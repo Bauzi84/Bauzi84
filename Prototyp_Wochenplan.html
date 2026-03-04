@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Kindle Dashboard 1.2</title>
+
+<style>
+.grid {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+
+  padding: 10px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(1024px, 2fr));
+  
+  gap: 15px;
+  padding: 15px;
+}
+.card {
+  border: 3px solid black;
+  border-radius: 0px;      /* bewusst eckig */
+  padding: 15px;
+  background: white;
+}
+.card h2 {
+  margin-top: 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<a href="Matheaufgaben_1mal1.html">Mathe_1</a>
+<!-- Gesamter oberer Block -->
+
+<div style="width:1050px;">
+
+<!-- 1. Reihe -->
+	<div class="grid">
+<!-- 3-Tage Wetter -->
+		<div class="card"><div id="weather" style="display:flex; gap:10px;"></div></div>
+
+ <!-- Jackenindex -->
+		<div class="card"><h2>Jackenindex</h2><div id="jacket"style="font-size:36px;"></div></div>
+ <!-- Datum -->		
+		<div class="card"><div id="date"style="font-size:36px;"></div></div>
+	</div>
+
+	
+	
+<!-- 2. Reihe -->
+	<div class="grid">
+<!-- Stundenvorschau -->	
+		<div class="card"><h2>Stundenvorschau</h2><div id="hourly"style="display:flex; gap:12px; margin-top:10px;font-size:24px;"></div></div>
+	</div>
+
+<!-- 3. Reihe -->
+	<div class="grid">
+<!-- WOCHENPLAN -->	
+		<div class="card">
+			<h1>🗓 Woche</h1>
+			<div id="week"style="font-size:32px;line-height:1px"></div>
+		</div>
+	
+<!-- Countdown -->
+		<div class="card"><h2>📅 Countdown</h2><div id="countdown"style="font-size:32px;line-height:1px;"></div></div>
+		
+	</div>
+
+<!-- 4. Reihe -->
+	<div class="grid">
+<!-- Mülltermine -->
+		<div class="card"><div style="margin-top:10px;"><h1>Nächste Mülltermine:</h1>
+			<div id="trashlist" style="display:flex; gap:10px; margin-top:5px;font-size:24px;"></div>
+	</div></div>
+
+	</div>
+</div>
+
+
+
+<script>
+
+/* =========================
+   HEUTE + WOCHENPLAN
+========================= */
+const week = {
+  Mo: "17 Uhr Schwimmen",
+  Di: "17 Uhr Englisch",
+  Mi: "18 Uhr Reha",
+  Do: "Sophie Sportzeug",
+  Fr: "15 Uhr Reha & Tanzen",
+  Sa: "",
+  So: ""
+};
+
+const todayIndex = new Date().getDay(); 
+// 0=So ... 6=Sa
+
+const days = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+
+let html = "";
+
+days.forEach((day, index) => {
+  let content = week[day] || "-";
+  if (index === todayIndex) {
+    html += `<p><strong>${day}: ${content}</strong></p>`;
+  } else {
+    html += `<p>${day}: ${content}</p>`;
+  }
+});
+
+document.getElementById("week").innerHTML = html;
+
+
+
+document.getElementById("jacket").innerText = jacketIndex(currentTemp);
+
+/* =========================
+   HEUTE + WOCHENPLAN
+========================= */
+
+var today = new Date();
+var weekdays = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+
+document.getElementById("date").innerHTML =
+    weekdays[today.getDay()] + " " + formatDate(today);
+
+
+
+function formatDate(d){
+    var day=("0"+d.getDate()).slice(-2);
+    var mon=("0"+(d.getMonth()+1)).slice(-2);
+    var y=d.getFullYear();
+    return day+"."+mon+"."+y;
+}
+
+
+/* =========================
+   WETTER (3-Tage und 12-Stunden)
+========================= */
+
+function getIcon(code){
+    if(code==0) return "☀";
+    if(code<=3) return "⛅";
+    if(code<=48) return "☁";
+    if(code<=67) return "🌧";
+    if(code<=77) return "❄";
+    return "☁";
+}
+
+var lat = 51.3999693;
+var lon = 7.1836594;
+var currentTemp = 0;
+var xhr = new XMLHttpRequest();
+xhr.open(
+    "GET",
+    "https://api.open-meteo.com/v1/forecast?latitude="+lat+
+    "&longitude="+lon+
+    "&hourly=temperature_2m,precipitation,weathercode"+
+    "&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max"+
+    "&timezone=Europe%2FBerlin",
+    true
+);
+
+xhr.onreadystatechange = function(){
+    if(xhr.readyState !== 4) return;
+
+    var data = JSON.parse(xhr.responseText);
+    var weatherDiv = document.getElementById("weather");
+    var hourlyDiv = document.getElementById("hourly");
+
+    // 3-Tage Vorschau
+    for(var i=0;i<3;i++){
+        var d = new Date();
+        d.setDate(today.getDate()+i);
+
+        var icon = getIcon(data.daily.weathercode[i]);
+        var min = Math.round(data.daily.temperature_2m_min[i]);
+        var max = Math.round(data.daily.temperature_2m_max[i]);
+        var rain = data.daily.precipitation_probability_max[i];
+		currentTemp = min;
+        var box = document.createElement("div");
+        box.style.textAlign = "center";
+        box.innerHTML =
+            "<div style='font-size:64px'>"+icon+"</div>"+
+            "<div style='font-weight:bold'>"+weekdays[d.getDay()]+": "+min+"°–"+max+"°</div>"+
+            "<div>"+rain+"% Regen</div>";
+
+        weatherDiv.appendChild(box);
+    }
+
+    // 12-Stunden Vorschau, aktuelle Stunde -1
+    var hourNow = today.getHours();
+    var startIndex = Math.max(0, hourNow-1);
+    for(var i=startIndex; i<startIndex+10 && i<data.hourly.time.length; i++){
+        var time = new Date(data.hourly.time[i]);
+        var temp = Math.round(data.hourly.temperature_2m[i]);
+        var prec = data.hourly.precipitation[i];
+        var icon = getIcon(data.hourly.weathercode[i]);
+
+
+        var hbox = document.createElement("div");
+        hbox.style.textAlign = "center";
+		
+
+        hbox.innerHTML =
+			"<div style='font-size:64px;'>"+icon+"</div>"+
+			("0"+time.getHours()).slice(-2)+":00<br>"+
+			temp+"°<br>"+
+			prec+"mm";
+
+        hourlyDiv.appendChild(hbox);
+    }
+
+};
+xhr.send();
+
+/* =========================
+   EventCountdown
+========================= */
+
+
+function updateCountdown() {
+  const today = new Date();
+  const events = [
+	{ name: "Osterferien", date: "2026-03-28" },
+	{ name: "Sommerferien", date: "2026-07-18" },
+	{ name: "Herbstferien", date: "2026-10-17" },
+	{ name: "Weihnachtsferien", date: "2026-12-23" },
+	{ name: "Weihnachten", date: "2026-12-25" },
+	{ name: "Geburtstag Sophie", date: "2027-01-13" },
+	{ name: "Geburtstag Melanie", date: "2027-03-02" },
+	{ name: "Geburtstag Nico", date: "2026-09-19" }
+];
+
+const upcomingEvents = events
+    .map(event => ({
+      ...event,
+      target: new Date(event.date),
+      diff: Math.ceil((new Date(event.date) - today) / (1000 * 60 * 60 * 24))
+    }))
+    .filter(event => event.diff >= 0)
+    // Sortiere nach diff aufsteigend (nächstes zuerst)
+    .sort((a, b) => a.diff - b.diff);
+
+  let html = "";
+  upcomingEvents.forEach(event => {
+    html += `<p>${event.name}: noch <strong>${event.diff}</strong> Tage</p>`;
+  });
+
+  document.getElementById("countdown").innerHTML = html;
+}
+
+updateCountdown();
+
+
+
+/* =========================
+   Jackenindex
+========================= */
+
+
+function jacketIndex(temp) {
+  if (temp < 6) return "🧥 Dicke Jacke!";
+  if (temp >= 6 && temp <= 13) return "🧥 Leichte Jacke!";
+  if (temp >= 20) return "👕 T-Shirt-Wetter!";
+  return "🧥Übergangswetter";
+}
+
+/* =========================
+   MÜLLTERMINE (ICS STRING)
+========================= */
+
+var icsText = `
+BEGIN:VCALENDAR
+PRODID:-//github.com/rianjs/ical.net//NONSGML ical.net 4.0//EN
+VERSION:2.0
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260206
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260205
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:285d49e6-a8e0-4a83-9f1c-6cd657a6a02a
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260206
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260205
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:3213d211-3b16-4c66-a759-bc140e078ae7
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260213
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260212
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:fe2e477b-53c1-4f5c-aa4c-57fd036e629d
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260213
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260212
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:5fc5c547-12ff-4f34-a47a-f0c9ca08f5ed
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260220
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260219
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:796bf4f3-5185-4866-9df0-9c32eb84ba1f
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260227
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260226
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:7c0ecf0a-b4c4-410b-b1c0-348acdc8a480
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260227
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260226
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:d25db674-df68-41f9-b512-2316f6eb222e
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260306
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260305
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:e2e65de7-3eda-4f57-9733-7c5a7ce202f8
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260306
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260305
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:858f0ed2-de8e-4402-b45f-9eae71cfcafd
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260313
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260312
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:9df1c277-a77e-4d7b-b5eb-ddcec7e3e27d
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260313
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260312
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:90f12310-fd68-46cd-9ddc-cb1ed500f8b8
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260320
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260319
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:c0771e9a-1d90-4b8a-aeab-6065b7c86b63
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260327
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260326
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:0a8e7e08-0bca-44e6-a7a9-206cabb08422
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260327
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260326
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:a188ae32-53f4-4013-8ac4-f498190691fe
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260403
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260402
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:a9db4b6a-02bd-4e01-9746-4a6bc640c750
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260403
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260402
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:a6c746fa-1982-4c48-9ed2-00f3538aa4e0
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260411
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260410
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:ab64bd13-4d17-48c8-abf0-c2896082fcdb
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260411
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260410
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:8dbd15a4-41d5-41c0-aab8-9e252e72771f
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260418
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260417
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:91906a17-1762-4609-ad36-00fddd18ad28
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260424
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260423
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:693c8d7f-0fe3-4386-8d64-184fd20c0bb0
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260424
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260423
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:49d9f73f-a16b-4520-ad4e-2d3b904a38f3
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260501
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260430
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:ab725e61-aa93-4aff-88f1-3c728f99007c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260501
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260430
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:6df9f919-75d0-4a2d-80c2-a122bc15c50c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260508
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260507
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:19e2d96b-5a3b-4455-aaf1-6dedbb3b574e
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260508
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260507
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:59467a65-c289-41c1-96d7-2854946e080f
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260516
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260515
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:325b6b89-1a79-40ca-9d44-efe17e2b8a8a
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260522
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260521
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:0e111f75-05bc-408b-a949-7c9fb311d108
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260522
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260521
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:93d1849d-d676-464e-b898-1fb502eef255
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260530
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260529
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:948f0a5e-4c78-4f69-8b0d-0a822d8ec8f2
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260530
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260529
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:c6040222-a822-4c91-b3ad-49055f098854
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260606
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260605
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:48bf40f5-1f5d-4d47-a5cb-e8fafee3bd80
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260606
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260605
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:352044b7-f4c6-4536-b465-5397381a11b8
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260613
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260612
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:cf10b72c-993d-48eb-9683-7410d96061a9
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260619
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260618
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:249e42e9-4f26-4279-8f04-20265e610d97
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260619
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260618
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:c697c826-0ee7-4d80-ac3f-57b3a181da1a
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260626
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260625
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:bb63cf11-394e-40ab-a58b-daf431be02fb
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260626
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260625
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:abf9994d-0868-49c7-a240-79d0a4a9ba82
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260703
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260702
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:dba0d89e-9a67-4cd4-908c-146223e12e9b
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260703
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260702
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:865b44e6-e6cd-48c0-b703-cce2c80a442c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260710
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260709
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:31c2a497-58b2-40ed-8692-a9527e94a76b
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260717
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260716
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:4aa689c6-28d7-4fea-a323-80efa67ed0af
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260717
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260716
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:58f19aad-f088-4c7b-a60b-aa801d622813
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260724
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260723
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:972a52a5-c394-48fd-a823-a50fc0779345
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260724
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260723
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:eee8a9bc-7d75-46fe-b317-305db5181418
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260731
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260730
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:4f0949a1-2a89-4884-aef9-927f1616714e
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260731
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260730
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:1109198f-04f8-47a0-9eae-3713a27a6c8a
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260807
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260806
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:abe70b7d-40bf-4c06-bcfa-bdceb2ffdb41
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260814
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260813
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:e9b95035-3283-4af6-9eed-2c4d50c9f1ee
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260814
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260813
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:f1d44d26-1b07-46fb-b36e-0f4a99f75c36
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260821
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260820
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:0fa4a9e5-3cf7-47f9-9af7-b504cebf1690
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260821
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260820
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:ca1a81f2-b08a-4ed7-9641-17b58c50a176
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260828
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260827
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:f61edae5-b897-4fde-a7de-35c699c9fc41
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260828
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260827
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:4bd65a65-c8c6-40f1-bf85-8d47acfa80e9
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260904
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260903
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:27c3b9c6-fcbe-4892-af17-9f5377806bf5
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260911
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260910
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:3858b694-57e2-4eba-a43b-e911f646545c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260911
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260910
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:73210a1e-441f-47bc-8b24-d31d30787817
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260918
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260917
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:9fe13b91-3075-44ba-94b8-2e759282626c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260918
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260917
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:d3cb7477-68d0-4c17-b20c-599fae6af757
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260925
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260924
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:33eff77c-aabd-4355-8572-b9f40e0a3610
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260925
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260924
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:f5950976-b9ea-4239-b74d-f2c9686a8e83
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261002
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261001
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:64c0274a-e240-4dd9-8ecc-8d6f123e4e31
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261009
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261008
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:6846e4b5-048c-4a87-9a8e-af3636cb9529
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261009
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261008
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:ad979e14-48ca-4508-9324-1ae7f0b9d2f7
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261016
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261015
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:344e3b68-5641-4f99-a20d-2cdb8499b7a5
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261016
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261015
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:7e59abaa-8696-4c2d-b635-5ee6b012b3f9
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261023
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261022
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:9a26ec88-4906-4f51-a9b6-de896d0467e0
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261023
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261022
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:cdedaa3f-0153-45e4-9a57-ef1d4f09f9aa
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261030
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261029
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:ce54b1c6-10bf-4ab3-9d5f-1030a6631bfb
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261106
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261105
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:bb63145f-7995-4d03-aabc-4240fdfce83c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261106
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261105
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:cd603308-12f7-476a-9149-8ce82823b4b2
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261113
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261112
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:e0e200db-4b8e-4f4d-9b04-b95a82e9abbb
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261113
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261112
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:145b9854-8531-4559-84d0-4b363b752406
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261120
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261119
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:1d5235a3-0a75-4b84-8652-00eecb851264
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261120
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261119
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:63243a12-427f-40d6-8824-74978cc52550
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261127
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261126
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:6c2225b0-0ddd-4dd1-84c6-042823636bff
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261204
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261203
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:b8387b74-d958-4e0a-ab00-bbef921baad5
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261204
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261203
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:9c775293-358e-4ea9-b5f3-3077c52c4081
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261211
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261210
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:675d7cfb-5b2d-4921-a52e-85bc277bdb18
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261211
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261210
+SEQUENCE:0
+SUMMARY:Leerung: Papier
+UID:0ee5e8b5-7d01-4d5e-b7cf-940e92bbd95c
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261217
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261216
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:08d2a780-964e-4ab9-b987-d354a61873de
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261217
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261216
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:cbb56035-fdfb-46b6-96a0-163fae4522d7
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261223
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261222
+SEQUENCE:0
+SUMMARY:Leerung: Biomüll
+UID:d06d5f30-a48f-42a0-830f-b27ff25beb33
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261231
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261230
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll
+UID:ea0164ef-6bf7-47ca-b416-b5ca1d1045f4
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261231
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261230
+SEQUENCE:0
+SUMMARY:Leerung: Hausmüll-Sack
+UID:ef46f913-6741-46bd-8082-57be6acdba89
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260320
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260319
+SEQUENCE:0
+SUMMARY:Leerung: Bio Reinigung
+UID:35ca5d5e-cbca-4f8c-a621-cb8abb820900
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20260710
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20260709
+SEQUENCE:0
+SUMMARY:Leerung: Bio Reinigung
+UID:66053870-8130-4bca-aa56-e574561cded2
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:
+DTEND;VALUE=DATE:20261030
+DTSTAMP:20260203T182440Z
+DTSTART;VALUE=DATE:20261029
+SEQUENCE:0
+SUMMARY:Leerung: Bio Reinigung
+UID:1635b44d-8940-446d-822a-dc8a0dc742ae
+END:VEVENT
+END:VCALENDAR`;
+
+var events = parseICS(icsText);
+var list = document.getElementById("trashlist");
+
+for(var i=0;i<5 && i<events.length;i++){
+    var ev = events[i];
+    var d = new Date(ev.date);
+
+    var div = document.createElement("div");
+    div.style.border="1px solid black";
+    div.style.padding="6px 10px";
+    div.style.textAlign="center";
+	div.style.fontSize="32px";  // Passe an (z.B. 12px klein, 16px normal)
+    
+	var icons = getTrashIcon(ev.title);
+    var name = ev.title.replace(/^Leerung:\s*/i,"");
+
+
+    div.innerHTML =
+        icons + "<br>" +
+        name + "<br>" +
+        formatShort(d);
+
+    if(isSameDay(d,today)){
+        div.style.background="black";
+        div.style.color="white";
+    }
+
+    list.appendChild(div);
+}
+
+
+function parseICS(text){
+    var lines=text.split(/\r?\n/);
+    var events=[];
+    var current=null;
+    for(var i=0;i<lines.length;i++){
+        var line=lines[i];
+        if(line.indexOf("BEGIN:VEVENT")===0){ current={}; }
+        if(line.indexOf("DTSTART")===0){
+            var date=line.split(":")[1];
+            current.date = date.substr(0,4)+"-"+date.substr(4,2)+"-"+date.substr(6,2);
+        }
+        if(line.indexOf("SUMMARY")===0){
+            current.title=line.split(":").slice(1).join(":").trim();
+        }
+        if(line.indexOf("END:VEVENT")===0 && current){
+            if(new Date(current.date)>=today){ events.push(current); }
+            current=null;
+        }
+    }
+    events.sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+    return events;
+}
+
+function getTrashIcon(title){
+    title=title.toLowerCase();
+    var icons=[];
+    if(title.indexOf("bio")>-1) icons.push("🌿");
+    if(title.indexOf("papier")>-1) icons.push("📦");
+    if(title.indexOf("hausmüll")>-1) icons.push("🗑");
+    if(title.indexOf("sack")>-1) icons.push("♻");
+    if(title.indexOf("reinigung")>-1) icons.push("🧹");
+    if(icons.length===0) icons.push("🗑");
+    return icons.join(" ");
+}
+
+function isSameDay(a,b){ return a.toDateString()===b.toDateString(); }
+function formatShort(d){
+    var day=("0"+d.getDate()).slice(-2);
+    var mon=("0"+(d.getMonth()+1)).slice(-2);
+    return day+"."+mon;
+}
+
+
+
+
+</script>
+</body>
+</html>

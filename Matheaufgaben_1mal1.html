@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Grundschul-Mathe Arbeitsblätter</title>
+
+<style>
+
+body{
+    font-family:"Comic Sans MS", Arial, sans-serif;
+    background:#f4f8ff;
+    margin:15px;
+}
+
+h1{
+    text-align:center;
+    color:#2b5cff;
+}
+
+.controls{
+    background:white;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 8px rgba(0,0,0,0.1);
+}
+
+.sheet{
+    background:white;
+    padding:15mm;
+    box-sizing:border-box;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8mm;
+    font-size:13pt;
+}
+
+.tasks{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6mm 4mm;
+    font-size:15pt;
+}
+
+.line{
+    border-bottom:2px solid black;
+    display:inline-block;
+    width:45px;
+    margin-left:6px;
+}
+
+.footer{
+    margin-top:10mm;
+    border-top:2px dashed #999;
+    padding-top:5mm;
+    font-size:12pt;
+}
+
+//Checkbox für 1x1-Reihe
+.checkbox-grid{
+    display:grid;
+    grid-template-columns:repeat(11,auto);
+    gap:6px;
+}
+
+button{
+    padding:8px 14px;
+    border:none;
+    border-radius:8px;
+    background:#2b5cff;
+    color:white;
+    cursor:pointer;
+}
+
+/* ===== Druck ===== */
+
+@page{
+    size:A4;
+    margin:12mm;
+}
+
+@media print{
+    .controls{display:none;}
+    body{background:white;margin:0;}
+    .sheet{
+        page-break-after:always;
+        break-after:page;
+        padding:10mm;
+    }
+    .sheet *{break-inside:avoid;}
+}
+</style>
+</head>
+
+<body>
+<a href="Prototyp_Wochenplan.html">Wochenplan</a>
+<h1>🌟 Mathe-Arbeitsblätter 🌟</h1>
+
+<div class="controls">
+
+<b>Rechenarten:</b><br>
+<label><input type="checkbox" value="add" checked> Addition</label>
+<label><input type="checkbox" value="sub"> Subtraktion</label>
+<label><input type="checkbox" value="mul"> Multiplikation</label>
+<label><input type="checkbox" value="div"> Division</label>
+
+<br><br>
+
+<b>Zahlenraum (+ / −):</b>
+<input type="number" id="range" value="100" min="10" max="1000">
+
+<br><br>
+
+<b>1×1 Reihen:</b>
+<div class="checkbox-grid" id="rows"></div>
+
+<br>
+
+Anzahl Arbeitsblätter:
+<input type="number" id="sheetCount" value="1" min="1" max="20">
+
+<br><br>
+
+<button onclick="generate()">Arbeitsblätter erzeugen</button>
+<button onclick="window.print()">🖨 Drucken</button>
+
+</div>
+
+<div id="worksheets"></div>
+
+<script>
+// Nico Baumann
+/* Reihen erzeugen */
+const rowDiv=document.getElementById("rows");
+for(let i=0;i<=10;i++){
+    rowDiv.innerHTML+=
+    `<label><input type="checkbox" value="${i}" checked>${i}</label>`;
+}
+
+const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+function selectedRows(){
+    return [...document.querySelectorAll("#rows input:checked")]
+        .map(e=>Number(e.value));
+}
+
+function selectedOps(){
+    return [...document.querySelectorAll(".controls input[type=checkbox]:checked")]
+        .map(e=>e.value)
+        .filter(v=>["add","sub","mul","div"].includes(v));
+}
+
+/* ===== Aufgaben Generator ===== */
+
+function makeTask(ops, range, rows){
+
+    let op=pick(ops);
+
+    if(op==="add"){
+        let a=rand(0,range);
+        let b=rand(0,range-a);
+        return `${a} + ${b}`;
+    }
+
+    if(op==="sub"){
+        let a=rand(0,range);
+        let b=rand(0,a);
+        return `${a} − ${b}`;
+    }
+
+    if(op==="mul"){
+        let a=pick(rows);
+        let b=rand(0,10);
+        return `${a} × ${b}`;
+    }
+
+    if(op==="div"){
+        let b=rand(1,10);
+        let c=rand(0,10);
+        let a=b*c;
+        return `${a} ÷ ${b}`;
+    }
+}
+
+function createSheet(n,ops,range,rows){
+
+    let html="";
+
+    for(let i=0;i<40;i++){
+        html+=`<div>${makeTask(ops,range,rows)} = <span class="line"></span></div>`;
+    }
+
+    const sheet=document.createElement("div");
+    sheet.className="sheet";
+
+    sheet.innerHTML=`
+        <div class="header">
+            <div>Name: __________________</div>
+            <div>Datum: __________________</div>
+        </div>
+
+        <h2>Arbeitsblatt ${n}</h2>
+
+        <div class="tasks">${html}</div>
+
+        <div class="footer">
+            Punkte: ______ / 40<br>
+        </div>
+    `;
+
+    return sheet;
+}
+
+function generate(){
+
+    const ops=selectedOps();
+    const rows=selectedRows();
+    const range=Number(document.getElementById("range").value);
+    const count=Number(document.getElementById("sheetCount").value);
+
+    if(ops.length===0){
+        alert("Bitte mindestens eine Rechenart wählen!");
+        return;
+    }
+
+    const container=document.getElementById("worksheets");
+    container.innerHTML="";
+
+    for(let i=1;i<=count;i++){
+        container.appendChild(createSheet(i,ops,range,rows));
+    }
+}
+
+generate();
+</script>
+
+</body>
+</html>
