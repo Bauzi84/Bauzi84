@@ -106,7 +106,7 @@ button{
 <label><input type="checkbox" value="sub"> Subtraktion</label>
 <label><input type="checkbox" value="mul"> Multiplikation</label>
 <label><input type="checkbox" value="div"> Division</label>
-
+<label><input type="checkbox" value="square"> Quadratzahlen</label>
 <br><br>
 
 <b>Zahlenraum (+ / −):</b>
@@ -116,8 +116,9 @@ button{
 
 <b>1×1 Reihen:</b>
 <div class="checkbox-grid" id="rows"></div>
-
 <br>
+
+<br><br>
 
 Anzahl Arbeitsblätter:
 <input type="number" id="sheetCount" value="1" min="1" max="20">
@@ -151,7 +152,7 @@ function selectedRows(){
 function selectedOps(){
     return [...document.querySelectorAll(".controls input[type=checkbox]:checked")]
         .map(e=>e.value)
-        .filter(v=>["add","sub","mul","div"].includes(v));
+        .filter(v=>["add","sub","mul","div","square"].includes(v));
 }
 
 /* ===== Aufgaben Generator ===== */
@@ -184,6 +185,11 @@ function makeTask(ops, range, rows){
         let a=b*c;
         return `${a} ÷ ${b}`;
     }
+	
+	if(op==="square"){
+    let a=rand(1,10);
+    return `${a} × ${a}`;
+}
 }
 
 function createSheet(n,ops,range,rows){
@@ -239,7 +245,4 @@ generate();
 </script>
 
 </body>
-
 </html>
-
-
