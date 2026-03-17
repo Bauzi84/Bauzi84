@@ -1186,43 +1186,33 @@ const symbols = [
 
 async function loadStocks() {
   try {
-	console.log("Starte Aktien-Request...");
-    const proxy = "https://api.allorigins.win/raw?url=";
+    const proxy = "https://corsproxy.io/?";
 
     const url = encodeURIComponent(
-      `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`
+      "https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL"
     );
 
     const res = await fetch(proxy + url);
-	console.log(data);
     const data = await res.json();
 
-    let html = "";
+    const stock = data.quoteResponse.result[0];
 
-    data.quoteResponse.result.forEach(stock => {
-      const price = stock.regularMarketPrice?.toFixed(2);
-      const change = stock.regularMarketChangePercent?.toFixed(2);
+    const change = stock.regularMarketChangePercent ?? 0;
 
-      const color = change >= 0 ? "green" : "red";
-
-      let icon = "→";
-      if (change > 0.5) icon = "📈";
-      if (change < -0.5) icon = "📉";
-
-      html += `
-        <p style="color:${color}">
-          <strong>${stock.shortName}</strong><br>
-          ${price} (${change}%) ${icon}
-        </p>
-      `;
-    });
-
-    document.getElementById("stocks").innerHTML = html;
+    document.getElementById("stocks").innerHTML =
+      stock.shortName + " " +
+      stock.regularMarketPrice +
+      " (" + change.toFixed(2) + "%)";
 
   } catch (e) {
-    document.getElementById("stocks").innerHTML = "Aktien konnten nicht geladen werden";
+    console.log(e);
+    document.getElementById("stocks").innerHTML = "Fehler beim Laden";
   }
 }
+
+window.onload = function() {
+  loadStocks();
+};
 
 loadStocks();
 setInterval(loadStocks, 300000);
@@ -1254,7 +1244,7 @@ async function loadNews() {
   }
 }
 
-loadNews();
+//loadNews();
 
 let icon = "→";
 if (change > 0.5) icon = "📈";
