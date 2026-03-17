@@ -99,7 +99,7 @@
 
   <div class="card">
     <h2>📰 News</h2>
-    <div id="news"></div>
+    <div>— aktuell deaktiviert —</div>
   </div>
 
 </div>
@@ -1185,25 +1185,19 @@ const symbols = [
 
 
 async function loadStocks() {
-  let html = "";
+  try {
+    const proxy = "https://api.allorigins.win/raw?url=";
 
-  for (let sym of symbols) {
-    try {
-      const proxy = "https://api.allorigins.win/raw?url=";
-      const url = encodeURIComponent(
-        `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${sym}`
-      );
+    const url = encodeURIComponent(
+      `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`
+    );
 
-      const res = await fetch(proxy + url);
-      const data = await res.json();
+    const res = await fetch(proxy + url);
+    const data = await res.json();
 
-      const stock = data.quoteResponse.result[0];
+    let html = "";
 
-      if (!stock) {
-        html += `<p>${sym}: keine Daten</p>`;
-        continue;
-      }
-
+    data.quoteResponse.result.forEach(stock => {
       const price = stock.regularMarketPrice?.toFixed(2);
       const change = stock.regularMarketChangePercent?.toFixed(2);
 
@@ -1215,20 +1209,21 @@ async function loadStocks() {
 
       html += `
         <p style="color:${color}">
-          <strong>${stock.shortName || sym}</strong><br>
+          <strong>${stock.shortName}</strong><br>
           ${price} (${change}%) ${icon}
         </p>
       `;
-    } catch (e) {
-      html += `<p>${sym}: Fehler</p>`;
-    }
-  }
+    });
 
-  document.getElementById("stocks").innerHTML = html;
+    document.getElementById("stocks").innerHTML = html;
+
+  } catch (e) {
+    document.getElementById("stocks").innerHTML = "Aktien konnten nicht geladen werden";
+  }
 }
 
 loadStocks();
-setInterval(loadStocks, 300000); // alle 5 Minuten (stabiler!)
+setInterval(loadStocks, 300000);
 
 async function loadNews() {
   const proxy = "https://api.allorigins.win/raw?url=";
