@@ -1186,6 +1186,7 @@ const symbols = [
 
 async function loadStocks() {
   try {
+	console.log("Starte Aktien-Request...");
     const proxy = "https://api.allorigins.win/raw?url=";
 
     const url = encodeURIComponent(
@@ -1193,6 +1194,7 @@ async function loadStocks() {
     );
 
     const res = await fetch(proxy + url);
+	console.log(data);
     const data = await res.json();
 
     let html = "";
