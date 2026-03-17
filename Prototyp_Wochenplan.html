@@ -42,7 +42,7 @@
 <body>
 
 <a href="Matheaufgaben_1mal1.html">Mathe_1</a>
-	Version 1.2.3
+	Version 1.2.4
 <!-- Gesamter oberer Block -->
 
 <div style="display:flex; gap:20px;">
@@ -1191,93 +1191,6 @@ function formatShort(d){
 }
 
 
-
-
-//Aktien einblenden
-const symbols = [
-  "AMD",        // AMD
-  "BLK",        // BlackRock
-  "XGLD.DE",    // Xetra Gold
-  "ISPA.DE",    // Div ETF (kann variieren!)
-  "EEM",        // MSCI EM (Alternative)
-  "ICLN",       // Clean Energy
-  "IWDA.AS",    // MSCI World Core
-  "IXC",        // Energy Sector
-  "CNDX.AS",    // Nasdaq 100
-  "NVDA",       // Nvidia
-  "RHM.DE",     // Rheinmetall
-  "DFEN",       // Defense ETF (Annäherung)
-  "DIS",        // Disney
-  "XDWD.DE",    // MSCI World Xtrackers
-  "EOAN.DE",    // E.ON
-  "DFNS.AS"     // Defense Tech ETF (evtl. prüfen)
-];
-
-
-async function loadStocks() {
-  try {
-    const res = await fetch("https://stooq.com/q/l/?s=aapl.us&f=sd2t2ohlcv&h&e=json");
-    const data = await res.json();
-
-    const stock = data.symbols[0];
-
-    document.getElementById("stocks").innerHTML =
-      stock.name + " " + stock.close;
-
-  } catch (e) {
-    console.log(e);
-    document.getElementById("stocks").innerHTML = "Fehler beim Laden";
-  }
-}
-
-window.onload = function() {
-  loadStocks();
-};
-
-loadStocks();
-setInterval(loadStocks, 300000);
-
-async function loadNews() {
-  const proxy = "https://api.allorigins.win/raw?url=";
-  const url = encodeURIComponent("https://feeds.finance.yahoo.com/rss/2.0/headline?s=AAPL&region=US&lang=en-US");
-
-  try {
-    const res = await fetch(proxy + url);
-    const text = await res.text();
-
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "text/xml");
-
-    const items = xml.querySelectorAll("item");
-
-    let html = "";
-
-    items.forEach((item, i) => {
-      if (i < 5) {
-        html += `<p>• ${item.querySelector("title").textContent}</p>`;
-      }
-    });
-
-    document.getElementById("news").innerHTML = html;
-  } catch {
-    document.getElementById("news").innerHTML = "News konnten nicht geladen werden";
-  }
-}
-
-//loadNews();
-
-let icon = "→";
-if (change > 0.5) icon = "📈";
-if (change < -0.5) icon = "📉";
-
-const color = change >= 0 ? "green" : "red";
-
-html += `
-  <p style="color:${color}">
-    <strong>${stock.shortName}</strong><br>
-    ${price} (${change}%)
-  </p>
-`;
 
 
 </script>
