@@ -42,7 +42,7 @@
 <body>
 
 <a href="Matheaufgaben_1mal1.html">Mathe_1</a>
-	Version 1.2.1
+	Version 1.2.2
 <!-- Gesamter oberer Block -->
 
 <div style="display:flex; gap:20px;">
@@ -1187,23 +1187,13 @@ const symbols = [
 
 async function loadStocks() {
   try {
-    const proxy = "https://corsproxy.io/?";
-
-    const url = encodeURIComponent(
-      "https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL"
-    );
-
-    const res = await fetch(proxy + url);
+    const res = await fetch("https://stooq.com/q/l/?s=aapl.us&f=sd2t2ohlcv&h&e=json");
     const data = await res.json();
 
-    const stock = data.quoteResponse.result[0];
-
-    const change = stock.regularMarketChangePercent ?? 0;
+    const stock = data.symbols[0];
 
     document.getElementById("stocks").innerHTML =
-      stock.shortName + " " +
-      stock.regularMarketPrice +
-      " (" + change.toFixed(2) + "%)";
+      stock.name + " " + stock.close;
 
   } catch (e) {
     console.log(e);
