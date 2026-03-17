@@ -30,6 +30,11 @@
   margin-top: 0;
 }
 
+#stocks p, #news p {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
 </style>
 
 </head>
@@ -39,50 +44,65 @@
 <a href="Matheaufgaben_1mal1.html">Mathe_1</a>
 <!-- Gesamter oberer Block -->
 
-<div style="width:1050px;">
+<div style="display:flex; gap:20px;">
 
+	<div style="width:1050px;">
 <!-- 1. Reihe -->
-	<div class="grid">
+		<div class="grid">
 <!-- 3-Tage Wetter -->
-		<div class="card"><div id="weather" style="display:flex; gap:10px;"></div></div>
+			<div class="card"><div id="weather" style="display:flex; gap:10px;"></div></div>
 
  <!-- Jackenindex -->
-		<div class="card"><h2>Jackenindex</h2><div id="jacket"style="font-size:36px;"></div></div>
+			<div class="card"><h2>Jackenindex</h2><div id="jacket"style="font-size:36px;"></div></div>
  <!-- Datum -->		
-		<div class="card"><div id="date"style="font-size:36px;"></div></div>
-	</div>
+			<div class="card"><div id="date"style="font-size:36px;"></div></div>
+		</div>
 
 	
 	
 <!-- 2. Reihe -->
-	<div class="grid">
+		<div class="grid">
 <!-- Stundenvorschau -->	
-		<div class="card"><h2>Stundenvorschau</h2><div id="hourly"style="display:flex; gap:12px; margin-top:10px;font-size:24px;"></div></div>
-	</div>
+			<div class="card"><h2>Stundenvorschau</h2><div id="hourly"style="display:flex; gap:12px; margin-top:10px;font-size:24px;"></div></div>
+		</div>
 
 <!-- 3. Reihe -->
-	<div class="grid">
+		<div class="grid">
 <!-- WOCHENPLAN -->	
-		<div class="card">
-			<h1>🗓 Woche</h1>
-			<div id="week"style="font-size:32px;line-height:1px"></div>
-		</div>
+			<div class="card">
+				<h1>🗓 Woche</h1>
+				<div id="week"style="font-size:32px;line-height:1px"></div>
+			</div>
 	
 <!-- Countdown -->
-		<div class="card"><h2>📅 Countdown</h2><div id="countdown"style="font-size:32px;line-height:1px;"></div></div>
+			<div class="card"><h2>📅 Countdown</h2><div id="countdown"style="font-size:32px;line-height:1px;"></div></div>
 		
-	</div>
+		</div>
 
 <!-- 4. Reihe -->
-	<div class="grid">
+		<div class="grid">
 <!-- Mülltermine -->
-		<div class="card"><div style="margin-top:10px;"><h1>Nächste Mülltermine:</h1>
-			<div id="trashlist" style="display:flex; gap:10px; margin-top:5px;font-size:24px;"></div>
-	</div></div>
+			<div class="card"><div style="margin-top:10px;"><h1>Nächste Mülltermine:</h1>
+				<div id="trashlist" style="display:flex; gap:10px; margin-top:5px;font-size:24px;"></div>
+			</div></div>
 
+		</div>
+	
 	</div>
-</div>
+	
+<div style="flex:1; display:flex; flex-direction:column; gap:15px;">
+  
+  <div class="card">
+    <h2>📈 Aktien & ETFs</h2>
+    <div id="stocks"></div>
+  </div>
 
+  <div class="card">
+    <h2>📰 News</h2>
+    <div id="news"></div>
+  </div>
+
+</div>
 
 
 <script>
@@ -91,11 +111,11 @@
    HEUTE + WOCHENPLAN
 ========================= */
 const week = {
-  Mo: "S",
-  Di: "E",
-  Mi: "R",
-  Do: "Sportzeug",
-  Fr: "R&T",
+  Mo: "17 Uhr Schwimmen",
+  Di: "17 Uhr Englisch",
+  Mi: "18 Uhr Reha",
+  Do: "Sophie Sportzeug",
+  Fr: "15 Uhr Reha & Tanzen",
   Sa: "",
   So: ""
 };
@@ -237,7 +257,7 @@ function updateCountdown() {
 	{ name: "Weihnachten", date: "2026-12-25" },
 	{ name: "Geburtstag Sophie", date: "2027-01-13" },
 	{ name: "Geburtstag Melanie", date: "2027-03-02" },
-	{ name: "Geburtstag Nico", date: "2026-09-19" }
+	{ name: "Geburtstag Nico", date: "2026-09-19" },
 ];
 
 const upcomingEvents = events
@@ -1143,7 +1163,116 @@ function formatShort(d){
 
 
 
+//Aktien einblenden
+const symbols = [
+  "AMD",        // AMD
+  "BLK",        // BlackRock
+  "XGLD.DE",    // Xetra Gold
+  "ISPA.DE",    // Div ETF (kann variieren!)
+  "EEM",        // MSCI EM (Alternative)
+  "ICLN",       // Clean Energy
+  "IWDA.AS",    // MSCI World Core
+  "IXC",        // Energy Sector
+  "CNDX.AS",    // Nasdaq 100
+  "NVDA",       // Nvidia
+  "RHM.DE",     // Rheinmetall
+  "DFEN",       // Defense ETF (Annäherung)
+  "DIS",        // Disney
+  "XDWD.DE",    // MSCI World Xtrackers
+  "EOAN.DE",    // E.ON
+  "DFNS.AS"     // Defense Tech ETF (evtl. prüfen)
+];
+
+
+async function loadStocks() {
+  let html = "";
+
+  for (let sym of symbols) {
+    try {
+      const proxy = "https://api.allorigins.win/raw?url=";
+      const url = encodeURIComponent(
+        `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${sym}`
+      );
+
+      const res = await fetch(proxy + url);
+      const data = await res.json();
+
+      const stock = data.quoteResponse.result[0];
+
+      if (!stock) {
+        html += `<p>${sym}: keine Daten</p>`;
+        continue;
+      }
+
+      const price = stock.regularMarketPrice?.toFixed(2);
+      const change = stock.regularMarketChangePercent?.toFixed(2);
+
+      const color = change >= 0 ? "green" : "red";
+
+      let icon = "→";
+      if (change > 0.5) icon = "📈";
+      if (change < -0.5) icon = "📉";
+
+      html += `
+        <p style="color:${color}">
+          <strong>${stock.shortName || sym}</strong><br>
+          ${price} (${change}%) ${icon}
+        </p>
+      `;
+    } catch (e) {
+      html += `<p>${sym}: Fehler</p>`;
+    }
+  }
+
+  document.getElementById("stocks").innerHTML = html;
+}
+
+loadStocks();
+setInterval(loadStocks, 300000); // alle 5 Minuten (stabiler!)
+
+async function loadNews() {
+  const proxy = "https://api.allorigins.win/raw?url=";
+  const url = encodeURIComponent("https://feeds.finance.yahoo.com/rss/2.0/headline?s=AAPL&region=US&lang=en-US");
+
+  try {
+    const res = await fetch(proxy + url);
+    const text = await res.text();
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "text/xml");
+
+    const items = xml.querySelectorAll("item");
+
+    let html = "";
+
+    items.forEach((item, i) => {
+      if (i < 5) {
+        html += `<p>• ${item.querySelector("title").textContent}</p>`;
+      }
+    });
+
+    document.getElementById("news").innerHTML = html;
+  } catch {
+    document.getElementById("news").innerHTML = "News konnten nicht geladen werden";
+  }
+}
+
+loadNews();
+
+let icon = "→";
+if (change > 0.5) icon = "📈";
+if (change < -0.5) icon = "📉";
+
+const color = change >= 0 ? "green" : "red";
+
+html += `
+  <p style="color:${color}">
+    <strong>${stock.shortName}</strong><br>
+    ${price} (${change}%)
+  </p>
+`;
+
+
 </script>
 </body>
-
 </html>
