@@ -42,7 +42,7 @@
 <body>
 
 <a href="Matheaufgaben_1mal1.html">Mathe_1</a>
-	Version 1.2.2
+	Version 1.2.3
 <!-- Gesamter oberer Block -->
 
 <div style="display:flex; gap:20px;">
@@ -94,9 +94,13 @@
 <div style="flex:1; display:flex; flex-direction:column; gap:15px;">
   
   <div class="card">
-    <h2>📈 Aktien & ETFs</h2>
-    <div id="stocks"></div>
+  <h2>📈 Aktien & ETFs</h2>
+
+  <div class="tradingview-widget-container">
+    <div id="tradingview_stocks"></div>
   </div>
+
+</div>
 
   <div class="card">
     <h2>📰 News</h2>
@@ -105,7 +109,32 @@
 
 </div>
 
-
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+new TradingView.MediumWidget({
+  "container_id": "tradingview_stocks",
+  "symbols": [
+    ["AMD", "NASDAQ:AMD"],
+    ["NVIDIA", "NASDAQ:NVDA"],
+    ["Microsoft", "NASDAQ:MSFT"],
+    ["BlackRock", "NYSE:BLK"],
+    ["Disney", "NYSE:DIS"],
+    ["Rheinmetall", "ETR:RHM"],
+    ["E.ON", "ETR:EOAN"],
+    ["MSCI World", "XETR:IWDA"],
+    ["Nasdaq 100 ETF", "XETR:CNDX"]
+  ],
+  "greyText": "Quotes by TradingView",
+  "gridLineColor": "#e7e7e7",
+  "fontColor": "#000",
+  "underLineColor": "#ccc",
+  "trendLineColor": "#37a6ef",
+  "width": "100%",
+  "height": "400",
+  "locale": "de"
+});
+</script>
+	
 <script>
 
 /* =========================
