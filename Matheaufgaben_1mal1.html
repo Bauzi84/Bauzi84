@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Grundschul-Arbeitsblatt-Generator - mit Ergebniskästchen</title>
+    <title>Grundschul-Arbeitsblatt-Generator von Bauzi84 - 20260330</title>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
         * {
@@ -104,12 +104,17 @@
             background: #059669;
         }
 
-        .row-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            max-width: 280px;
-        }
+		.row-selector {
+			display: grid;
+			grid-template-columns: repeat(5, 30px);  /* 5 Spalten à 30px */
+			gap: 6px;
+			max-width: 100%;
+		}
+
+		.row-selector span {
+			text-align: center;
+			padding: 3px 0;
+		}
 
         .row-selector span {
             background: #e2e8f0;
@@ -311,9 +316,18 @@
                 padding: 0;
                 margin: 0;
             }
-            .controls, button, .no-print, .print-btn {
-                display: none !important;
-            }
+			
+			/* Alles ausblenden, was nicht gedruckt werden soll */
+			.controls, button, .no-print, .print-btn,
+			.control-group a,                          /* Wochenplan-Link */
+			.control-group:first-child,                /* Erste Control-Group mit Seitenanzahl */
+			.button-group,                             /* Generieren & Drucken Buttons */
+			.generator-container > .control-group,     /* Direkte Control-Group außerhalb */
+			.generator-container > .button-group,      /* Direkte Button-Group außerhalb */
+			.generator-container > br {                /* Der <br> Tag dazwischen */
+				display: none !important;
+			}
+			
             .generator-container {
                 padding: 0;
                 margin: 0;
@@ -407,14 +421,107 @@
             color: #94a3b8;
             margin-top: 12px;
         }
+		
+		/* Uhrzeit-Aufgaben */
+		.time-task {
+			background: #f0f9ff;
+			border: 1px solid #bae6fd;
+			border-radius: 12px;
+			padding: 10px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.clock-canvas {
+			width: 100px;
+			height: 100px;
+			background: white;
+			border-radius: 50%;
+			border: 2px solid #334155;
+			position: relative;
+			margin: 5px auto;
+		}
+
+		.clock-canvas svg {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		.time-question {
+			font-size: 0.9rem;
+			font-weight: 500;
+			text-align: center;
+			margin-bottom: 5px;
+		}
+
+		.time-answer {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+			justify-content: center;
+			width: 100%;
+		}
+
+		.time-answer input {
+			width: 80px;
+			text-align: center;
+			border: 1px solid #cbd5e1;
+			border-radius: 8px;
+			padding: 4px;
+			font-size: 0.85rem;
+		}
+
+		.time-answer .result-box {
+			width: 70px;
+			height: 28px;
+			margin: 0;
+		}	
+
+		/* Für Zeichnen-Aufgaben */
+		.drawing-area {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			margin: 0 auto;
+			cursor: pointer;
+		}
+
+		@media print {
+			.time-answer input {
+				border: 1px solid #000;
+				background: transparent;
+			}
+			.clock-canvas {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+		}
+		
+		
     </style>
 </head>
 <body>
-<a href="Prototyp_Wochenplan.html">Wochenplan</a><br><br><br><br>
 <div class="generator-container">
+	<div class="control-group no-print">
+		<!-- <a href="Prototyp_Wochenplan.html">Wochenplan</a> -->
+		<!-- <a href="paypal.me/bauzi84">Paypal Danke :)</a> -->
+		<label>📄 Seitenanzahl:</label>
+		<input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
+		<br>
+	</div>
+
+	<div class="button-group no-print">
+		<button id="generateBtn">✨ Generieren</button>
+		<button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
+	</div>
+	<br>
     <div class="controls no-print">
         <div class="control-group">
-            <label>📘 Modus:</label>
+            <label>Fach:</label>
             <select id="modeSelect">
                 <option value="math">Mathe</option>
                 <option value="deutsch">Deutsch</option>
@@ -423,28 +530,46 @@
 
         <!-- MATHE Steuerung -->
         <div id="mathControls" class="control-group">
-            <label>➕ Rechenarten:</label>
-            <div class="checkbox-group" id="mathOps">
-                <label><input type="checkbox" value="add" checked> +</label>
-                <label><input type="checkbox" value="sub" checked> −</label>
-                <label><input type="checkbox" value="mul"> ×</label>
-                <label><input type="checkbox" value="div"> ÷</label>
-                <label><input type="checkbox" value="square" id="squareCheck"> □ (x·x)</label>
-                <label><input type="checkbox" value="sqrt" id="sqrtCheck"> √ (Wurzel)</label>
-            </div>
+            <label>Rechenarten:</label>
+			<div class="checkbox-group" id="mathOpsBasic">
+				<label><input type="checkbox" value="add"> +</label>
+				<label><input type="checkbox" value="sub"> −</label>
+				<label><input type="checkbox" value="mul" checked> ×</label>
+				<label><input type="checkbox" value="div"> :</label>
+			</div>
+			
+			<div class="checkbox-group" id="mathOpsSpecial">
+				<label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
+				<label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
+				<label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
+			</div>
         </div>
-        <div id="mathRangeGroup" class="control-group">
-            <label>🔢 Zahlenraum:</label>
-            <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
-        </div>
-        <div id="multiplicationRowGroup" class="control-group">
-            <label>📐 1×1-Reihen:</label>
-            <div class="row-selector" id="rowSelector"></div>
-        </div>
-        <div id="squareSettings" class="control-group">
-            <label>🔲 Quadrat-Basis max:</label>
-            <input type="number" id="maxSquareBase" value="12" min="2" max="20" step="1" style="width: 70px;">
-        </div>
+		
+		<!-- Diese Container werden je nach Auswahl ein-/ausgeblendet -->
+		<div id="mathRangeGroup" class="control-group hidden">
+			<label>Zahlenraum Grundrechenarten:</label>
+			<input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
+		</div>
+
+		<div id="squareSettings" class="control-group hidden">
+			<label>Quadratzahlen maximum:</label>
+			<input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
+		</div>
+
+		<div id="multiplicationRowGroup" class="control-group hidden">
+			<label>1×1-Reihen:</label>
+			<div class="row-selector" id="rowSelector"></div>
+		</div>
+
+		<div id="timeSettings" class="control-group hidden">
+			<label>Uhrzeit-Schwierigkeit:</label>
+			<select id="timeDifficulty">
+				<option value="hours" selected>Nur volle Stunden (1:00, 2:00...)</option>
+				<option value="quarters">Viertelstunden (z.B. 2:15, 3:30, 4:45)</option>
+				<option value="fiveMinutes">5-Minuten-Schritte (z.B. 2:05, 3:20)</option>
+			</select>
+			<small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
+		</div>
 
         <!-- DEUTSCH Steuerung -->
         <div id="deutschControls" class="control-group hidden">
@@ -456,29 +581,22 @@
             </div>
             <label>📖 Schwierigkeit:</label>
             <select id="difficultySelect">
-                <option value="easy">Einfach (1./2. Klasse)</option>
-                <option value="medium" selected>Mittel (2./3. Klasse)</option>
+                <option value="easy" selected>Einfach (1./2. Klasse)</option>
+                <option value="medium">Mittel (2./3. Klasse)</option>
                 <option value="hard">Schwer (3./4. Klasse)</option>
             </select>
         </div>
 
-        <div class="control-group">
-            <label>📄 Seitenanzahl:</label>
-            <input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
-        </div>
 
-        <div class="button-group">
-            <button id="generateBtn">✨ Generieren</button>
-            <button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
-        </div>
     </div>
 
     <div id="multiPageContainer" class="multi-page-container"></div>
     
-    <footer class="no-print">✔ DIN A4 Hochformat | 3-Linien-Schreibsystem für 2. Klasse | Quadratzahlen als "5×5"</footer>
+
 </div>
 
 <script>
+
     // Wortlisten Deutsch (angepasst für 2. Klasse)
     const wordLists = {
         easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch","Hund", "Katze", "Maus", "Haus", "Baum", "Brot", "Ball", "Kind","der","die","das","und","ist","ich","du","wir","Haus","Ball","Auto","Kind","Buch","Baum","Hand","gehen","sehen","spielen","laufen","kommen","gut","rot","blau","alt","neu","klein","groß"],
@@ -513,7 +631,16 @@
         "Wir machen einen Ausflug in den Wald und sammeln Blätter.",
         "Im Winter baue ich einen großen Schneemann im Garten.",
         "Ich lese gerne spannende Geschichten vor dem Einschlafen.",
-        "Auf dem Spielplatz schaukeln wir hoch in den Himmel."
+        "Auf dem Spielplatz schaukeln wir hoch in den Himmel.",
+		"Fischers Fritz fischt frische Fische.",
+		"Blaukraut bleibt Blaukraut und Brautkleid bleibt Brautkleid.",
+		"Im dichten Fichtendickicht nicken dicke Fichten tüchtig.",
+		"Zwischen zwei Zwetschgenzweigen zwitschern zwei Schwalben.",
+		"In Ulm, um Ulm und um Ulm herum.",
+		"Es klapperten die Klapper-Schlangen, bis ihre Klapper schlapper klangen.",
+		"Acht alte Ameisen aßen am Abend Ananas.",
+		"Zehn Ziegen ziehen zehn Zentner Zucker zum Zoo.",
+		"Wenn Fliegen hinter Fliegen fliegen, fliegen Fliegen Fliegen nach."
     ];
 
     function rand(min, max) {
@@ -533,6 +660,118 @@
         let square = root * root;
         return { display: `√${square} = ` };
     }
+
+// Uhrzeit-Funktionen
+function generateTimeTasks(count, difficulty) {
+    let tasks = [];
+    const timeOptions = [];
+    
+    // Verfügbare Minuten basierend auf Schwierigkeit
+    let minutesList = [];
+    if (difficulty === 'hours') {
+        minutesList = [0];
+    } else if (difficulty === 'quarters') {
+        minutesList = [0, 15, 30, 45];
+    } else {
+        // 5-Minuten-Schritte von 0 bis 55
+        for (let m = 0; m < 60; m += 5) {
+            minutesList.push(m);
+        }
+    }
+    
+    for (let i = 0; i < count; i++) {
+        // Zufällige Stunde (1-12) und Minuten
+        let hour = rand(1, 12);
+        let minute = minutesList[Math.floor(Math.random() * minutesList.length)];
+        
+        // Sonderfall: Bei 0 Minuten wird die Stunde nicht erhöht
+        let displayHour = hour;
+        let displayMinute = minute;
+        
+        // Aufgaben-Typ abwechseln: 0 = ablesen, 1 = zeichnen
+        let taskType = Math.random() < 0.5 ? 'read' : 'draw';
+        
+        tasks.push({
+            type: taskType,
+            hour: hour,
+            minute: minute,
+            displayHour: displayHour,
+            displayMinute: displayMinute,
+            minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0')
+        });
+    }
+    return tasks;
+}
+
+// Zeichnet eine analoge Uhr mit SVG
+function drawClockSVG(hour, minute, withHands = true) {
+    // Berechne Winkel
+    const hourAngle = (hour % 12) * 30 + minute * 0.5;
+    const minuteAngle = minute * 6;
+    
+    const centerX = 50;
+    const centerY = 50;
+    const radius = 45;
+    
+    // Stundenzeiger
+    const hourRad = (hourAngle - 90) * Math.PI / 180;
+    const hourX = centerX + 25 * Math.cos(hourRad);
+    const hourY = centerY + 25 * Math.sin(hourRad);
+    
+    // Minutenzeiger
+    const minuteRad = (minuteAngle - 90) * Math.PI / 180;
+    const minuteX = centerX + 38 * Math.cos(minuteRad);
+    const minuteY = centerY + 38 * Math.sin(minuteRad);
+    
+    let handsSVG = '';
+    if (withHands) {
+        handsSVG = `
+            <line x1="${centerX}" y1="${centerY}" x2="${hourX}" y2="${hourY}" 
+                  stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+            <line x1="${centerX}" y1="${centerY}" x2="${minuteX}" y2="${minuteY}" 
+                  stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="${centerX}" cy="${centerY}" r="3" fill="#1e293b"/>
+        `;
+    }
+    
+    // Ziffern
+    let numbersSVG = '';
+    for (let i = 1; i <= 12; i++) {
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const numX = centerX + 35 * Math.cos(angle);
+        const numY = centerY + 35 * Math.sin(angle);
+        numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
+    }
+    
+    return `
+        <svg viewBox="0 0 100 100" style="width:100%; height:100%">
+            <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+            ${numbersSVG}
+            ${handsSVG}
+        </svg>
+    `;
+}
+
+function drawBlankClockSVG() {
+    // Leeres Zifferblatt (nur Ziffern, keine Zeiger)
+    let numbersSVG = '';
+    for (let i = 1; i <= 12; i++) {
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const numX = 50 + 35 * Math.cos(angle);
+        const numY = 50 + 35 * Math.sin(angle);
+        numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
+    }
+    
+    return `
+        <svg viewBox="0 0 100 100" style="width:100%; height:100%">
+            <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+            ${numbersSVG}
+        </svg>
+    `;
+}
+
+
+
 
     // Mathe-Generator
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase) {
@@ -664,7 +903,7 @@
     const pageCountInput = document.getElementById('pageCount');
     const rowSelectorDiv = document.getElementById('rowSelector');
     
-    let selectedRows = [1,2,3,4,5,6,7,8,9,10];
+    let selectedRows = [0,1,2,3,4,5,6,7,8,9,10];
     
     function buildRowSelector() {
         rowSelectorDiv.innerHTML = '';
@@ -685,33 +924,36 @@
         }
     }
     
-    function toggleModeUI() {
-        const mode = modeSelect.value;
-        if (mode === 'math') {
-            mathControlsDiv.classList.remove('hidden');
-            mathRangeGroup.classList.remove('hidden');
-            multiplicationRowGroup.classList.remove('hidden');
-            squareSettingsDiv.classList.remove('hidden');
-            deutschControlsDiv.classList.add('hidden');
-        } else {
-            mathControlsDiv.classList.add('hidden');
-            mathRangeGroup.classList.add('hidden');
-            multiplicationRowGroup.classList.add('hidden');
-            squareSettingsDiv.classList.add('hidden');
-            deutschControlsDiv.classList.remove('hidden');
-        }
-    }
+	function toggleModeUI() {
+		const mode = modeSelect.value;
+		if (mode === 'math') {
+			mathControlsDiv.classList.remove('hidden');
+			deutschControlsDiv.classList.add('hidden');
+			// Sichtbarkeit der Untersgruppen aktualisieren
+			updateVisibilityBasedOnSelection();
+		} else {
+			mathControlsDiv.classList.add('hidden');
+			deutschControlsDiv.classList.remove('hidden');
+			// Im Deutsch-Modus alle Mathe-Steuerungen ausblenden
+			const mathGroups = ['mathRangeGroup', 'multiplicationRowGroup', 'squareSettings', 'timeSettings'];
+			mathGroups.forEach(id => {
+				const el = document.getElementById(id);
+				if (el) el.classList.add('hidden');
+			});
+		}
+	}
     
-    function getMathOperations() {
-        return {
-            add: document.querySelector('#mathOps input[value="add"]').checked,
-            sub: document.querySelector('#mathOps input[value="sub"]').checked,
-            mul: document.querySelector('#mathOps input[value="mul"]').checked,
-            div: document.querySelector('#mathOps input[value="div"]').checked,
-            square: document.getElementById('squareCheck').checked,
-            sqrt: document.getElementById('sqrtCheck').checked
-        };
-    }
+	function getMathOperations() {
+		return {
+			add: document.querySelector('#mathOpsBasic input[value="add"]')?.checked || false,
+			sub: document.querySelector('#mathOpsBasic input[value="sub"]')?.checked || false,
+			mul: document.querySelector('#mathOpsBasic input[value="mul"]')?.checked || false,
+			div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
+			square: document.getElementById('squareCheck')?.checked || false,
+			sqrt: document.getElementById('sqrtCheck')?.checked || false,
+			time: document.getElementById('timeCheck')?.checked || false
+		};
+	}
     
     function getDeutschTypes() {
         return {
@@ -729,9 +971,9 @@
         const header = document.createElement('div');
         header.className = 'worksheet-header';
         const title = document.createElement('h1');
-        title.textContent = mode === 'math' ? 
-            `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
-            `Deutsch-Arbeitsblatt - Schreibübungen${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
+        //title.textContent = mode === 'math' ? 
+        //    `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
+        //    `Deutsch-Arbeitsblatt - Schreibübungen${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
         const nameDate = document.createElement('div');
         nameDate.className = 'name-date';
         nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
@@ -742,27 +984,63 @@
         tasksGrid.className = `tasks-grid ${mode === 'math' ? 'math-grid' : 'deutsch-grid'}`;
         
         if (mode === 'math') {
-            let ops = getMathOperations();
-            let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
-            let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 12;
-            let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
-			tasks.forEach(task => {
-				const taskDiv = document.createElement('div');
-				taskDiv.className = 'task-item math-task';
-    
-				// Prüfen, ob die Aufgabe sehr lange Zahlen enthält (3+ Stellen)
-				const hasLargeNumbers = /\d{3,}/.test(task.text);
-				const fontSizeClass = hasLargeNumbers ? 'small-numbers' : '';
-    
-			taskDiv.innerHTML = `
-					<div class="math-equation ${fontSizeClass}">
-						<span>${task.text}</span>
-						<div class="result-box"></div>
-					</div>
-				`;
-				tasksGrid.appendChild(taskDiv);
-			});
-        } 
+			let ops = getMathOperations();
+			let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
+			let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 12;
+			
+			// Prüfen ob Uhrzeit aktiv ist
+			if (ops.time) {
+				// Uhrzeit-Modus: 12 Aufgaben pro Seite (besser für Uhren)
+				let timeDifficulty = document.getElementById('timeDifficulty').value;
+				let timeTasks = generateTimeTasks(12, timeDifficulty);
+				
+				timeTasks.forEach(task => {
+					const taskDiv = document.createElement('div');
+					taskDiv.className = 'task-item time-task';
+					
+					if (task.type === 'read') {
+						const clockSVG = drawClockSVG(task.hour, task.minute, true);
+						taskDiv.innerHTML = `
+							<div class="clock-canvas">${clockSVG}</div>
+							<div class="time-question">Wie spät ist es?</div>
+							<div class="time-answer">
+								<span>__ : __</span>
+								<div class="result-box"></div>
+							</div>
+						`;
+					} else {
+						// Aufgabe: Uhrzeit zeichnen
+						const blankClockSVG = drawBlankClockSVG();
+						taskDiv.innerHTML = `
+							<div class="time-question">Zeichne die Zeiger für:</div>
+							<div class="time-question"><strong>${task.displayHour} : ${task.minuteStr}</strong></div>
+							<div class="clock-canvas drawing-area">${blankClockSVG}</div>
+							<div class="time-answer">
+								<span>(Zeiger einzeichnen)</span>
+								<div class="result-box"></div>
+							</div>
+						`;
+					}
+					tasksGrid.appendChild(taskDiv);
+				});
+			} else {
+				// Normale Mathe-Aufgaben (40 Stück)
+				let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
+				tasks.forEach(task => {
+					const taskDiv = document.createElement('div');
+					taskDiv.className = 'task-item math-task';
+					const hasLargeNumbers = /\d{3,}/.test(task.text);
+					const fontSizeClass = hasLargeNumbers ? 'small-numbers' : '';
+					taskDiv.innerHTML = `
+						<div class="math-equation ${fontSizeClass}">
+							<span>${task.text}</span>
+							<div class="result-box"></div>
+						</div>
+					`;
+					tasksGrid.appendChild(taskDiv);
+				});
+			}
+		}
         // Im createWorksheet-Bereich für Deutsch:
 		else {
 			let types = getDeutschTypes();
@@ -809,6 +1087,124 @@
         }
     }
     
+
+	// Exklusive Auswahl für Sonderaufgaben
+	function setupSpecialOpsExclusive() {
+		const specialOps = ['square', 'sqrt', 'time'];
+		const basicOps = ['add', 'sub', 'mul', 'div'];
+		
+		// Event-Listener für jede Sonderaufgabe
+		specialOps.forEach(opId => {
+			const checkbox = document.getElementById(`${opId}Check`);
+			if (checkbox) {
+				checkbox.addEventListener('change', (e) => {
+					if (e.target.checked) {
+						// Wenn aktiviert: alle Grundrechenarten deaktivieren
+						basicOps.forEach(basicId => {
+							const basicCheck = document.querySelector(`#mathOpsBasic input[value="${basicId}"]`);
+							if (basicCheck && basicCheck.checked) {
+								basicCheck.checked = false;
+							}
+						});
+						// Andere Sonderaufgaben deaktivieren
+						specialOps.forEach(otherId => {
+							if (otherId !== opId) {
+								const otherCheck = document.getElementById(`${otherId}Check`);
+								if (otherCheck && otherCheck.checked) {
+									otherCheck.checked = false;
+								}
+							}
+						});
+					}
+					// Sichtbarkeit aktualisieren
+					updateVisibilityBasedOnSelection();
+				});
+			}
+		});
+		
+		// Event-Listener für Grundrechenarten
+		basicOps.forEach(opId => {
+			const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
+			if (checkbox) {
+				checkbox.addEventListener('change', () => {
+					// Wenn irgendeine Grundrechenart aktiviert wird, alle Sonderaufgaben deaktivieren
+					const anyBasicChecked = basicOps.some(id => {
+						const cb = document.querySelector(`#mathOpsBasic input[value="${id}"]`);
+						return cb && cb.checked;
+					});
+					
+					if (anyBasicChecked) {
+						specialOps.forEach(specialId => {
+							const specialCheck = document.getElementById(`${specialId}Check`);
+							if (specialCheck && specialCheck.checked) {
+								specialCheck.checked = false;
+							}
+						});
+					}
+					// Sichtbarkeit aktualisieren
+					updateVisibilityBasedOnSelection();
+				});
+			}
+		});
+	}
+		
+	// Steuerung der Sichtbarkeit der verschiedenen Steuerungsgruppen
+	function updateVisibilityBasedOnSelection() {
+		// Sicherstellen, dass getMathOperations existiert und funktioniert
+		let ops;
+		try {
+			ops = getMathOperations();
+		} catch(e) {
+			console.log("Fehler beim Laden der Einstellungen");
+			return;
+		}
+		
+		// 1. Grundrechenarten Bereich
+		const anyBasicActive = ops.add || ops.sub || ops.div || ops.mul;
+		const mathRangeGroup = document.getElementById('mathRangeGroup');
+		if (mathRangeGroup) {
+			if (ops.add || ops.sub || ops.div || ops.sqrt) {
+				mathRangeGroup.classList.remove('hidden');
+			} else {
+				mathRangeGroup.classList.add('hidden');
+			}
+		}
+		
+		// 2. 1×1-Reihen – anzeigen, wenn Multiplikation ODER Division aktiv ist UND Grundrechenarten aktiv sind
+		const multiplicationRowGroup = document.getElementById('multiplicationRowGroup');
+		if (multiplicationRowGroup) {
+			const showMultiplication = (ops.mul || ops.square) && anyBasicActive;
+			if (showMultiplication) {
+				multiplicationRowGroup.classList.remove('hidden');
+			} else {
+				multiplicationRowGroup.classList.add('hidden');
+			}
+		}
+		
+		// 3. Quadratzahlen-Einstellung – anzeigen, wenn Quadratzahl aktiv ist
+		const squareSettings = document.getElementById('squareSettings');
+		if (squareSettings) {
+			if (ops.square) {
+				squareSettings.classList.remove('hidden');
+			} else {
+				squareSettings.classList.add('hidden');
+			}
+		}
+		
+		// 4. Uhrzeit-Einstellung – anzeigen, wenn Uhrzeit aktiv ist
+		const timeSettings = document.getElementById('timeSettings');
+		if (timeSettings) {
+			if (ops.time) {
+				timeSettings.classList.remove('hidden');
+			} else {
+				timeSettings.classList.add('hidden');
+			}
+		}
+	}
+		
+		
+		
+		
     function printWorksheets() {
         window.print();
     }
@@ -819,7 +1215,10 @@
     
     buildRowSelector();
     toggleModeUI();
+    setupSpecialOpsExclusive();
+    updateVisibilityBasedOnSelection();
     generateMultiPage();
+
 </script>
 </body>
 </html>
