@@ -1,248 +1,825 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Grundschul-Mathe Arbeitsblätter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Grundschul-Arbeitsblatt-Generator - mit Ergebniskästchen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            background: #e9f0f5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-body{
-    font-family:"Comic Sans MS", Arial, sans-serif;
-    background:#f4f8ff;
-    margin:15px;
-}
+        .generator-container {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px 25px 30px;
+        }
 
-h1{
-    text-align:center;
-    color:#2b5cff;
-}
+        .controls {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-start;
+            border: 1px solid #cbd5e1;
+        }
 
-.controls{
-    background:white;
-    padding:12px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 0 8px rgba(0,0,0,0.1);
-}
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 130px;
+        }
 
-.sheet{
-    background:white;
-    padding:15mm;
-    box-sizing:border-box;
-}
+        .control-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #1e293b;
+        }
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:8mm;
-    font-size:13pt;
-}
+        select, input, .checkbox-group {
+            padding: 6px 10px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.85rem;
+        }
 
-.tasks{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:4mm 2mm;
-    font-size:14pt;
-}
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #f1f5f9;
+            border: none;
+            padding: 4px 0;
+        }
 
-.line{
-    border-bottom:2px solid black;
-    display:inline-block;
-    width:45px;
-    margin-left:6px;
-}
+        .checkbox-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
 
-.footer{
-    margin-top:10mm;
-    border-top:2px dashed #999;
-    padding-top:5mm;
-    font-size:12pt;
-}
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
 
-//Checkbox für 1x1-Reihe
-.checkbox-grid{
-    display:grid;
-    grid-template-columns:repeat(11,auto);
-    gap:6px;
-}
+        button:hover {
+            background: #2563eb;
+        }
 
-button{
-    padding:8px 14px;
-    border:none;
-    border-radius:8px;
-    background:#2b5cff;
-    color:white;
-    cursor:pointer;
-}
+        .print-btn {
+            background: #10b981;
+        }
+        .print-btn:hover {
+            background: #059669;
+        }
 
-/* ===== Druck ===== */
+        .row-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 280px;
+        }
 
-@page{
-    size:A4;
-    margin:12mm;
-}
+        .row-selector span {
+            background: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            user-select: none;
+        }
 
-@media print{
-    .controls{display:none;}
-    body{background:white;margin:0;}
-    .sheet{
-        page-break-after:always;
-        break-after:page;
-        padding:10mm;
-    }
-    .sheet *{break-inside:avoid;}
-}
-</style>
+        .row-selector span.selected {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .multi-page-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .worksheet {
+            background: white;
+            padding: 15px 18px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .worksheet:last-child {
+            page-break-after: auto;
+            break-after: auto;
+        }
+
+        .worksheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 12px;
+        }
+        .worksheet-header h1 {
+            font-size: 1.5rem;
+            color: #0f172a;
+        }
+        .name-date {
+            display: flex;
+            gap: 25px;
+        }
+        .name-date div {
+            font-size: 0.85rem;
+            color: #334155;
+            border-bottom: 1px solid #94a3b8;
+            min-width: 130px;
+            padding: 3px 0;
+        }
+
+        .tasks-grid {
+            display: grid;
+            gap: 18px 22px;
+            margin: 15px 0;
+        }
+        
+        .math-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .deutsch-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .task-item {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* MATHE: Kästchen statt gestrichelter Linie */
+        /* Mathe-Aufgaben - verhindert Umbruch und sorgt für flexible Breite */
+		.math-task {
+			font-size: 1rem; /* etwas kleiner für mehr Platz */
+			font-weight: 500;
+			font-family: 'Courier New', monospace;
+			background: #fefce8;
+			padding: 8px 6px;
+			border-radius: 10px;
+			border: 1px solid #fde047;
+			white-space: nowrap; /* Verhindert Zeilenumbruch in der Zeile */
+			overflow-x: auto; /* Falls doch zu lang, scrollbar */
+			overflow-y: hidden;
+		}
+
+		.math-equation {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: nowrap; /* Wichtig: Kein Umbruch erlauben */
+			justify-content: flex-start;
+			white-space: nowrap;
+		}
+
+		.math-equation span:first-child {
+		   flex-shrink: 1; /* Darf schrumpfen, aber nicht umbrechen */
+		    white-space: nowrap;
+		    overflow-x: visible;
+		    font-size: 0.95rem; /* Bei sehr langen Zahlen etwas kleiner */
+		}
+
+		.result-box {
+		   display: inline-block;
+ 		   width: 65px;
+		    height: 28px;
+		    border: 2px solid #334155;
+		    border-radius: 6px;
+		    background-color: white;
+		    vertical-align: middle;
+		    flex-shrink: 0; /* Kästchen bleibt immer gleich groß */
+		}
+
+        /* DEUTSCH: 3-Linien-Lineatur für Grundschule */
+        .deutsch-task {
+            margin-bottom: 24px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .deutsch-prompt {
+            font-family: 'Patrick Hand', 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #0c4a6e;
+            background: #f0f9ff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        /* Korrigierte 3-Linien-Lineatur mit vollständigen Linien */
+        .gs-lineatur {
+            background-image: 
+                repeating-linear-gradient(
+                    to bottom,
+                    #1e40af 0px,
+                    #1e40af 1px,
+                    transparent 1px,
+                    transparent 13px,
+                    #94a3b8 13px,
+                    #94a3b8 14px,
+                    transparent 14px,
+                    transparent 27px,
+                    #1e40af 27px,
+                    #1e40af 28px,
+                    transparent 28px,
+                    transparent 56px
+                );
+            background-size: 100% 56px;
+            background-repeat: repeat-y;
+            background-position: top left;
+            min-height: 70px;
+            width: 100%;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .points-field {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 25px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 15px;
+            font-size: 0.85rem;
+        }
+        .points-field span {
+            border-bottom: 1px solid #000;
+            min-width: 75px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* DRUCK-OPTIMIERUNG: DIN A4 Hochformat */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1.2cm;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .controls, button, .no-print, .print-btn {
+                display: none !important;
+            }
+            .generator-container {
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+                box-shadow: none;
+                background: white;
+            }
+            .worksheet {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                page-break-after: always;
+                break-after: page;
+            }
+            .worksheet:last-child {
+                page-break-after: auto;
+            }
+            .tasks-grid {
+                gap: 12px;
+            }
+            .math-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .deutsch-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .task-item {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .gs-lineatur {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .result-box {
+                width: 65px;
+                height: 26px;
+                border: 1.5px solid #334155;
+            }
+            .worksheet-header h1 {
+                font-size: 1.3rem;
+            }
+		    /* NEU: Kleinere Schrift für große Zahlen im Druck */
+			.math-equation.small-numbers span:first-child {
+				font-size: 0.75rem;
+			}
+        }
+		.math-equation.small-numbers span:first-child {
+			font-size: 0.8rem;
+		}
+/* Anpassung für verschiedene Bildschirmgrößen */
+		@media (max-width: 900px) {
+			.math-task {
+				font-size: 0.9rem;
+			}
+			.math-equation span:first-child {
+				font-size: 0.85rem;
+			}
+			.result-box {
+				width: 55px;
+				height: 26px;
+			}
+		}
+
+		@media print {
+		.math-task {
+				font-size: 0.9rem;
+				white-space: normal; /* Im Druck lieber umbrechen lassen */
+			}
+			.math-equation {
+				flex-wrap: wrap; /* Im Druck darf umgebrochen werden */
+			}
+			.result-box {
+				width: 60px;
+				height: 25px;
+			}
+		}
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 15px;
+            color: #64748b;
+        }
+        .hidden {
+            display: none;
+        }
+        .page-number {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 12px;
+        }
+    </style>
 </head>
-
 <body>
-<a href="Prototyp_Wochenplan.html">Wochenplan</a>
-<h1>🌟 Mathe-Arbeitsblätter 🌟</h1>
+<a href="Prototyp_Wochenplan.html">Wochenplan</a><br><br><br><br>
+<div class="generator-container">
+    <div class="controls no-print">
+        <div class="control-group">
+            <label>📘 Modus:</label>
+            <select id="modeSelect">
+                <option value="math">Mathe</option>
+                <option value="deutsch">Deutsch</option>
+            </select>
+        </div>
 
-<div class="controls">
+        <!-- MATHE Steuerung -->
+        <div id="mathControls" class="control-group">
+            <label>➕ Rechenarten:</label>
+            <div class="checkbox-group" id="mathOps">
+                <label><input type="checkbox" value="add" checked> +</label>
+                <label><input type="checkbox" value="sub" checked> −</label>
+                <label><input type="checkbox" value="mul"> ×</label>
+                <label><input type="checkbox" value="div"> ÷</label>
+                <label><input type="checkbox" value="square" id="squareCheck"> □ (x·x)</label>
+                <label><input type="checkbox" value="sqrt" id="sqrtCheck"> √ (Wurzel)</label>
+            </div>
+        </div>
+        <div id="mathRangeGroup" class="control-group">
+            <label>🔢 Zahlenraum:</label>
+            <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
+        </div>
+        <div id="multiplicationRowGroup" class="control-group">
+            <label>📐 1×1-Reihen:</label>
+            <div class="row-selector" id="rowSelector"></div>
+        </div>
+        <div id="squareSettings" class="control-group">
+            <label>🔲 Quadrat-Basis max:</label>
+            <input type="number" id="maxSquareBase" value="12" min="2" max="20" step="1" style="width: 70px;">
+        </div>
 
-<b>Rechenarten:</b><br>
-<label><input type="checkbox" value="add" checked> Addition</label>
-<label><input type="checkbox" value="sub"> Subtraktion</label>
-<label><input type="checkbox" value="mul"> Multiplikation</label>
-<label><input type="checkbox" value="div"> Division</label>
-<label><input type="checkbox" value="square"> Quadratzahlen</label>
-<br><br>
+        <!-- DEUTSCH Steuerung -->
+        <div id="deutschControls" class="control-group hidden">
+            <label>✍️ Übungstyp:</label>
+            <div class="checkbox-group" id="deutschTypes">
+                <label><input type="checkbox" value="copyWords" checked> Wörter</label>
+                <label><input type="checkbox" value="letters"> Buchstaben</label>
+                <label><input type="checkbox" value="sentences"> Sätze</label>
+            </div>
+            <label>📖 Schwierigkeit:</label>
+            <select id="difficultySelect">
+                <option value="easy">Einfach (1./2. Klasse)</option>
+                <option value="medium" selected>Mittel (2./3. Klasse)</option>
+                <option value="hard">Schwer (3./4. Klasse)</option>
+            </select>
+        </div>
 
-<b>Zahlenraum (+ / −):</b>
-<input type="number" id="range" value="100" min="10" max="1000">
+        <div class="control-group">
+            <label>📄 Seitenanzahl:</label>
+            <input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
+        </div>
 
-<br><br>
+        <div class="button-group">
+            <button id="generateBtn">✨ Generieren</button>
+            <button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
+        </div>
+    </div>
 
-<b>1×1 Reihen:</b>
-<div class="checkbox-grid" id="rows"></div>
-<br>
-
-<br><br>
-
-Anzahl Arbeitsblätter:
-<input type="number" id="sheetCount" value="1" min="1" max="20">
-
-<br><br>
-
-<button onclick="generate()">Arbeitsblätter erzeugen</button>
-<button onclick="window.print()">🖨 Drucken</button>
-
+    <div id="multiPageContainer" class="multi-page-container"></div>
+    
+    <footer class="no-print">✔ DIN A4 Hochformat | 3-Linien-Schreibsystem für 2. Klasse | Quadratzahlen als "5×5"</footer>
 </div>
 
-<div id="worksheets"></div>
-
 <script>
-// Nico Baumann
-/* Reihen erzeugen */
-const rowDiv=document.getElementById("rows");
-for(let i=0;i<=10;i++){
-    rowDiv.innerHTML+=
-    `<label><input type="checkbox" value="${i}" checked>${i}</label>`;
-}
+    // Wortlisten Deutsch (angepasst für 2. Klasse)
+    const wordLists = {
+        easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch","Hund", "Katze", "Maus", "Haus", "Baum", "Brot", "Ball", "Kind","der","die","das","und","ist","ich","du","wir","Haus","Ball","Auto","Kind","Buch","Baum","Hand","gehen","sehen","spielen","laufen","kommen","gut","rot","blau","alt","neu","klein","groß"],
+        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume","Schule", "Garten", "Sommer", "Winter", "Wasser", "Lernen", "Apfel","Schule","Freund","Lehrer","Tafel","Heft","Pause","Garten","Zimmer","Fenster","Straße","springen","tanzen","malen","lernen","arbeiten","schnell","langsam","fröhlich","traurig","leise","Wasser","Feuer","Licht","Sonne","Regen"],
+        hard: ["Eichhörnchen", "Schmetterling", "Abenteuer", "Sonnenschein", "Fahrrad","Abenteuer","Schmetterling","Elefant","Krankenhaus","Regenbogen","Feuerwehr","Spielplatz","Geburtstag","entscheiden","vergessen","erzählen","beschreiben","gefährlich","wichtig","freundlich","glücklich","Verantwortung","Gemeinschaft","Erfahrung","Erdmännchen","Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule"]
+    };
+    
+    const sentencesList = [
+        "Der Hund läuft im Park.",
+        "Heute scheint die Sonne.",
+        "Ich gehe gerne in die Schule.",
+        "Meine Katze schläft auf dem Sofa.",
+        "Wir spielen Fußball im Garten.",
+        "Das Essen schmeckt sehr gut.",
+        "Morgen fahre ich mit dem Fahrrad.",
+        "Lena liest ein spannendes Buch.",
+        "Papa kocht leckere Nudeln.",
+        "Im Winter bauen wir einen Schneemann.",
+        "Die Blumen blühen bunt.",
+        "Anna malt ein Bild.",
+        "Unser Lehrer erzählt eine Geschichte.",
+        "Kannst du mir bitte helfen?",
+        "Heute Abend sehe ich einen Film.",
+        "Wir basteln Laternen.",
+        "Die Maus frisst gerne Käse.",
+		"Heute scheint die Sonne und wir spielen im Garten.",
+        "Der Hund läuft fröhlich über die Wiese.",
+        "In der Schule lerne ich lesen, schreiben und rechnen.",
+        "Am Wochenende besuche ich meine Großeltern.",
+        "Im Herbst fallen die bunten Blätter von den Bäumen.",
+        "Im Klassenzimmer hängen viele bunte Bilder an der Wand.",
+        "Wir machen einen Ausflug in den Wald und sammeln Blätter.",
+        "Im Winter baue ich einen großen Schneemann im Garten.",
+        "Ich lese gerne spannende Geschichten vor dem Einschlafen.",
+        "Auf dem Spielplatz schaukeln wir hoch in den Himmel."
+    ];
 
-const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-
-function selectedRows(){
-    return [...document.querySelectorAll("#rows input:checked")]
-        .map(e=>Number(e.value));
-}
-
-function selectedOps(){
-    return [...document.querySelectorAll(".controls input[type=checkbox]:checked")]
-        .map(e=>e.value)
-        .filter(v=>["add","sub","mul","div","square"].includes(v));
-}
-
-/* ===== Aufgaben Generator ===== */
-
-function makeTask(ops, range, rows){
-
-    let op=pick(ops);
-
-    if(op==="add"){
-        let a=rand(0,range);
-        let b=rand(0,range-a);
-        return `${a} + ${b}`;
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    if(op==="sub"){
-        let a=rand(0,range);
-        let b=rand(0,a);
-        return `${a} − ${b}`;
+    // Quadratzahl als "5 × 5"
+    function generateSquareTask(maxBase) {
+        let base = rand(2, maxBase);
+        return { display: `${base} × ${base} = ` };
     }
 
-    if(op==="mul"){
-        let a=pick(rows);
-        let b=rand(0,10);
-        return `${a} × ${b}`;
+    function generateSqrtTask(maxNumber) {
+        let maxRoot = Math.floor(Math.sqrt(maxNumber));
+        if (maxRoot < 2) maxRoot = 10;
+        let root = rand(2, maxRoot);
+        let square = root * root;
+        return { display: `√${square} = ` };
     }
 
-    if(op==="div"){
-        let b=rand(1,10);
-        let c=rand(0,10);
-        let a=b*c;
-        return `${a} ÷ ${b}`;
+    // Mathe-Generator
+    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase) {
+        let tasks = [];
+        const opsList = [];
+        if (operations.add) opsList.push('+');
+        if (operations.sub) opsList.push('-');
+        if (operations.mul) opsList.push('*');
+        if (operations.div) opsList.push('/');
+        if (operations.square) opsList.push('□');
+        if (operations.sqrt) opsList.push('√');
+        
+        if (opsList.length === 0) opsList.push('+');
+        
+        for (let i = 0; i < count; i++) {
+            let op = opsList[Math.floor(Math.random() * opsList.length)];
+            let taskText = "";
+            let valid = false;
+            let attempts = 0;
+            
+            while (!valid && attempts < 40) {
+                if (op === '+') {
+                    let a = rand(0, maxNumber);
+                    let b = rand(0, maxNumber - a);
+                    taskText = `${a} + ${b} =`;
+                    valid = true;
+                } 
+                else if (op === '-') {
+                    let a = rand(0, maxNumber);
+                    let b = rand(0, a);
+                    taskText = `${a} - ${b} =`;
+                    valid = true;
+                } 
+                else if (op === '*') {
+                    if (selectedRows && selectedRows.length > 0) {
+                        let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
+                        let b = rand(0, 10);
+                        if (row * b <= maxNumber) {
+                            taskText = `${row} × ${b} =`;
+                            valid = true;
+                        }
+                    }
+                    if (!valid) {
+                        let a = rand(1, Math.min(10, maxNumber));
+                        let b = rand(1, Math.floor(maxNumber / a));
+                        taskText = `${a} × ${b} =`;
+                        valid = true;
+                    }
+                } 
+                else if (op === '/') {
+                    let b = rand(1, 12);
+                    let quotient = rand(1, Math.floor(maxNumber / b));
+                    let a = b * quotient;
+                    if (a <= maxNumber && quotient > 0) {
+                        taskText = `${a} ÷ ${b} =`;
+                        valid = true;
+                    }
+                }
+                else if (op === '□') {
+                    let sq = generateSquareTask(squareMaxBase);
+                    taskText = sq.display;
+                    valid = true;
+                }
+                else if (op === '√') {
+                    let sqrtT = generateSqrtTask(maxNumber);
+                    taskText = sqrtT.display;
+                    valid = true;
+                }
+                attempts++;
+            }
+            if (!valid) taskText = `1 + 1 =`;
+            tasks.push({ text: taskText });
+        }
+        return tasks;
     }
-	
-	if(op==="square"){
-    let a=rand(1,10);
-    return `${a} × ${a}`;
-}
-}
-
-function createSheet(n,ops,range,rows){
-
-    let html="";
-
-    for(let i=0;i<40;i++){
-        html+=`<div>${makeTask(ops,range,rows)} = <span class="line"></span></div>`;
+    
+    // Deutsch-Aufgaben mit korrekter Lineatur
+    // Deutsch-Aufgaben mit korrekter, vollständiger Lineatur für jede Aufgabe
+	function generateGermanTasks(count, types, difficulty) {
+		let tasks = [];
+		let wordPool = wordLists[difficulty] || wordLists.medium;
+		let letterPool = difficulty === 'easy' ? ['A', 'E', 'I', 'O', 'U', 'M', 'L'] :
+                    (difficulty === 'medium' ? ['Sch', 'Au', 'Ei', 'Ch', 'Sp', 'St'] : ['ß', 'Qu', 'Schr', 'Spr']);
+		let sentencePool = [...sentencesList];
+    
+		let activeTypes = [];
+		if (types.copyWords) activeTypes.push('word');
+		if (types.letters) activeTypes.push('letter');
+		if (types.sentences) activeTypes.push('sentence');
+		if (activeTypes.length === 0) activeTypes.push('word');
+    
+		for (let i = 0; i < count; i++) {
+			let type = activeTypes[Math.floor(Math.random() * activeTypes.length)];
+			let prompt = "";
+			let lineCount = 1; // Standard: 1 Zeile (70px)
+        
+			if (type === 'word') {
+				let w = wordPool[Math.floor(Math.random() * wordPool.length)];
+				prompt = `📝 ${w}`;
+				lineCount = 2; // Wörter: 2 Wiederholungen = 2 Zeilen
+			} else if (type === 'letter') {
+				let l = letterPool[Math.floor(Math.random() * letterPool.length)];
+				prompt = `✍️  ${l}`;
+				lineCount = 2; // Buchstaben: 2 Wiederholungen zum Üben
+			} else {
+				let s = sentencePool[Math.floor(Math.random() * sentencePool.length)];
+				prompt = `📖 ${s}`;
+				lineCount = 2; // Sätze: 2 Zeilen zum Abschreiben
+			}
+        
+			tasks.push({ 
+				prompt: prompt, 
+				lineCount: lineCount  // Speichert Anzahl der benötigten Zeilen
+			});
+		}
+		return tasks;
+	}
+    
+    // DOM-Elemente
+    const modeSelect = document.getElementById('modeSelect');
+    const mathControlsDiv = document.getElementById('mathControls');
+    const mathRangeGroup = document.getElementById('mathRangeGroup');
+    const multiplicationRowGroup = document.getElementById('multiplicationRowGroup');
+    const squareSettingsDiv = document.getElementById('squareSettings');
+    const deutschControlsDiv = document.getElementById('deutschControls');
+    const generateBtn = document.getElementById('generateBtn');
+    const printBtn = document.getElementById('printBtn');
+    const multiPageContainer = document.getElementById('multiPageContainer');
+    const pageCountInput = document.getElementById('pageCount');
+    const rowSelectorDiv = document.getElementById('rowSelector');
+    
+    let selectedRows = [1,2,3,4,5,6,7,8,9,10];
+    
+    function buildRowSelector() {
+        rowSelectorDiv.innerHTML = '';
+        for (let i = 0; i <= 10; i++) {
+            const span = document.createElement('span');
+            span.textContent = i;
+            if (selectedRows.includes(i)) span.classList.add('selected');
+            span.addEventListener('click', () => {
+                if (selectedRows.includes(i)) {
+                    selectedRows = selectedRows.filter(v => v !== i);
+                } else {
+                    selectedRows.push(i);
+                    selectedRows.sort((a,b)=>a-b);
+                }
+                buildRowSelector();
+            });
+            rowSelectorDiv.appendChild(span);
+        }
     }
-
-    const sheet=document.createElement("div");
-    sheet.className="sheet";
-
-    sheet.innerHTML=`
-        <div class="header">
-            <div>Name: __________________</div>
-            <div>Datum: __________________</div>
-        </div>
-
-        <h2>Arbeitsblatt ${n}</h2>
-
-        <div class="tasks">${html}</div>
-
-        <div class="footer">
-            Punkte: ______ / 40<br>
-        </div>
-    `;
-
-    return sheet;
-}
-
-function generate(){
-
-    const ops=selectedOps();
-    const rows=selectedRows();
-    const range=Number(document.getElementById("range").value);
-    const count=Number(document.getElementById("sheetCount").value);
-
-    if(ops.length===0){
-        alert("Bitte mindestens eine Rechenart wählen!");
-        return;
+    
+    function toggleModeUI() {
+        const mode = modeSelect.value;
+        if (mode === 'math') {
+            mathControlsDiv.classList.remove('hidden');
+            mathRangeGroup.classList.remove('hidden');
+            multiplicationRowGroup.classList.remove('hidden');
+            squareSettingsDiv.classList.remove('hidden');
+            deutschControlsDiv.classList.add('hidden');
+        } else {
+            mathControlsDiv.classList.add('hidden');
+            mathRangeGroup.classList.add('hidden');
+            multiplicationRowGroup.classList.add('hidden');
+            squareSettingsDiv.classList.add('hidden');
+            deutschControlsDiv.classList.remove('hidden');
+        }
     }
-
-    const container=document.getElementById("worksheets");
-    container.innerHTML="";
-
-    for(let i=1;i<=count;i++){
-        container.appendChild(createSheet(i,ops,range,rows));
+    
+    function getMathOperations() {
+        return {
+            add: document.querySelector('#mathOps input[value="add"]').checked,
+            sub: document.querySelector('#mathOps input[value="sub"]').checked,
+            mul: document.querySelector('#mathOps input[value="mul"]').checked,
+            div: document.querySelector('#mathOps input[value="div"]').checked,
+            square: document.getElementById('squareCheck').checked,
+            sqrt: document.getElementById('sqrtCheck').checked
+        };
     }
-}
-
-generate();
+    
+    function getDeutschTypes() {
+        return {
+            copyWords: document.querySelector('#deutschTypes input[value="copyWords"]').checked,
+            letters: document.querySelector('#deutschTypes input[value="letters"]').checked,
+            sentences: document.querySelector('#deutschTypes input[value="sentences"]').checked
+        };
+    }
+    
+    function createWorksheet(pageIndex, totalPages) {
+        const mode = modeSelect.value;
+        const worksheetDiv = document.createElement('div');
+        worksheetDiv.className = 'worksheet';
+        
+        const header = document.createElement('div');
+        header.className = 'worksheet-header';
+        const title = document.createElement('h1');
+        title.textContent = mode === 'math' ? 
+            `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
+            `Deutsch-Arbeitsblatt - Schreibübungen${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
+        const nameDate = document.createElement('div');
+        nameDate.className = 'name-date';
+        nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
+        header.appendChild(title);
+        header.appendChild(nameDate);
+        
+        const tasksGrid = document.createElement('div');
+        tasksGrid.className = `tasks-grid ${mode === 'math' ? 'math-grid' : 'deutsch-grid'}`;
+        
+        if (mode === 'math') {
+            let ops = getMathOperations();
+            let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
+            let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 12;
+            let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
+			tasks.forEach(task => {
+				const taskDiv = document.createElement('div');
+				taskDiv.className = 'task-item math-task';
+    
+				// Prüfen, ob die Aufgabe sehr lange Zahlen enthält (3+ Stellen)
+				const hasLargeNumbers = /\d{3,}/.test(task.text);
+				const fontSizeClass = hasLargeNumbers ? 'small-numbers' : '';
+    
+			taskDiv.innerHTML = `
+					<div class="math-equation ${fontSizeClass}">
+						<span>${task.text}</span>
+						<div class="result-box"></div>
+					</div>
+				`;
+				tasksGrid.appendChild(taskDiv);
+			});
+        } 
+        // Im createWorksheet-Bereich für Deutsch:
+		else {
+			let types = getDeutschTypes();
+			let difficulty = document.getElementById('difficultySelect').value;
+			let taskCount = 10;
+			let onlySentences = types.sentences && !types.copyWords && !types.letters;
+			if (onlySentences) taskCount = 8; //Sätze
+			else if (types.sentences) taskCount = 8; //gemischt
+			else taskCount = 8; //alles andere
+    
+			let deutschTasks = generateGermanTasks(taskCount, types, difficulty);
+			deutschTasks.forEach(t => {
+				const taskDiv = document.createElement('div');
+				taskDiv.className = 'task-item deutsch-task';
+        
+        // Berechne Höhe basierend auf Zeilenanzahl (56px pro Zeile)
+				const lineHeightPx = t.lineCount * 56;
+        
+				taskDiv.innerHTML = `
+					<div class="deutsch-prompt">${t.prompt}</div>
+					<div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>
+        `		;
+				tasksGrid.appendChild(taskDiv);
+			});
+		}
+        
+        const pointsField = document.createElement('div');
+        pointsField.className = 'points-field';
+        pointsField.innerHTML = `<div>Punkte: ______ / ______</div><div>Bemerkung: _______________</div>`;
+        
+        worksheetDiv.appendChild(header);
+        worksheetDiv.appendChild(tasksGrid);
+        worksheetDiv.appendChild(pointsField);
+        
+        return worksheetDiv;
+    }
+    
+    function generateMultiPage() {
+        let pageCount = parseInt(pageCountInput.value) || 1;
+        pageCount = Math.min(10, Math.max(1, pageCount));
+        multiPageContainer.innerHTML = '';
+        for (let i = 0; i < pageCount; i++) {
+            multiPageContainer.appendChild(createWorksheet(i, pageCount));
+        }
+    }
+    
+    function printWorksheets() {
+        window.print();
+    }
+    
+    modeSelect.addEventListener('change', () => { toggleModeUI(); generateMultiPage(); });
+    generateBtn.addEventListener('click', generateMultiPage);
+    printBtn.addEventListener('click', printWorksheets);
+    
+    buildRowSelector();
+    toggleModeUI();
+    generateMultiPage();
 </script>
-
 </body>
 </html>
