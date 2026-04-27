@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Grundschul-Arbeitsblatt-Generator von Bauzi84 - 20260330</title>
+    <title>Grundschul-Arbeitsblatt-Generator - Bauzi84</title>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
         * {
@@ -104,17 +104,12 @@
             background: #059669;
         }
 
-		.row-selector {
-			display: grid;
-			grid-template-columns: repeat(5, 30px);  /* 5 Spalten à 30px */
-			gap: 6px;
-			max-width: 100%;
-		}
-
-		.row-selector span {
-			text-align: center;
-			padding: 3px 0;
-		}
+        .row-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 30px);
+            gap: 6px;
+            max-width: 100%;
+        }
 
         .row-selector span {
             background: #e2e8f0;
@@ -124,6 +119,7 @@
             font-size: 0.75rem;
             font-weight: 500;
             user-select: none;
+            text-align: center;
         }
 
         .row-selector span.selected {
@@ -202,58 +198,58 @@
         }
 
         /* MATHE: Kästchen statt gestrichelter Linie */
-        /* Mathe-Aufgaben - verhindert Umbruch und sorgt für flexible Breite */
-		.math-task {
-			font-size: 1rem; /* etwas kleiner für mehr Platz */
-			font-weight: 500;
-			font-family: 'Courier New', monospace;
-			background: #fefce8;
-			padding: 8px 6px;
-			border-radius: 10px;
-			border: 1px solid #fde047;
-			white-space: nowrap; /* Verhindert Zeilenumbruch in der Zeile */
-			overflow-x: auto; /* Falls doch zu lang, scrollbar */
-			overflow-y: hidden;
-		}
+        .math-task {
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+            background: #fefce8;
+            padding: 8px 6px;
+            border-radius: 10px;
+            border: 1px solid #fde047;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
 
-		.math-equation {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			flex-wrap: nowrap; /* Wichtig: Kein Umbruch erlauben */
-			justify-content: flex-start;
-			white-space: nowrap;
-		}
+        .math-equation {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            white-space: nowrap;
+        }
 
-		.math-equation span:first-child {
-		   flex-shrink: 1; /* Darf schrumpfen, aber nicht umbrechen */
-		    white-space: nowrap;
-		    overflow-x: visible;
-		    font-size: 0.95rem; /* Bei sehr langen Zahlen etwas kleiner */
-		}
+        .math-equation span:first-child {
+            flex-shrink: 1;
+            white-space: nowrap;
+            overflow-x: visible;
+            font-size: 0.95rem;
+        }
 
-		.result-box {
-		   display: inline-block;
- 		   width: 65px;
-		    height: 28px;
-		    border: 2px solid #334155;
-		    border-radius: 6px;
-		    background-color: white;
-		    vertical-align: middle;
-		    flex-shrink: 0; /* Kästchen bleibt immer gleich groß */
-		}
+        .result-box {
+            display: inline-block;
+            width: 65px;
+            height: 28px;
+            border: 2px solid #334155;
+            border-radius: 6px;
+            background-color: white;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
 
-        /* DEUTSCH: 3-Linien-Lineatur für Grundschule */
+        /* DEUTSCH: 3-Linien-Lineatur für Grundschule - optimiert */
         .deutsch-task {
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             break-inside: avoid;
             page-break-inside: avoid;
         }
+        
         .deutsch-prompt {
             font-family: 'Patrick Hand', 'Comic Neue', cursive;
             font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #0c4a6e;
             background: #f0f9ff;
             padding: 4px 8px;
@@ -261,7 +257,7 @@
             display: inline-block;
         }
         
-        /* Korrigierte 3-Linien-Lineatur mit vollständigen Linien */
+        /* Korrigierte 3-Linien-Lineatur - ohne zusätzliche Ränder */
         .gs-lineatur {
             background-image: 
                 repeating-linear-gradient(
@@ -282,10 +278,9 @@
             background-size: 100% 56px;
             background-repeat: repeat-y;
             background-position: top left;
-            min-height: 70px;
             width: 100%;
             margin-top: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 0;
         }
 
         .points-field {
@@ -304,7 +299,69 @@
             text-align: center;
         }
 
-        /* DRUCK-OPTIMIERUNG: DIN A4 Hochformat */
+        /* Uhrzeit-Aufgaben */
+        .time-task {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clock-canvas {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #334155;
+            position: relative;
+            margin: 5px auto;
+        }
+
+        .clock-canvas svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .time-question {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .time-answer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .time-answer .result-box {
+            width: 65px;
+            height: 28px;
+            margin: 0;
+        }
+
+        .drawing-area {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* DRUCK-OPTIMIERUNG */
         @media print {
             @page {
                 size: A4 portrait;
@@ -316,18 +373,16 @@
                 padding: 0;
                 margin: 0;
             }
-			
-			/* Alles ausblenden, was nicht gedruckt werden soll */
-			.controls, button, .no-print, .print-btn,
-			.control-group a,                          /* Wochenplan-Link */
-			.control-group:first-child,                /* Erste Control-Group mit Seitenanzahl */
-			.button-group,                             /* Generieren & Drucken Buttons */
-			.generator-container > .control-group,     /* Direkte Control-Group außerhalb */
-			.generator-container > .button-group,      /* Direkte Button-Group außerhalb */
-			.generator-container > br {                /* Der <br> Tag dazwischen */
-				display: none !important;
-			}
-			
+            
+            .controls, button, .no-print, .print-btn,
+            .control-group:first-child,
+            .button-group,
+            .generator-container > .control-group,
+            .generator-container > .button-group,
+            .generator-container > br {
+                display: none !important;
+            }
+            
             .generator-container {
                 padding: 0;
                 margin: 0;
@@ -335,6 +390,7 @@
                 box-shadow: none;
                 background: white;
             }
+            
             .worksheet {
                 box-shadow: none;
                 padding: 0;
@@ -342,183 +398,114 @@
                 page-break-after: always;
                 break-after: page;
             }
+            
             .worksheet:last-child {
                 page-break-after: auto;
             }
+            
             .tasks-grid {
                 gap: 12px;
             }
+            
             .math-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+            
             .deutsch-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
             .task-item {
                 break-inside: avoid;
                 page-break-inside: avoid;
             }
+            
+            /* Deutsch-Druck optimiert - keine zusätzlichen Linien */
+            .deutsch-task {
+                margin-bottom: 8px !important;
+            }
+            
+            .deutsch-task .gs-lineatur {
+                margin-bottom: 0 !important;
+                margin-top: 2px !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .deutsch-prompt {
+                margin-bottom: 2px !important;
+            }
+            
             .gs-lineatur {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            
             .result-box {
                 width: 65px;
                 height: 26px;
                 border: 1.5px solid #334155;
             }
+            
             .worksheet-header h1 {
                 font-size: 1.3rem;
             }
-		    /* NEU: Kleinere Schrift für große Zahlen im Druck */
-			.math-equation.small-numbers span:first-child {
-				font-size: 0.75rem;
-			}
+            
+            .math-equation.small-numbers span:first-child {
+                font-size: 0.75rem;
+            }
+            
+            .math-task {
+                font-size: 0.9rem;
+                white-space: normal;
+            }
+            
+            .math-equation {
+                flex-wrap: wrap;
+            }
+            
+            .time-answer input {
+                border: 1px solid #000;
+                background: transparent;
+            }
+            
+            .clock-canvas {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
-		.math-equation.small-numbers span:first-child {
-			font-size: 0.8rem;
-		}
-/* Anpassung für verschiedene Bildschirmgrößen */
-		@media (max-width: 900px) {
-			.math-task {
-				font-size: 0.9rem;
-			}
-			.math-equation span:first-child {
-				font-size: 0.85rem;
-			}
-			.result-box {
-				width: 55px;
-				height: 26px;
-			}
-		}
 
-		@media print {
-		.math-task {
-				font-size: 0.9rem;
-				white-space: normal; /* Im Druck lieber umbrechen lassen */
-			}
-			.math-equation {
-				flex-wrap: wrap; /* Im Druck darf umgebrochen werden */
-			}
-			.result-box {
-				width: 60px;
-				height: 25px;
-			}
-		}
-
-        footer {
-            font-size: 0.7rem;
-            text-align: center;
-            margin-top: 15px;
-            color: #64748b;
+        .math-equation.small-numbers span:first-child {
+            font-size: 0.8rem;
         }
-        .hidden {
-            display: none;
+
+        @media (max-width: 900px) {
+            .math-task {
+                font-size: 0.9rem;
+            }
+            .math-equation span:first-child {
+                font-size: 0.85rem;
+            }
+            .result-box {
+                width: 55px;
+                height: 26px;
+            }
         }
-        .page-number {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 12px;
-        }
-		
-		/* Uhrzeit-Aufgaben */
-		.time-task {
-			background: #f0f9ff;
-			border: 1px solid #bae6fd;
-			border-radius: 12px;
-			padding: 10px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 8px;
-		}
-
-		.clock-canvas {
-			width: 100px;
-			height: 100px;
-			background: white;
-			border-radius: 50%;
-			border: 2px solid #334155;
-			position: relative;
-			margin: 5px auto;
-		}
-
-		.clock-canvas svg {
-			width: 100%;
-			height: 100%;
-			display: block;
-		}
-
-		.time-question {
-			font-size: 0.9rem;
-			font-weight: 500;
-			text-align: center;
-			margin-bottom: 5px;
-		}
-
-		.time-answer {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			flex-wrap: wrap;
-			justify-content: center;
-			width: 100%;
-		}
-
-		.time-answer input {
-			width: 80px;
-			text-align: center;
-			border: 1px solid #cbd5e1;
-			border-radius: 8px;
-			padding: 4px;
-			font-size: 0.85rem;
-		}
-
-		.time-answer .result-box {
-			width: 70px;
-			height: 28px;
-			margin: 0;
-		}	
-
-		/* Für Zeichnen-Aufgaben */
-		.drawing-area {
-			position: relative;
-			width: 100px;
-			height: 100px;
-			margin: 0 auto;
-			cursor: pointer;
-		}
-
-		@media print {
-			.time-answer input {
-				border: 1px solid #000;
-				background: transparent;
-			}
-			.clock-canvas {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		}
-		
-		
     </style>
 </head>
 <body>
 <div class="generator-container">
-	<div class="control-group no-print">
-		<!-- <a href="Prototyp_Wochenplan.html">Wochenplan</a> -->
-		<!-- <a href="paypal.me/bauzi84">Paypal Danke :)</a> -->
-		<label>📄 Seitenanzahl:</label>
-		<input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
-		<br>
-	</div>
+    <div class="control-group no-print">
+        <label>📄 Seitenanzahl:</label>
+        <input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
+    </div>
 
-	<div class="button-group no-print">
-		<button id="generateBtn">✨ Generieren</button>
-		<button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
-	</div>
-	<br>
+    <div class="button-group no-print">
+        <button id="generateBtn">✨ Generieren</button>
+        <button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
+    </div>
+    <br>
+    
     <div class="controls no-print">
         <div class="control-group">
             <label>Fach:</label>
@@ -531,53 +518,54 @@
         <!-- MATHE Steuerung -->
         <div id="mathControls" class="control-group">
             <label>Rechenarten:</label>
-			<div class="checkbox-group" id="mathOpsBasic">
-				<label><input type="checkbox" value="add"> +</label>
-				<label><input type="checkbox" value="sub"> −</label>
-				<label><input type="checkbox" value="mul" checked> ×</label>
-				<label><input type="checkbox" value="div"> :</label>
-			</div>
-			
-			<div class="checkbox-group" id="mathOpsSpecial">
-				<label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
-				<label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
-				<label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
-			</div>
+            <div class="checkbox-group" id="mathOpsBasic">
+                <label><input type="checkbox" value="add"> +</label>
+                <label><input type="checkbox" value="sub"> −</label>
+                <label><input type="checkbox" value="mul" checked> ×</label>
+                <label><input type="checkbox" value="div"> :</label>
+            </div>
+            
+            <div class="checkbox-group" id="mathOpsSpecial">
+                <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
+                <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
+                <label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
+            </div>
         </div>
-		
-		<!-- Diese Container werden je nach Auswahl ein-/ausgeblendet -->
-		<div id="mathRangeGroup" class="control-group hidden">
-			<label>Zahlenraum Grundrechenarten:</label>
-			<input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
-		</div>
+        
+        <div id="mathRangeGroup" class="control-group hidden">
+            <label>Zahlenraum Grundrechenarten:</label>
+            <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
+        </div>
 
-		<div id="squareSettings" class="control-group hidden">
-			<label>Quadratzahlen maximum:</label>
-			<input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
-		</div>
+        <div id="squareSettings" class="control-group hidden">
+            <label>Quadratzahlen maximum:</label>
+            <input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
+        </div>
 
-		<div id="multiplicationRowGroup" class="control-group hidden">
-			<label>1×1-Reihen:</label>
-			<div class="row-selector" id="rowSelector"></div>
-		</div>
+        <div id="multiplicationRowGroup" class="control-group hidden">
+            <label>1×1-Reihen:</label>
+            <div class="row-selector" id="rowSelector"></div>
+        </div>
 
-		<div id="timeSettings" class="control-group hidden">
-			<label>Uhrzeit-Schwierigkeit:</label>
-			<select id="timeDifficulty">
-				<option value="hours" selected>Nur volle Stunden (1:00, 2:00...)</option>
-				<option value="quarters">Viertelstunden (z.B. 2:15, 3:30, 4:45)</option>
-				<option value="fiveMinutes">5-Minuten-Schritte (z.B. 2:05, 3:20)</option>
-			</select>
-			<small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
-		</div>
+        <div id="timeSettings" class="control-group hidden">
+            <label>Uhrzeit-Schwierigkeit:</label>
+            <select id="timeDifficulty">
+                <option value="hours" selected>Nur volle Stunden</option>
+                <option value="quarters">Viertelstunden</option>
+                <option value="fiveMinutes">5-Minuten-Schritte</option>
+            </select>
+            <small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
+        </div>
 
-        <!-- DEUTSCH Steuerung -->
+        <!-- DEUTSCH Steuerung - exklusive Auswahl -->
         <div id="deutschControls" class="control-group hidden">
             <label>✍️ Übungstyp:</label>
-            <div class="checkbox-group" id="deutschTypes">
-                <label><input type="checkbox" value="copyWords" checked> Wörter</label>
-                <label><input type="checkbox" value="letters"> Buchstaben</label>
-                <label><input type="checkbox" value="sentences"> Sätze</label>
+            <div class="checkbox-group" id="deutschTypesBasic">
+                <label><input type="checkbox" value="copyWords" id="wordsCheck" checked> Wörter</label>
+                <label><input type="checkbox" value="letters" id="lettersCheck"> Buchstaben</label>
+            </div>
+            <div class="checkbox-group" id="deutschTypesSpecial">
+                <label><input type="checkbox" value="sentences" id="sentencesCheck"> 📖 Sätze</label>
             </div>
             <label>📖 Schwierigkeit:</label>
             <select id="difficultySelect">
@@ -586,68 +574,109 @@
                 <option value="hard">Schwer (3./4. Klasse)</option>
             </select>
         </div>
-
-
     </div>
 
     <div id="multiPageContainer" class="multi-page-container"></div>
-    
-
 </div>
 
 <script>
-
-    // Wortlisten Deutsch (angepasst für 2. Klasse)
+    // Wortlisten Deutsch
     const wordLists = {
-        easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch","Hund", "Katze", "Maus", "Haus", "Baum", "Brot", "Ball", "Kind","der","die","das","und","ist","ich","du","wir","Haus","Ball","Auto","Kind","Buch","Baum","Hand","gehen","sehen","spielen","laufen","kommen","gut","rot","blau","alt","neu","klein","groß"],
-        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume","Schule", "Garten", "Sommer", "Winter", "Wasser", "Lernen", "Apfel","Schule","Freund","Lehrer","Tafel","Heft","Pause","Garten","Zimmer","Fenster","Straße","springen","tanzen","malen","lernen","arbeiten","schnell","langsam","fröhlich","traurig","leise","Wasser","Feuer","Licht","Sonne","Regen","nächste", "Sonntag", "Tasse", "wachen", "Weg", "Apfel", "Fahrrad", "ganz", "fahren", "fangen", "hält", "lang", "Tasche", "Vorschlag", "Wasser", "Angst", "alt", "fährt", "fängt", "haben", "kämpfen", "Mann", "schlafen"],
-        hard: ["Eichhörnchen", "Schmetterling", "Abenteuer", "Sonnenschein", "Fahrrad","Abenteuer","Schmetterling","Elefant","Krankenhaus","Regenbogen","Feuerwehr","Spielplatz","Geburtstag","entscheiden","vergessen","erzählen","beschreiben","gefährlich","wichtig","freundlich","glücklich","Verantwortung","Gemeinschaft","Erfahrung","Erdmännchen","Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule"]
+        easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", "spielen", "gut", "rot", "blau", "alt", "neu", "klein", "groß"],
+        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", "Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", "arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", "Fahrrad"],
+        hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"]
     };
     
     const sentencesList = [
-        "Der Hund läuft im Park.",
-        "Heute scheint die Sonne.",
-        "Ich gehe gerne in die Schule.",
-        "Meine Katze schläft auf dem Sofa.",
-        "Wir spielen Fußball im Garten.",
-        "Das Essen schmeckt sehr gut.",
-        "Morgen fahre ich mit dem Fahrrad.",
-        "Lena liest ein spannendes Buch.",
-        "Papa kocht leckere Nudeln.",
-        "Im Winter bauen wir einen Schneemann.",
-        "Die Blumen blühen bunt.",
-        "Anna malt ein Bild.",
-        "Unser Lehrer erzählt eine Geschichte.",
-        "Kannst du mir bitte helfen?",
-        "Heute Abend sehe ich einen Film.",
-        "Wir basteln Laternen.",
-        "Die Maus frisst gerne Käse.",
-		"Heute scheint die Sonne und wir spielen im Garten.",
-        "Der Hund läuft fröhlich über die Wiese.",
-        "In der Schule lerne ich lesen, schreiben und rechnen.",
-        "Am Wochenende besuche ich meine Großeltern.",
-        "Im Herbst fallen die bunten Blätter von den Bäumen.",
-        "Im Klassenzimmer hängen viele bunte Bilder an der Wand.",
-        "Wir machen einen Ausflug in den Wald und sammeln Blätter.",
-        "Im Winter baue ich einen großen Schneemann im Garten.",
-        "Ich lese gerne spannende Geschichten vor dem Einschlafen.",
-        "Auf dem Spielplatz schaukeln wir hoch in den Himmel.",
-		"Fischers Fritz fischt frische Fische.",
-		"Blaukraut bleibt Blaukraut und Brautkleid bleibt Brautkleid.",
-		"Im dichten Fichtendickicht nicken dicke Fichten tüchtig.",
-		"Zwischen zwei Zwetschgenzweigen zwitschern zwei Schwalben.",
-		"In Ulm, um Ulm und um Ulm herum.",
-		"Es klapperten die Klapper-Schlangen, bis ihre Klapper schlapper klangen.",
-		"Acht alte Ameisen aßen am Abend Ananas.",
-		"Zehn Ziegen ziehen zehn Zentner Zucker zum Zoo.",
-		"Wenn Fliegen hinter Fliegen fliegen, fliegen Fliegen Fliegen nach."
+		// Alltag & Familie
+		"Ich helfe meiner Mama beim Kochen.",
+		"Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
+		"Wir frühstücken zusammen am Sonntagmorgen.",
+		"Meine Oma backt leckere Kekse.",
+		"Ich spiele mit meinem kleinen Bruder.",
+		"Meine große Schwester zeigt mir einen neuen Tanz.",
+		"Wir machen einen Ausflug mit der ganzen Familie.",
+		"Der Hund läuft im Park.",
+		"Meine Katze schläft auf dem Sofa.",
+		
+		// Schule & Lernen
+		"In der Pause toben wir auf dem Schulhof.",
+		"Mein Lieblingsfach ist Sport.",
+		"Wir malen ein Bild für unsere Klassenlehrerin.",
+		"Heute habe ich meine Hausaufgaben vergessen.",
+		"In der Schule lernen wir das Einmaleins.",
+		"Unser Klassenzimmer ist bunt dekoriert.",
+		"Der Lehrer erklärt uns eine schwierige Aufgabe.",
+		"Ich gehe gerne in die Schule.",
+		"Lena liest ein spannendes Buch.",
+		"Unser Lehrer erzählt eine Geschichte.",
+		
+		// Natur & Tiere
+		"Der Igel sucht ein gemütliches Winterquartier.",
+		"Die Bienen sammeln fleißig Nektar.",
+		"Im Wald sehen wir viele bunte Pilze.",
+		"Das Eichhörnchen versteckt Nüsse für den Winter.",
+		"Die Schmetterlinge fliegen von Blüte zu Blüte.",
+		"Die Enten schwimmen auf dem Teich.",
+		"Im Zoo habe ich einen Elefanten gesehen.",
+		"Ein Löwe frisst viel Fleisch",
+		"Das Kamel schleicht durch die Wüse",
+		"Der Affe sitzt auf einem Baum",
+		
+		// Jahreszeiten & Feste
+		"Im Herbst werfen die Bäume ihre Blätter ab.",
+		"Wir bauen einen Schneemann mit Möhrennase.",
+		"Zu Ostern suchen wir bunte Eier im Garten.",
+		"An Weihnachten schmücken wir den Tannenbaum.",
+		"Im Sommer gehen wir gerne ins Freibad.",
+		"Im Frühling blühen die ersten Blumen.",
+		"Laterne, Laterne, Sonne, Mond und Sterne.",
+		"Heute scheint die Sonne.",
+		"Im Winter bauen wir einen Schneemann.",
+		"Die Blumen blühen bunt.",
+		
+		// Gefühle & Freundschaft
+		"Ich freue mich auf mein Geburtstagsgeschenk.",
+		"Meine beste Freundin kommt mich besuchen.",
+		"Wir vertragen uns wieder nach dem Streit.",
+		"Ich habe keine Angst vor der Klassenarbeit.",
+		"Das Konzert hat mir sehr gut gefallen.",
+		"Ich bin stolz auf meine selbstgemalte Karte.",
+		"Die Überraschungsparty war toll.",
+		
+		// Fantasie & Spaß
+		"Der Clown macht lustige Grimassen.",
+		"Wir bauen eine Burg aus Decken und Kissen.",
+		"Im Zirkus sehe ich akrobatische Kunststücke.",
+		"Der Ritter kämpft gegen den gefährlichen Drachen.",
+		"Die Fee erfüllt mir einen besonderen Wunsch.",
+		"Der Zauberer zaubert einen Hasen aus dem Hut.",
+		"Anna malt ein Bild.",
+		
+		// Gesundheit & Sport
+		"Zähneputzen ist wichtig für gesunde Zähne.",
+		"Wir spielen Fußball auf dem Sportplatz.",
+		"Nach dem Toben trinke ich ein Glas Wasser.",
+		"Beim Turnen übe ich den Purzelbaum.",
+		"Radfahren macht mir großen Spaß.",
+		"Wir spielen Fußball im Garten.",
+		"Morgen fahre ich mit dem Fahrrad.",
+		
+		// Essen & Trinken
+		"Pommes mit Ketchup schmecken mir am besten.",
+		"Ich esse gerne bunte Obstspieße.",
+		"Die Pizza wird mit Käse belegt.",
+		"Zum Frühstück gibt es Müsli mit Milch.",
+		"Das Essen schmeckt sehr gut.",
+		"Mama kocht meine Lieblingsnudeln mit Tomatensoße."
+	
     ];
 
     function rand(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Quadratzahl als "5 × 5"
+    // Quadratzahl
     function generateSquareTask(maxBase) {
         let base = rand(2, maxBase);
         return { display: `${base} × ${base} = ` };
@@ -661,117 +690,89 @@
         return { display: `√${square} = ` };
     }
 
-// Uhrzeit-Funktionen
-function generateTimeTasks(count, difficulty) {
-    let tasks = [];
-    const timeOptions = [];
-    
-    // Verfügbare Minuten basierend auf Schwierigkeit
-    let minutesList = [];
-    if (difficulty === 'hours') {
-        minutesList = [0];
-    } else if (difficulty === 'quarters') {
-        minutesList = [0, 15, 30, 45];
-    } else {
-        // 5-Minuten-Schritte von 0 bis 55
-        for (let m = 0; m < 60; m += 5) {
-            minutesList.push(m);
+    // Uhrzeit-Funktionen
+    function generateTimeTasks(count, difficulty) {
+        let tasks = [];
+        let minutesList = [];
+        if (difficulty === 'hours') {
+            minutesList = [0];
+        } else if (difficulty === 'quarters') {
+            minutesList = [0, 15, 30, 45];
+        } else {
+            for (let m = 0; m < 60; m += 5) minutesList.push(m);
         }
+        
+        for (let i = 0; i < count; i++) {
+            let hour = rand(1, 12);
+            let minute = minutesList[Math.floor(Math.random() * minutesList.length)];
+            let taskType = Math.random() < 0.5 ? 'read' : 'draw';
+            tasks.push({
+                type: taskType,
+                hour: hour,
+                minute: minute,
+                displayHour: hour,
+                minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0')
+            });
+        }
+        return tasks;
     }
-    
-    for (let i = 0; i < count; i++) {
-        // Zufällige Stunde (1-12) und Minuten
-        let hour = rand(1, 12);
-        let minute = minutesList[Math.floor(Math.random() * minutesList.length)];
-        
-        // Sonderfall: Bei 0 Minuten wird die Stunde nicht erhöht
-        let displayHour = hour;
-        let displayMinute = minute;
-        
-        // Aufgaben-Typ abwechseln: 0 = ablesen, 1 = zeichnen
-        let taskType = Math.random() < 0.5 ? 'read' : 'draw';
-        
-        tasks.push({
-            type: taskType,
-            hour: hour,
-            minute: minute,
-            displayHour: displayHour,
-            displayMinute: displayMinute,
-            minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0')
-        });
-    }
-    return tasks;
-}
 
-// Zeichnet eine analoge Uhr mit SVG
-function drawClockSVG(hour, minute, withHands = true) {
-    // Berechne Winkel
-    const hourAngle = (hour % 12) * 30 + minute * 0.5;
-    const minuteAngle = minute * 6;
-    
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 45;
-    
-    // Stundenzeiger
-    const hourRad = (hourAngle - 90) * Math.PI / 180;
-    const hourX = centerX + 25 * Math.cos(hourRad);
-    const hourY = centerY + 25 * Math.sin(hourRad);
-    
-    // Minutenzeiger
-    const minuteRad = (minuteAngle - 90) * Math.PI / 180;
-    const minuteX = centerX + 38 * Math.cos(minuteRad);
-    const minuteY = centerY + 38 * Math.sin(minuteRad);
-    
-    let handsSVG = '';
-    if (withHands) {
-        handsSVG = `
-            <line x1="${centerX}" y1="${centerY}" x2="${hourX}" y2="${hourY}" 
-                  stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
-            <line x1="${centerX}" y1="${centerY}" x2="${minuteX}" y2="${minuteY}" 
-                  stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="${centerX}" cy="${centerY}" r="3" fill="#1e293b"/>
+    function drawClockSVG(hour, minute, withHands = true) {
+        const hourAngle = (hour % 12) * 30 + minute * 0.5;
+        const minuteAngle = minute * 6;
+        const centerX = 50, centerY = 50;
+        
+        const hourRad = (hourAngle - 90) * Math.PI / 180;
+        const hourX = centerX + 25 * Math.cos(hourRad);
+        const hourY = centerY + 25 * Math.sin(hourRad);
+        
+        const minuteRad = (minuteAngle - 90) * Math.PI / 180;
+        const minuteX = centerX + 38 * Math.cos(minuteRad);
+        const minuteY = centerY + 38 * Math.sin(minuteRad);
+        
+        let handsSVG = '';
+        if (withHands) {
+            handsSVG = `
+                <line x1="${centerX}" y1="${centerY}" x2="${hourX}" y2="${hourY}" 
+                      stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+                <line x1="${centerX}" y1="${centerY}" x2="${minuteX}" y2="${minuteY}" 
+                      stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="${centerX}" cy="${centerY}" r="3" fill="#1e293b"/>
+            `;
+        }
+        
+        let numbersSVG = '';
+        for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * Math.PI / 180;
+            const numX = centerX + 35 * Math.cos(angle);
+            const numY = centerY + 35 * Math.sin(angle);
+            numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
+        }
+        
+        return `
+            <svg viewBox="0 0 100 100" style="width:100%; height:100%">
+                <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+                ${numbersSVG}
+                ${handsSVG}
+            </svg>
         `;
     }
-    
-    // Ziffern
-    let numbersSVG = '';
-    for (let i = 1; i <= 12; i++) {
-        const angle = (i * 30 - 90) * Math.PI / 180;
-        const numX = centerX + 35 * Math.cos(angle);
-        const numY = centerY + 35 * Math.sin(angle);
-        numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
+
+    function drawBlankClockSVG() {
+        let numbersSVG = '';
+        for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * Math.PI / 180;
+            const numX = 50 + 35 * Math.cos(angle);
+            const numY = 50 + 35 * Math.sin(angle);
+            numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
+        }
+        return `
+            <svg viewBox="0 0 100 100" style="width:100%; height:100%">
+                <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+                ${numbersSVG}
+            </svg>
+        `;
     }
-    
-    return `
-        <svg viewBox="0 0 100 100" style="width:100%; height:100%">
-            <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
-            ${numbersSVG}
-            ${handsSVG}
-        </svg>
-    `;
-}
-
-function drawBlankClockSVG() {
-    // Leeres Zifferblatt (nur Ziffern, keine Zeiger)
-    let numbersSVG = '';
-    for (let i = 1; i <= 12; i++) {
-        const angle = (i * 30 - 90) * Math.PI / 180;
-        const numX = 50 + 35 * Math.cos(angle);
-        const numY = 50 + 35 * Math.sin(angle);
-        numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
-    }
-    
-    return `
-        <svg viewBox="0 0 100 100" style="width:100%; height:100%">
-            <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
-            ${numbersSVG}
-        </svg>
-    `;
-}
-
-
-
 
     // Mathe-Generator
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase) {
@@ -848,54 +849,61 @@ function drawBlankClockSVG() {
         return tasks;
     }
     
-    // Deutsch-Aufgaben mit korrekter Lineatur
-    // Deutsch-Aufgaben mit korrekter, vollständiger Lineatur für jede Aufgabe
-	function generateGermanTasks(count, types, difficulty) {
-		let tasks = [];
-		let wordPool = wordLists[difficulty] || wordLists.medium;
-		let letterPool = difficulty === 'easy' ? ['A', 'E', 'I', 'O', 'U', 'M', 'L'] :
-                    (difficulty === 'medium' ? ['Sch', 'Au', 'Ei', 'Ch', 'Sp', 'St'] : ['ß', 'Qu', 'Schr', 'Spr']);
-		let sentencePool = [...sentencesList];
-    
-		let activeTypes = [];
-		if (types.copyWords) activeTypes.push('word');
-		if (types.letters) activeTypes.push('letter');
-		if (types.sentences) activeTypes.push('sentence');
-		if (activeTypes.length === 0) activeTypes.push('word');
-    
-		for (let i = 0; i < count; i++) {
-			let type = activeTypes[Math.floor(Math.random() * activeTypes.length)];
-			let prompt = "";
-			let lineCount = 1; // Standard: 1 Zeile (70px)
+    // Deutsch-Aufgaben
+    function generateGermanTasks(count, types, difficulty) {
+        let tasks = [];
+        let wordPool = wordLists[difficulty] || wordLists.medium;
+        let letterPool = difficulty === 'easy' ? ['A', 'E', 'I', 'O', 'U', 'M', 'L'] :
+                        (difficulty === 'medium' ? ['Sch', 'Au', 'Ei', 'Ch', 'Sp', 'St'] : ['ß', 'Qu', 'Schr', 'Spr']);
+        let sentencePool = [...sentencesList];
         
-			if (type === 'word') {
-				let w = wordPool[Math.floor(Math.random() * wordPool.length)];
-				prompt = `📝 ${w}`;
-				lineCount = 2; // Wörter: 2 Wiederholungen = 2 Zeilen
-			} else if (type === 'letter') {
-				let l = letterPool[Math.floor(Math.random() * letterPool.length)];
-				prompt = `✍️  ${l}`;
-				lineCount = 2; // Buchstaben: 2 Wiederholungen zum Üben
-			} else {
-				let s = sentencePool[Math.floor(Math.random() * sentencePool.length)];
-				prompt = `📖 ${s}`;
-				lineCount = 2; // Sätze: 2 Zeilen zum Abschreiben
-			}
-        
-			tasks.push({ 
-				prompt: prompt, 
-				lineCount: lineCount  // Speichert Anzahl der benötigten Zeilen
-			});
-		}
-		return tasks;
-	}
+        // Nur Sätze
+        if (types.sentences) {
+			count = 6
+            for (let i = 0; i < count; i++) {
+                let s = sentencePool[Math.floor(Math.random() * sentencePool.length)];
+                tasks.push({ prompt: `📖 ${s}`, lineCount: 3 });
+            }
+        } 
+        // Wörter und/oder Buchstaben
+        else {
+            let activeTypes = [];
+            if (types.copyWords) activeTypes.push('word');
+            if (types.letters) activeTypes.push('letter');
+            if (activeTypes.length === 0) activeTypes.push('word');
+            count = 14
+            for (let i = 0; i < count; i++) {
+                let type = activeTypes[Math.floor(Math.random() * activeTypes.length)];
+                if (type === 'word') {
+                    let w = wordPool[Math.floor(Math.random() * wordPool.length)];
+                    tasks.push({ prompt: `📝 ${w}`, lineCount: 1 });
+                } else {
+                    let l = letterPool[Math.floor(Math.random() * letterPool.length)];
+                    tasks.push({ prompt: `✍️ ${l}`, lineCount: 1 });
+                }
+            }
+        }
+        return tasks;
+    }
     
+    // Dynamische Aufgabenanzahl
+    function calculateOptimalTaskCount(types, difficulty) {
+        const MAX_HEIGHT = 950;
+        
+        let linesPerTask = types.sentences ? 3 : 1;
+        let estimatedHeightPerTask = 40 + (linesPerTask * 56) + 15;
+        let maxTasks = Math.floor(MAX_HEIGHT / estimatedHeightPerTask);
+        
+        if (types.sentences) {
+            return Math.min(7, Math.max(3, maxTasks));
+        } else {
+            return Math.min(14, Math.max(8, maxTasks));
+        }
+    }
+
     // DOM-Elemente
     const modeSelect = document.getElementById('modeSelect');
     const mathControlsDiv = document.getElementById('mathControls');
-    const mathRangeGroup = document.getElementById('mathRangeGroup');
-    const multiplicationRowGroup = document.getElementById('multiplicationRowGroup');
-    const squareSettingsDiv = document.getElementById('squareSettings');
     const deutschControlsDiv = document.getElementById('deutschControls');
     const generateBtn = document.getElementById('generateBtn');
     const printBtn = document.getElementById('printBtn');
@@ -924,43 +932,44 @@ function drawBlankClockSVG() {
         }
     }
     
-	function toggleModeUI() {
-		const mode = modeSelect.value;
-		if (mode === 'math') {
-			mathControlsDiv.classList.remove('hidden');
-			deutschControlsDiv.classList.add('hidden');
-			// Sichtbarkeit der Untersgruppen aktualisieren
-			updateVisibilityBasedOnSelection();
-		} else {
-			mathControlsDiv.classList.add('hidden');
-			deutschControlsDiv.classList.remove('hidden');
-			// Im Deutsch-Modus alle Mathe-Steuerungen ausblenden
-			const mathGroups = ['mathRangeGroup', 'multiplicationRowGroup', 'squareSettings', 'timeSettings'];
-			mathGroups.forEach(id => {
-				const el = document.getElementById(id);
-				if (el) el.classList.add('hidden');
-			});
-		}
-	}
+    function toggleModeUI() {
+        const mode = modeSelect.value;
+        if (mode === 'math') {
+            mathControlsDiv.classList.remove('hidden');
+            deutschControlsDiv.classList.add('hidden');
+            updateVisibilityBasedOnSelection();
+        } else {
+            mathControlsDiv.classList.add('hidden');
+            deutschControlsDiv.classList.remove('hidden');
+            document.querySelectorAll('#mathRangeGroup, #multiplicationRowGroup, #squareSettings, #timeSettings').forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+        }
+    }
     
-	function getMathOperations() {
-		return {
-			add: document.querySelector('#mathOpsBasic input[value="add"]')?.checked || false,
-			sub: document.querySelector('#mathOpsBasic input[value="sub"]')?.checked || false,
-			mul: document.querySelector('#mathOpsBasic input[value="mul"]')?.checked || false,
-			div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
-			square: document.getElementById('squareCheck')?.checked || false,
-			sqrt: document.getElementById('sqrtCheck')?.checked || false,
-			time: document.getElementById('timeCheck')?.checked || false
-		};
-	}
+    function getMathOperations() {
+        return {
+            add: document.querySelector('#mathOpsBasic input[value="add"]')?.checked || false,
+            sub: document.querySelector('#mathOpsBasic input[value="sub"]')?.checked || false,
+            mul: document.querySelector('#mathOpsBasic input[value="mul"]')?.checked || false,
+            div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
+            square: document.getElementById('squareCheck')?.checked || false,
+            sqrt: document.getElementById('sqrtCheck')?.checked || false,
+            time: document.getElementById('timeCheck')?.checked || false
+        };
+    }
     
     function getDeutschTypes() {
-        return {
-            copyWords: document.querySelector('#deutschTypes input[value="copyWords"]').checked,
-            letters: document.querySelector('#deutschTypes input[value="letters"]').checked,
-            sentences: document.querySelector('#deutschTypes input[value="sentences"]').checked
-        };
+        const sentencesActive = document.getElementById('sentencesCheck')?.checked || false;
+        if (sentencesActive) {
+            return { copyWords: false, letters: false, sentences: true };
+        } else {
+            return {
+                copyWords: document.getElementById('wordsCheck')?.checked || false,
+                letters: document.getElementById('lettersCheck')?.checked || false,
+                sentences: false
+            };
+        }
     }
     
     function createWorksheet(pageIndex, totalPages) {
@@ -971,9 +980,9 @@ function drawBlankClockSVG() {
         const header = document.createElement('div');
         header.className = 'worksheet-header';
         const title = document.createElement('h1');
-        //title.textContent = mode === 'math' ? 
-        //    `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
-        //    `Deutsch-Arbeitsblatt - Schreibübungen${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
+        title.textContent = mode === 'math' ? 
+            `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
+            `Deutsch-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
         const nameDate = document.createElement('div');
         nameDate.className = 'name-date';
         nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
@@ -984,88 +993,59 @@ function drawBlankClockSVG() {
         tasksGrid.className = `tasks-grid ${mode === 'math' ? 'math-grid' : 'deutsch-grid'}`;
         
         if (mode === 'math') {
-			let ops = getMathOperations();
-			let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
-			let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 12;
-			
-			// Prüfen ob Uhrzeit aktiv ist
-			if (ops.time) {
-				// Uhrzeit-Modus: 12 Aufgaben pro Seite (besser für Uhren)
-				let timeDifficulty = document.getElementById('timeDifficulty').value;
-				let timeTasks = generateTimeTasks(12, timeDifficulty);
-				
-				timeTasks.forEach(task => {
-					const taskDiv = document.createElement('div');
-					taskDiv.className = 'task-item time-task';
-					
-					if (task.type === 'read') {
-						const clockSVG = drawClockSVG(task.hour, task.minute, true);
-						taskDiv.innerHTML = `
-							<div class="clock-canvas">${clockSVG}</div>
-							<div class="time-question">Wie spät ist es?</div>
-							<div class="time-answer">
-								<span>__ : __</span>
-								<div class="result-box"></div>
-							</div>
-						`;
-					} else {
-						// Aufgabe: Uhrzeit zeichnen
-						const blankClockSVG = drawBlankClockSVG();
-						taskDiv.innerHTML = `
-							<div class="time-question">Zeichne die Zeiger für:</div>
-							<div class="time-question"><strong>${task.displayHour} : ${task.minuteStr}</strong></div>
-							<div class="clock-canvas drawing-area">${blankClockSVG}</div>
-							<div class="time-answer">
-								<span>(Zeiger einzeichnen)</span>
-								<div class="result-box"></div>
-							</div>
-						`;
-					}
-					tasksGrid.appendChild(taskDiv);
-				});
-			} else {
-				// Normale Mathe-Aufgaben (40 Stück)
-				let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
-				tasks.forEach(task => {
-					const taskDiv = document.createElement('div');
-					taskDiv.className = 'task-item math-task';
-					const hasLargeNumbers = /\d{3,}/.test(task.text);
-					const fontSizeClass = hasLargeNumbers ? 'small-numbers' : '';
-					taskDiv.innerHTML = `
-						<div class="math-equation ${fontSizeClass}">
-							<span>${task.text}</span>
-							<div class="result-box"></div>
-						</div>
-					`;
-					tasksGrid.appendChild(taskDiv);
-				});
-			}
-		}
-        // Im createWorksheet-Bereich für Deutsch:
-		else {
-			let types = getDeutschTypes();
-			let difficulty = document.getElementById('difficultySelect').value;
-			let taskCount = 10;
-			let onlySentences = types.sentences && !types.copyWords && !types.letters;
-			if (onlySentences) taskCount = 8; //Sätze
-			else if (types.sentences) taskCount = 8; //gemischt
-			else taskCount = 8; //alles andere
-    
-			let deutschTasks = generateGermanTasks(taskCount, types, difficulty);
-			deutschTasks.forEach(t => {
-				const taskDiv = document.createElement('div');
-				taskDiv.className = 'task-item deutsch-task';
-        
-        // Berechne Höhe basierend auf Zeilenanzahl (56px pro Zeile)
-				const lineHeightPx = t.lineCount * 56;
-        
-				taskDiv.innerHTML = `
-					<div class="deutsch-prompt">${t.prompt}</div>
-					<div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>
-        `		;
-				tasksGrid.appendChild(taskDiv);
-			});
-		}
+            let ops = getMathOperations();
+            let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
+            let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 10;
+            
+            if (ops.time) {
+                let timeDifficulty = document.getElementById('timeDifficulty').value;
+                let timeTasks = generateTimeTasks(12, timeDifficulty);
+                timeTasks.forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'task-item time-task';
+                    if (task.type === 'read') {
+                        taskDiv.innerHTML = `
+                            <div class="clock-canvas">${drawClockSVG(task.hour, task.minute, true)}</div>
+                            <div class="time-question">Wie spät ist es?</div>
+                            <div class="time-answer"><span>__ : __</span></div>
+                        `;
+                    } else {
+                        taskDiv.innerHTML = `
+                            <div class="time-question">Zeichne die Zeiger für:</div>
+                            <div class="time-question"><strong>${task.displayHour} : ${task.minuteStr}</strong></div>
+                            <div class="clock-canvas drawing-area">${drawBlankClockSVG()}</div>
+                            <div class="time-answer"><span>(Zeiger einzeichnen)</span></div>
+                        `;
+                    }
+                    tasksGrid.appendChild(taskDiv);
+                });
+            } else {
+                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
+                tasks.forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'task-item math-task';
+                    const hasLargeNumbers = /\d{3,}/.test(task.text);
+                    taskDiv.innerHTML = `<div class="math-equation ${hasLargeNumbers ? 'small-numbers' : ''}"><span>${task.text}</span><div class="result-box"></div></div>`;
+                    tasksGrid.appendChild(taskDiv);
+                });
+            }
+        } else {
+            let types = getDeutschTypes();
+            let difficulty = document.getElementById('difficultySelect').value;
+            let taskCount = calculateOptimalTaskCount(types, difficulty);
+            let deutschTasks = generateGermanTasks(taskCount, types, difficulty);
+            
+            deutschTasks.forEach(t => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task-item deutsch-task';
+                const lineHeightPx = t.lineCount * 56;
+                taskDiv.innerHTML = `
+                    <div class="deutsch-prompt">${t.prompt}</div>
+                    <div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>
+                `;
+                tasksGrid.appendChild(taskDiv);
+            });
+        }
         
         const pointsField = document.createElement('div');
         pointsField.className = 'points-field';
@@ -1087,127 +1067,93 @@ function drawBlankClockSVG() {
         }
     }
     
-
-	// Exklusive Auswahl für Sonderaufgaben
-	function setupSpecialOpsExclusive() {
-		const specialOps = ['square', 'sqrt', 'time'];
-		const basicOps = ['add', 'sub', 'mul', 'div'];
-		
-		// Event-Listener für jede Sonderaufgabe
-		specialOps.forEach(opId => {
-			const checkbox = document.getElementById(`${opId}Check`);
-			if (checkbox) {
-				checkbox.addEventListener('change', (e) => {
-					if (e.target.checked) {
-						// Wenn aktiviert: alle Grundrechenarten deaktivieren
-						basicOps.forEach(basicId => {
-							const basicCheck = document.querySelector(`#mathOpsBasic input[value="${basicId}"]`);
-							if (basicCheck && basicCheck.checked) {
-								basicCheck.checked = false;
-							}
-						});
-						// Andere Sonderaufgaben deaktivieren
-						specialOps.forEach(otherId => {
-							if (otherId !== opId) {
-								const otherCheck = document.getElementById(`${otherId}Check`);
-								if (otherCheck && otherCheck.checked) {
-									otherCheck.checked = false;
-								}
-							}
-						});
-					}
-					// Sichtbarkeit aktualisieren
-					updateVisibilityBasedOnSelection();
-				});
-			}
-		});
-		
-		// Event-Listener für Grundrechenarten
-		basicOps.forEach(opId => {
-			const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
-			if (checkbox) {
-				checkbox.addEventListener('change', () => {
-					// Wenn irgendeine Grundrechenart aktiviert wird, alle Sonderaufgaben deaktivieren
-					const anyBasicChecked = basicOps.some(id => {
-						const cb = document.querySelector(`#mathOpsBasic input[value="${id}"]`);
-						return cb && cb.checked;
-					});
-					
-					if (anyBasicChecked) {
-						specialOps.forEach(specialId => {
-							const specialCheck = document.getElementById(`${specialId}Check`);
-							if (specialCheck && specialCheck.checked) {
-								specialCheck.checked = false;
-							}
-						});
-					}
-					// Sichtbarkeit aktualisieren
-					updateVisibilityBasedOnSelection();
-				});
-			}
-		});
-	}
-		
-	// Steuerung der Sichtbarkeit der verschiedenen Steuerungsgruppen
-	function updateVisibilityBasedOnSelection() {
-		// Sicherstellen, dass getMathOperations existiert und funktioniert
-		let ops;
-		try {
-			ops = getMathOperations();
-		} catch(e) {
-			console.log("Fehler beim Laden der Einstellungen");
-			return;
-		}
-		
-		// 1. Grundrechenarten Bereich
-		const anyBasicActive = ops.add || ops.sub || ops.div || ops.mul;
-		const mathRangeGroup = document.getElementById('mathRangeGroup');
-		if (mathRangeGroup) {
-			if (ops.add || ops.sub || ops.div || ops.sqrt) {
-				mathRangeGroup.classList.remove('hidden');
-			} else {
-				mathRangeGroup.classList.add('hidden');
-			}
-		}
-		
-		// 2. 1×1-Reihen – anzeigen, wenn Multiplikation ODER Division aktiv ist UND Grundrechenarten aktiv sind
-		const multiplicationRowGroup = document.getElementById('multiplicationRowGroup');
-		if (multiplicationRowGroup) {
-			const showMultiplication = (ops.mul || ops.square) && anyBasicActive;
-			if (showMultiplication) {
-				multiplicationRowGroup.classList.remove('hidden');
-			} else {
-				multiplicationRowGroup.classList.add('hidden');
-			}
-		}
-		
-		// 3. Quadratzahlen-Einstellung – anzeigen, wenn Quadratzahl aktiv ist
-		const squareSettings = document.getElementById('squareSettings');
-		if (squareSettings) {
-			if (ops.square) {
-				squareSettings.classList.remove('hidden');
-			} else {
-				squareSettings.classList.add('hidden');
-			}
-		}
-		
-		// 4. Uhrzeit-Einstellung – anzeigen, wenn Uhrzeit aktiv ist
-		const timeSettings = document.getElementById('timeSettings');
-		if (timeSettings) {
-			if (ops.time) {
-				timeSettings.classList.remove('hidden');
-			} else {
-				timeSettings.classList.add('hidden');
-			}
-		}
-	}
-		
-		
-		
-		
-    function printWorksheets() {
-        window.print();
+    // Exklusive Auswahl für Mathe-Sonderaufgaben
+    function setupSpecialOpsExclusive() {
+        const specialOps = ['square', 'sqrt', 'time'];
+        const basicOps = ['add', 'sub', 'mul', 'div'];
+        
+        specialOps.forEach(opId => {
+            const checkbox = document.getElementById(`${opId}Check`);
+            if (checkbox) {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        basicOps.forEach(basicId => {
+                            const basicCheck = document.querySelector(`#mathOpsBasic input[value="${basicId}"]`);
+                            if (basicCheck && basicCheck.checked) basicCheck.checked = false;
+                        });
+                        specialOps.forEach(otherId => {
+                            if (otherId !== opId) {
+                                const otherCheck = document.getElementById(`${otherId}Check`);
+                                if (otherCheck && otherCheck.checked) otherCheck.checked = false;
+                            }
+                        });
+                    }
+                    updateVisibilityBasedOnSelection();
+                });
+            }
+        });
+        
+        basicOps.forEach(opId => {
+            const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    const anyBasicChecked = basicOps.some(id => document.querySelector(`#mathOpsBasic input[value="${id}"]`)?.checked);
+                    if (anyBasicChecked) {
+                        specialOps.forEach(specialId => {
+                            const specialCheck = document.getElementById(`${specialId}Check`);
+                            if (specialCheck && specialCheck.checked) specialCheck.checked = false;
+                        });
+                    }
+                    updateVisibilityBasedOnSelection();
+                });
+            }
+        });
     }
+    
+    // Exklusive Auswahl für Deutsch
+    function setupDeutschExclusive() {
+        const wordsCheck = document.getElementById('wordsCheck');
+        const lettersCheck = document.getElementById('lettersCheck');
+        const sentencesCheck = document.getElementById('sentencesCheck');
+        
+        if (sentencesCheck) {
+            sentencesCheck.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (wordsCheck) wordsCheck.checked = false;
+                    if (lettersCheck) lettersCheck.checked = false;
+                }
+            });
+        }
+        
+        const disableSentences = () => {
+            if (sentencesCheck && sentencesCheck.checked) sentencesCheck.checked = false;
+        };
+        
+        if (wordsCheck) wordsCheck.addEventListener('change', disableSentences);
+        if (lettersCheck) lettersCheck.addEventListener('change', disableSentences);
+    }
+    
+    function updateVisibilityBasedOnSelection() {
+        let ops;
+        try {
+            ops = getMathOperations();
+        } catch(e) { return; }
+        
+        const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
+        const mathRange = document.getElementById('mathRangeGroup');
+        if (mathRange) anyBasicActive ? mathRange.classList.remove('hidden') : mathRange.classList.add('hidden');
+        
+        const multRow = document.getElementById('multiplicationRowGroup');
+        if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
+        
+        const squareSet = document.getElementById('squareSettings');
+        if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
+        
+        const timeSet = document.getElementById('timeSettings');
+        if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
+    }
+    
+    function printWorksheets() { window.print(); }
     
     modeSelect.addEventListener('change', () => { toggleModeUI(); generateMultiPage(); });
     generateBtn.addEventListener('click', generateMultiPage);
@@ -1216,9 +1162,9 @@ function drawBlankClockSVG() {
     buildRowSelector();
     toggleModeUI();
     setupSpecialOpsExclusive();
+    setupDeutschExclusive();
     updateVisibilityBasedOnSelection();
     generateMultiPage();
-
 </script>
 </body>
 </html>
