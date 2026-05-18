@@ -197,7 +197,6 @@
             page-break-inside: avoid;
         }
 
-        /* MATHE: Kästchen statt gestrichelter Linie */
         .math-task {
             font-size: 1rem;
             font-weight: 500;
@@ -238,7 +237,6 @@
             flex-shrink: 0;
         }
 
-        /* DEUTSCH: 3-Linien-Lineatur für Grundschule - optimiert */
         .deutsch-task {
             margin-bottom: 12px;
             break-inside: avoid;
@@ -257,7 +255,6 @@
             display: inline-block;
         }
         
-        /* Korrigierte 3-Linien-Lineatur - ohne zusätzliche Ränder */
         .gs-lineatur {
             background-image: 
                 repeating-linear-gradient(
@@ -299,7 +296,6 @@
             text-align: center;
         }
 
-        /* Uhrzeit-Aufgaben */
         .time-task {
             background: #f0f9ff;
             border: 1px solid #bae6fd;
@@ -361,7 +357,20 @@
             display: none;
         }
 
-        /* DRUCK-OPTIMIERUNG */
+        #customWordsInput {
+            width: 250px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+        }
+
+        .checkbox-label {
+            font-weight: normal;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
         @media print {
             @page {
                 size: A4 portrait;
@@ -387,12 +396,10 @@
                 padding: 0;
                 margin: 0;
                 max-width: 100%;
-                box-shadow: none;
                 background: white;
             }
             
             .worksheet {
-                box-shadow: none;
                 padding: 0;
                 margin: 0;
                 page-break-after: always;
@@ -415,12 +422,6 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .task-item {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-            
-            /* Deutsch-Druck optimiert - keine zusätzlichen Linien */
             .deutsch-task {
                 margin-bottom: 8px !important;
             }
@@ -462,11 +463,6 @@
             
             .math-equation {
                 flex-wrap: wrap;
-            }
-            
-            .time-answer input {
-                border: 1px solid #000;
-                background: transparent;
             }
             
             .clock-canvas {
@@ -515,7 +511,6 @@
             </select>
         </div>
 
-        <!-- MATHE Steuerung -->
         <div id="mathControls" class="control-group">
             <label>Rechenarten:</label>
             <div class="checkbox-group" id="mathOpsBasic">
@@ -524,7 +519,6 @@
                 <label><input type="checkbox" value="mul" checked> ×</label>
                 <label><input type="checkbox" value="div"> :</label>
             </div>
-            
             <div class="checkbox-group" id="mathOpsSpecial">
                 <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
                 <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
@@ -557,7 +551,6 @@
             <small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
         </div>
 
-        <!-- DEUTSCH Steuerung - exklusive Auswahl -->
         <div id="deutschControls" class="control-group hidden">
             <label>✍️ Übungstyp:</label>
             <div class="checkbox-group" id="deutschTypesBasic">
@@ -573,6 +566,12 @@
                 <option value="medium">Mittel (2./3. Klasse)</option>
                 <option value="hard">Schwer (3./4. Klasse)</option>
             </select>
+            <div id="customWordsGroup">
+                <label>📝 Eigene Wörter (optional):</label>
+                <textarea id="customWordsInput" rows="2" placeholder="z.B.: Haus, Maus, aus, Strauß, Traum" style="width: 200px; font-size: 0.8rem;"></textarea>
+                <small>Wörter durch Komma oder Leerzeichen getrennt</small>
+                <label class="checkbox-label"><input type="checkbox" id="useCustomWords"> Eigene Wörter verwenden</label>
+            </div>          
         </div>
     </div>
 
@@ -580,103 +579,65 @@
 </div>
 
 <script>
-    // Wortlisten Deutsch
     const wordLists = {
         easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", "spielen", "gut", "rot", "blau", "alt", "neu", "klein", "groß"],
-        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", "Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", "arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", "Fahrrad"],
+        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", "Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", "arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", "Fahrrad", "Platz", "Stadt", "tragen", "wachsen", "fällt", "gefährlich", "Hand", "lassen", "bauen", "läuft", "Baum", "laufen", "brauchen", "Maus", "Haus", "Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", "erklären", "fallen", "gefallen", "hat", , "kochen", "bekommen", "Tod", "Brot", "tot", "Kopf", "groß"],
         hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"]
     };
-    
+//Platz, Stadt, tragen, wachsen, fällt, gefährlich, Hand, lassen, bauen, läuft, Baum, laufen, brauchen, Maus, Haus, Rauch, Wald, Auge, kaufen, Verkäufer, loslassen, schläft, Tag, Vater, erklären, fallen, gefallen, hat, tanzen, malen, lernen, arbeiten, schnell, langsam, fröhlich, traurig, leise, Sonne, Regen, Fahrrad, kochen, bekommen, Tod, Brot, tot, Kopf, groß 
     const sentencesList = [
-		// Alltag & Familie
-		"Ich helfe meiner Mama beim Kochen.",
-		"Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
-		"Wir frühstücken zusammen am Sonntagmorgen.",
-		"Meine Oma backt leckere Kekse.",
-		"Ich spiele mit meinem kleinen Bruder.",
-		"Meine große Schwester zeigt mir einen neuen Tanz.",
-		"Wir machen einen Ausflug mit der ganzen Familie.",
-		"Der Hund läuft im Park.",
-		"Meine Katze schläft auf dem Sofa.",
-		
-		// Schule & Lernen
-		"In der Pause toben wir auf dem Schulhof.",
-		"Mein Lieblingsfach ist Sport.",
-		"Wir malen ein Bild für unsere Klassenlehrerin.",
-		"Heute habe ich meine Hausaufgaben vergessen.",
-		"In der Schule lernen wir das Einmaleins.",
-		"Unser Klassenzimmer ist bunt dekoriert.",
-		"Der Lehrer erklärt uns eine schwierige Aufgabe.",
-		"Ich gehe gerne in die Schule.",
-		"Lena liest ein spannendes Buch.",
-		"Unser Lehrer erzählt eine Geschichte.",
-		
-		// Natur & Tiere
-		"Der Igel sucht ein gemütliches Winterquartier.",
-		"Die Bienen sammeln fleißig Nektar.",
-		"Im Wald sehen wir viele bunte Pilze.",
-		"Das Eichhörnchen versteckt Nüsse für den Winter.",
-		"Die Schmetterlinge fliegen von Blüte zu Blüte.",
-		"Die Enten schwimmen auf dem Teich.",
-		"Im Zoo habe ich einen Elefanten gesehen.",
-		"Ein Löwe frisst viel Fleisch",
-		"Das Kamel schleicht durch die Wüste",
-		"Der Affe sitzt auf einem Baum",
-		
-		// Jahreszeiten & Feste
-		"Im Herbst werfen die Bäume ihre Blätter ab.",
-		"Wir bauen einen Schneemann mit Möhrennase.",
-		"Zu Ostern suchen wir bunte Eier im Garten.",
-		"An Weihnachten schmücken wir den Tannenbaum.",
-		"Im Sommer gehen wir gerne ins Freibad.",
-		"Im Frühling blühen die ersten Blumen.",
-		"Laterne, Laterne, Sonne, Mond und Sterne.",
-		"Heute scheint die Sonne.",
-		"Im Winter bauen wir einen Schneemann.",
-		"Die Blumen blühen bunt.",
-		
-		// Gefühle & Freundschaft
-		"Ich freue mich auf mein Geburtstagsgeschenk.",
-		"Meine beste Freundin kommt mich besuchen.",
-		"Wir vertragen uns wieder nach dem Streit.",
-		"Ich habe keine Angst vor der Klassenarbeit.",
-		"Das Konzert hat mir sehr gut gefallen.",
-		"Ich bin stolz auf meine selbstgemalte Karte.",
-		"Die Überraschungsparty war toll.",
-		
-		// Fantasie & Spaß
-		"Der Clown macht lustige Grimassen.",
-		"Wir bauen eine Burg aus Decken und Kissen.",
-		"Im Zirkus sehe ich akrobatische Kunststücke.",
-		"Der Ritter kämpft gegen den gefährlichen Drachen.",
-		"Die Fee erfüllt mir einen besonderen Wunsch.",
-		"Der Zauberer zaubert einen Hasen aus dem Hut.",
-		"Anna malt ein Bild.",
-		
-		// Gesundheit & Sport
-		"Zähneputzen ist wichtig für gesunde Zähne.",
-		"Wir spielen Fußball auf dem Sportplatz.",
-		"Nach dem Toben trinke ich ein Glas Wasser.",
-		"Beim Turnen übe ich den Purzelbaum.",
-		"Radfahren macht mir großen Spaß.",
-		"Wir spielen Fußball im Garten.",
-		"Morgen fahre ich mit dem Fahrrad.",
-		
-		// Essen & Trinken
-		"Pommes mit Ketchup schmecken mir am besten.",
-		"Ich esse gerne bunte Obstspieße.",
-		"Die Pizza wird mit Käse belegt.",
-		"Zum Frühstück gibt es Müsli mit Milch.",
-		"Das Essen schmeckt sehr gut.",
-		"Mama kocht meine Lieblingsnudeln mit Tomatensoße."
-	
+        "Ich helfe meiner Mama beim Kochen.",
+        "Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
+        "Wir frühstücken zusammen am Sonntagmorgen.",
+        "Meine Oma backt leckere Kekse.",
+        "Ich spiele mit meinem kleinen Bruder.",
+        "Wir machen einen Ausflug mit der ganzen Familie.",
+        "Der Hund läuft im Park.",
+        "Meine Katze schläft auf dem Sofa.",
+        "In der Pause toben wir auf dem Schulhof.",
+        "Mein Lieblingsfach ist Sport.",
+        "Wir malen ein Bild für unsere Klassenlehrerin.",
+        "In der Schule lernen wir das Einmaleins.",
+        "Unser Klassenzimmer ist bunt dekoriert.",
+        "Ich gehe gerne in die Schule.",
+        "Lena liest ein spannendes Buch.",
+        "Der Igel sucht ein gemütliches Winterquartier.",
+        "Die Bienen sammeln fleißig Nektar.",
+        "Im Wald sehen wir viele bunte Pilze.",
+        "Die Schmetterlinge fliegen von Blüte zu Blüte.",
+        "Im Zoo habe ich einen Elefanten gesehen.",
+        "Wir bauen einen Schneemann mit Möhrennase.",
+        "Zu Ostern suchen wir bunte Eier im Garten.",
+        "An Weihnachten schmücken wir den Tannenbaum.",
+        "Im Sommer gehen wir gerne ins Freibad.",
+        "Im Frühling blühen die ersten Blumen.",
+        "Ich freue mich auf mein Geburtstagsgeschenk.",
+        "Meine beste Freundin kommt mich besuchen.",
+        "Wir vertragen uns wieder nach dem Streit.",
+        "Das Konzert hat mir sehr gut gefallen.",
+        "Der Clown macht lustige Grimassen.",
+        "Wir bauen eine Burg aus Decken und Kissen.",
+        "Im Zirkus sehe ich akrobatische Kunststücke.",
+        "Anna malt ein Bild.",
+        "Zähneputzen ist wichtig für gesunde Zähne.",
+        "Wir spielen Fußball auf dem Sportplatz.",
+        "Radfahren macht mir großen Spaß.",
+        "Das Essen schmeckt sehr gut.",
+        "Mama kocht meine Lieblingsnudeln mit Tomatensoße."
     ];
+
+    function parseCustomWords(input) {
+        if (!input.trim()) return [];
+        let words = input.split(/[,\s;]+/);
+        words = words.filter(w => w.trim().length > 0).map(w => w.trim());
+        words = [...new Set(words)];
+        return words;
+    }
 
     function rand(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Quadratzahl
     function generateSquareTask(maxBase) {
         let base = rand(2, maxBase);
         return { display: `${base} × ${base} = ` };
@@ -690,7 +651,6 @@
         return { display: `√${square} = ` };
     }
 
-    // Uhrzeit-Funktionen
     function generateTimeTasks(count, difficulty) {
         let tasks = [];
         let minutesList = [];
@@ -701,18 +661,11 @@
         } else {
             for (let m = 0; m < 60; m += 5) minutesList.push(m);
         }
-        
         for (let i = 0; i < count; i++) {
             let hour = rand(1, 12);
             let minute = minutesList[Math.floor(Math.random() * minutesList.length)];
             let taskType = Math.random() < 0.5 ? 'read' : 'draw';
-            tasks.push({
-                type: taskType,
-                hour: hour,
-                minute: minute,
-                displayHour: hour,
-                minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0')
-            });
+            tasks.push({ type: taskType, hour: hour, minute: minute, displayHour: hour, minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0') });
         }
         return tasks;
     }
@@ -721,26 +674,18 @@
         const hourAngle = (hour % 12) * 30 + minute * 0.5;
         const minuteAngle = minute * 6;
         const centerX = 50, centerY = 50;
-        
         const hourRad = (hourAngle - 90) * Math.PI / 180;
         const hourX = centerX + 25 * Math.cos(hourRad);
         const hourY = centerY + 25 * Math.sin(hourRad);
-        
         const minuteRad = (minuteAngle - 90) * Math.PI / 180;
         const minuteX = centerX + 38 * Math.cos(minuteRad);
         const minuteY = centerY + 38 * Math.sin(minuteRad);
-        
         let handsSVG = '';
         if (withHands) {
-            handsSVG = `
-                <line x1="${centerX}" y1="${centerY}" x2="${hourX}" y2="${hourY}" 
-                      stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
-                <line x1="${centerX}" y1="${centerY}" x2="${minuteX}" y2="${minuteY}" 
-                      stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="${centerX}" cy="${centerY}" r="3" fill="#1e293b"/>
-            `;
+            handsSVG = `<line x1="${centerX}" y1="${centerY}" x2="${hourX}" y2="${hourY}" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="${centerX}" y1="${centerY}" x2="${minuteX}" y2="${minuteY}" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="${centerX}" cy="${centerY}" r="3" fill="#1e293b"/>`;
         }
-        
         let numbersSVG = '';
         for (let i = 1; i <= 12; i++) {
             const angle = (i * 30 - 90) * Math.PI / 180;
@@ -748,14 +693,11 @@
             const numY = centerY + 35 * Math.sin(angle);
             numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
         }
-        
-        return `
-            <svg viewBox="0 0 100 100" style="width:100%; height:100%">
-                <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
-                ${numbersSVG}
-                ${handsSVG}
-            </svg>
-        `;
+        return `<svg viewBox="0 0 100 100" style="width:100%; height:100%">
+                    <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+                    ${numbersSVG}
+                    ${handsSVG}
+                </svg>`;
     }
 
     function drawBlankClockSVG() {
@@ -766,15 +708,12 @@
             const numY = 50 + 35 * Math.sin(angle);
             numbersSVG += `<text x="${numX}" y="${numY + 4}" text-anchor="middle" font-size="8" fill="#334155">${i}</text>`;
         }
-        return `
-            <svg viewBox="0 0 100 100" style="width:100%; height:100%">
-                <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
-                ${numbersSVG}
-            </svg>
-        `;
+        return `<svg viewBox="0 0 100 100" style="width:100%; height:100%">
+                    <circle cx="50" cy="50" r="45" fill="white" stroke="#334155" stroke-width="1.5"/>
+                    ${numbersSVG}
+                </svg>`;
     }
 
-    // Mathe-Generator
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase) {
         let tasks = [];
         const opsList = [];
@@ -784,29 +723,24 @@
         if (operations.div) opsList.push('/');
         if (operations.square) opsList.push('□');
         if (operations.sqrt) opsList.push('√');
-        
         if (opsList.length === 0) opsList.push('+');
-        
         for (let i = 0; i < count; i++) {
             let op = opsList[Math.floor(Math.random() * opsList.length)];
             let taskText = "";
             let valid = false;
             let attempts = 0;
-            
             while (!valid && attempts < 40) {
                 if (op === '+') {
                     let a = rand(0, maxNumber);
                     let b = rand(0, maxNumber - a);
                     taskText = `${a} + ${b} =`;
                     valid = true;
-                } 
-                else if (op === '-') {
+                } else if (op === '-') {
                     let a = rand(0, maxNumber);
                     let b = rand(0, a);
                     taskText = `${a} - ${b} =`;
                     valid = true;
-                } 
-                else if (op === '*') {
+                } else if (op === '*') {
                     if (selectedRows && selectedRows.length > 0) {
                         let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
                         let b = rand(0, 10);
@@ -821,22 +755,32 @@
                         taskText = `${a} × ${b} =`;
                         valid = true;
                     }
-                } 
-                else if (op === '/') {
-                    let b = rand(1, 12);
-                    let quotient = rand(1, Math.floor(maxNumber / b));
-                    let a = b * quotient;
-                    if (a <= maxNumber && quotient > 0) {
-                        taskText = `${a} ÷ ${b} =`;
-                        valid = true;
-                    }
-                }
-                else if (op === '□') {
+                } else if (op === '/') {
+					// Nur Aufgaben aus dem kleinen Einmaleins (1×1 bis 10×10)
+					let maxB = 10;
+					let validDivision = false;
+					let attempts2 = 0;
+					
+					while (!validDivision && attempts2 < 30) {
+						let divisor = rand(1, 10);      // Divisor (b) zwischen 1 und 10
+						let quotient = rand(1, 10);     // Ergebnis (Quotient) zwischen 1 und 10
+						let dividend = divisor * quotient; // Dividend = Divisor × Quotient
+						
+						if (dividend <= maxNumber) {
+							taskText = `${dividend} : ${divisor} =`;
+							validDivision = true;
+						}
+						attempts2++;
+					}
+					if (!validDivision) {
+						taskText = `4 : 2 =`; // Fallback
+					}
+					valid = true;
+				} else if (op === '□') {
                     let sq = generateSquareTask(squareMaxBase);
                     taskText = sq.display;
                     valid = true;
-                }
-                else if (op === '√') {
+                } else if (op === '√') {
                     let sqrtT = generateSqrtTask(maxNumber);
                     taskText = sqrtT.display;
                     valid = true;
@@ -849,59 +793,83 @@
         return tasks;
     }
     
-    // Deutsch-Aufgaben
-    function generateGermanTasks(count, types, difficulty) {
-        let tasks = [];
-        let wordPool = wordLists[difficulty] || wordLists.medium;
-        let letterPool = difficulty === 'easy' ? ['A', 'E', 'I', 'O', 'U', 'M', 'L'] :
-                        (difficulty === 'medium' ? ['Sch', 'Au', 'Ei', 'Ch', 'Sp', 'St'] : ['ß', 'Qu', 'Schr', 'Spr']);
+    // Deutsch-Aufgaben - Eigene Wörter zuerst (keine Duplikate), dann Auffüllen mit Listen-Wörtern
+function generateGermanTasks(count, types, difficulty) {
+    let tasks = [];
+    const useCustom = document.getElementById('useCustomWords')?.checked || false;
+    const customInput = document.getElementById('customWordsInput')?.value || '';
+    let customWords = [];
+    
+    if (useCustom && customInput.trim()) {
+        customWords = parseCustomWords(customInput);
+    }
+    
+    // Nur Sätze
+    if (types.sentences) {
         let sentencePool = [...sentencesList];
-        
-        // Nur Sätze
-        if (types.sentences) {
-			count = 6
-            for (let i = 0; i < count; i++) {
-                let s = sentencePool[Math.floor(Math.random() * sentencePool.length)];
-                tasks.push({ prompt: `📖 ${s}`, lineCount: 3 });
-            }
-        } 
-        // Wörter und/oder Buchstaben
-        else {
-            let activeTypes = [];
-            if (types.copyWords) activeTypes.push('word');
-            if (types.letters) activeTypes.push('letter');
-            if (activeTypes.length === 0) activeTypes.push('word');
-            count = 14
-            for (let i = 0; i < count; i++) {
-                let type = activeTypes[Math.floor(Math.random() * activeTypes.length)];
-                if (type === 'word') {
-                    let w = wordPool[Math.floor(Math.random() * wordPool.length)];
-                    tasks.push({ prompt: `📝 ${w}`, lineCount: 1 });
-                } else {
-                    let l = letterPool[Math.floor(Math.random() * letterPool.length)];
-                    tasks.push({ prompt: `✍️ ${l}`, lineCount: 1 });
-                }
-            }
+        // Sätze mischen
+        for (let i = sentencePool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [sentencePool[i], sentencePool[j]] = [sentencePool[j], sentencePool[i]];
+        }
+        for (let i = 0; i < Math.min(6, sentencePool.length); i++) {
+            tasks.push({ prompt: `📖 ${sentencePool[i]}`, lineCount: 3 });
         }
         return tasks;
     }
     
-    // Dynamische Aufgabenanzahl
+    // Basis-Wortliste aus der Schwierigkeitsstufe
+    let baseWordPool = [...(wordLists[difficulty] || wordLists.medium)];
+    
+    // Mischen der Basis-Wortliste
+    for (let i = baseWordPool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [baseWordPool[i], baseWordPool[j]] = [baseWordPool[j], baseWordPool[i]];
+    }
+    
+    // Eigene Wörter zuerst (wenn vorhanden), danach Basis-Wörter
+    let finalWordPool = [];
+    
+    // 1. Eigene Wörter hinzufügen (ohne Duplikate)
+    if (useCustom && customWords.length > 0) {
+        // Eigene Wörter ebenfalls mischen
+        for (let i = customWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [customWords[i], customWords[j]] = [customWords[j], customWords[i]];
+        }
+        finalWordPool.push(...customWords);
+    }
+    
+    // 2. Basis-Wörter hinzufügen (nur die, die nicht schon in den eigenen Wörtern vorkommen)
+    for (let word of baseWordPool) {
+        if (!finalWordPool.includes(word)) {
+            finalWordPool.push(word);
+        }
+    }
+    
+    // Maximale Aufgaben: 14, aber nicht mehr als verfügbare Wörter
+    let taskCount = Math.min(14, finalWordPool.length);
+    
+    // Aufgaben erstellen (jedes Wort genau einmal)
+    for (let i = 0; i < taskCount; i++) {
+        tasks.push({ prompt: `📝 ${finalWordPool[i]}`, lineCount: 1 });
+    }
+    
+    return tasks;
+}
+    
     function calculateOptimalTaskCount(types, difficulty) {
         const MAX_HEIGHT = 950;
-        
         let linesPerTask = types.sentences ? 3 : 1;
         let estimatedHeightPerTask = 40 + (linesPerTask * 56) + 15;
         let maxTasks = Math.floor(MAX_HEIGHT / estimatedHeightPerTask);
-        
         if (types.sentences) {
-            return Math.min(7, Math.max(3, maxTasks));
+            return Math.min(6, Math.max(3, maxTasks));
         } else {
-            return Math.min(14, Math.max(8, maxTasks));
+            return 14;
         }
     }
 
-    // DOM-Elemente
     const modeSelect = document.getElementById('modeSelect');
     const mathControlsDiv = document.getElementById('mathControls');
     const deutschControlsDiv = document.getElementById('deutschControls');
@@ -945,6 +913,7 @@
                 if (el) el.classList.add('hidden');
             });
         }
+        updateCustomWordsVisibility();
     }
     
     function getMathOperations() {
@@ -972,31 +941,38 @@
         }
     }
     
+    function updateCustomWordsVisibility() {
+        const isDeutschMode = modeSelect.value === 'deutsch';
+        const types = getDeutschTypes();
+        const customGroup = document.getElementById('customWordsGroup');
+        if (customGroup) {
+            if (isDeutschMode && !types.sentences) {
+                customGroup.classList.remove('hidden');
+            } else {
+                customGroup.classList.add('hidden');
+            }
+        }
+    }
+    
     function createWorksheet(pageIndex, totalPages) {
         const mode = modeSelect.value;
         const worksheetDiv = document.createElement('div');
         worksheetDiv.className = 'worksheet';
-        
         const header = document.createElement('div');
         header.className = 'worksheet-header';
         const title = document.createElement('h1');
-        title.textContent = mode === 'math' ? 
-            `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` :
-            `Deutsch-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
+        title.textContent = mode === 'math' ? `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` : `Deutsch-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
         const nameDate = document.createElement('div');
         nameDate.className = 'name-date';
         nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
         header.appendChild(title);
         header.appendChild(nameDate);
-        
         const tasksGrid = document.createElement('div');
         tasksGrid.className = `tasks-grid ${mode === 'math' ? 'math-grid' : 'deutsch-grid'}`;
-        
         if (mode === 'math') {
             let ops = getMathOperations();
             let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
             let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 10;
-            
             if (ops.time) {
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
                 let timeTasks = generateTimeTasks(12, timeDifficulty);
@@ -1004,18 +980,9 @@
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item time-task';
                     if (task.type === 'read') {
-                        taskDiv.innerHTML = `
-                            <div class="clock-canvas">${drawClockSVG(task.hour, task.minute, true)}</div>
-                            <div class="time-question">Wie spät ist es?</div>
-                            <div class="time-answer"><span>__ : __</span></div>
-                        `;
+                        taskDiv.innerHTML = `<div class="clock-canvas">${drawClockSVG(task.hour, task.minute, true)}</div><div class="time-question">Wie spät ist es?</div><div class="time-answer"><span>__ : __</span><div class="result-box"></div></div>`;
                     } else {
-                        taskDiv.innerHTML = `
-                            <div class="time-question">Zeichne die Zeiger für:</div>
-                            <div class="time-question"><strong>${task.displayHour} : ${task.minuteStr}</strong></div>
-                            <div class="clock-canvas drawing-area">${drawBlankClockSVG()}</div>
-                            <div class="time-answer"><span>(Zeiger einzeichnen)</span></div>
-                        `;
+                        taskDiv.innerHTML = `<div class="time-question">Zeichne die Zeiger für:</div><div class="time-question"><strong>${task.displayHour} : ${task.minuteStr}</strong></div><div class="clock-canvas drawing-area">${drawBlankClockSVG()}</div><div class="time-answer"><span>(Zeiger einzeichnen)</span><div class="result-box"></div></div>`;
                     }
                     tasksGrid.appendChild(taskDiv);
                 });
@@ -1034,27 +1001,20 @@
             let difficulty = document.getElementById('difficultySelect').value;
             let taskCount = calculateOptimalTaskCount(types, difficulty);
             let deutschTasks = generateGermanTasks(taskCount, types, difficulty);
-            
             deutschTasks.forEach(t => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task-item deutsch-task';
                 const lineHeightPx = t.lineCount * 56;
-                taskDiv.innerHTML = `
-                    <div class="deutsch-prompt">${t.prompt}</div>
-                    <div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>
-                `;
+                taskDiv.innerHTML = `<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>`;
                 tasksGrid.appendChild(taskDiv);
             });
         }
-        
         const pointsField = document.createElement('div');
         pointsField.className = 'points-field';
         pointsField.innerHTML = `<div>Punkte: ______ / ______</div><div>Bemerkung: _______________</div>`;
-        
         worksheetDiv.appendChild(header);
         worksheetDiv.appendChild(tasksGrid);
         worksheetDiv.appendChild(pointsField);
-        
         return worksheetDiv;
     }
     
@@ -1067,11 +1027,9 @@
         }
     }
     
-    // Exklusive Auswahl für Mathe-Sonderaufgaben
     function setupSpecialOpsExclusive() {
         const specialOps = ['square', 'sqrt', 'time'];
         const basicOps = ['add', 'sub', 'mul', 'div'];
-        
         specialOps.forEach(opId => {
             const checkbox = document.getElementById(`${opId}Check`);
             if (checkbox) {
@@ -1092,7 +1050,6 @@
                 });
             }
         });
-        
         basicOps.forEach(opId => {
             const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
             if (checkbox) {
@@ -1110,25 +1067,25 @@
         });
     }
     
-    // Exklusive Auswahl für Deutsch
     function setupDeutschExclusive() {
         const wordsCheck = document.getElementById('wordsCheck');
         const lettersCheck = document.getElementById('lettersCheck');
         const sentencesCheck = document.getElementById('sentencesCheck');
-        
         if (sentencesCheck) {
             sentencesCheck.addEventListener('change', (e) => {
                 if (e.target.checked) {
                     if (wordsCheck) wordsCheck.checked = false;
                     if (lettersCheck) lettersCheck.checked = false;
                 }
+                updateCustomWordsVisibility();
             });
         }
-        
         const disableSentences = () => {
-            if (sentencesCheck && sentencesCheck.checked) sentencesCheck.checked = false;
+            if (sentencesCheck && sentencesCheck.checked) {
+                sentencesCheck.checked = false;
+            }
+            updateCustomWordsVisibility();
         };
-        
         if (wordsCheck) wordsCheck.addEventListener('change', disableSentences);
         if (lettersCheck) lettersCheck.addEventListener('change', disableSentences);
     }
@@ -1138,17 +1095,13 @@
         try {
             ops = getMathOperations();
         } catch(e) { return; }
-        
         const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
         const mathRange = document.getElementById('mathRangeGroup');
         if (mathRange) anyBasicActive ? mathRange.classList.remove('hidden') : mathRange.classList.add('hidden');
-        
         const multRow = document.getElementById('multiplicationRowGroup');
         if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
-        
         const squareSet = document.getElementById('squareSettings');
         if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
-        
         const timeSet = document.getElementById('timeSettings');
         if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
     }
