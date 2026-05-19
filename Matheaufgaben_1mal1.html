@@ -530,6 +530,12 @@
             <label>Zahlenraum Grundrechenarten:</label>
             <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
         </div>
+		
+		<div id="maxOperandGroup" class="control-group hidden">
+			<label>🔢 Max. Operand für +/-:</label>
+			<input type="number" id="maxOperand" value="100" min="1" max="500" step="5" style="width: 80px;">
+			<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
+		</div>
 
         <div id="squareSettings" class="control-group hidden">
             <label>Quadratzahlen maximum:</label>
@@ -562,8 +568,8 @@
             </div>
             <label>📖 Schwierigkeit:</label>
             <select id="difficultySelect">
-                <option value="easy" selected>Einfach (1./2. Klasse)</option>
-                <option value="medium">Mittel (2./3. Klasse)</option>
+                <option value="easy">Einfach (1./2. Klasse)</option>
+                <option value="medium" selected>Mittel (2./3. Klasse)</option>
                 <option value="hard">Schwer (3./4. Klasse)</option>
             </select>
             <div id="customWordsGroup">
@@ -581,10 +587,19 @@
 <script>
     const wordLists = {
         easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", "spielen", "gut", "rot", "blau", "alt", "neu", "klein", "groß"],
-        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", "Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", "Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", "arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", "Fahrrad", "Platz", "Stadt", "tragen", "wachsen", "fällt", "gefährlich", "Hand", "lassen", "bauen", "läuft", "Baum", "laufen", "brauchen", "Maus", "Haus", "Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", "erklären", "fallen", "gefallen", "hat", , "kochen", "bekommen", "Tod", "Brot", "tot", "Kopf", "groß"],
+        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
+		"Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", 
+		"Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", 
+		"arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", 
+		"Fahrrad", "Platz", "Stadt", "tragen", "wachsen", "fällt", "gefährlich", 
+		"Hand", "lassen", "bauen", "läuft", "Baum", "laufen", "brauchen", "Maus", "Haus", 
+		"Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", 
+		"erklären", "fallen", "gefallen", "hat", , "kochen", "bekommen", "Tod", "Brot", "tot", 
+		"Kopf", "groß", 
+		"Bruder", "jung", "müssen", "Zug", "Buch", "Kuh", "Mutter"],
         hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"]
     };
-//Platz, Stadt, tragen, wachsen, fällt, gefährlich, Hand, lassen, bauen, läuft, Baum, laufen, brauchen, Maus, Haus, Rauch, Wald, Auge, kaufen, Verkäufer, loslassen, schläft, Tag, Vater, erklären, fallen, gefallen, hat, tanzen, malen, lernen, arbeiten, schnell, langsam, fröhlich, traurig, leise, Sonne, Regen, Fahrrad, kochen, bekommen, Tod, Brot, tot, Kopf, groß 
+//Platz, Stadt, tragen, wachsen, fällt, gefährlich, Hand, lassen, bauen, läuft, Baum, laufen, brauchen, Maus, Haus, Rauch, Wald, Auge, kaufen, Verkäufer, loslassen, schläft, Tag, Vater, erklären, fallen, gefallen, hat, tanzen, malen, lernen, arbeiten, schnell, langsam, fröhlich, traurig, leise, Sonne, Regen, Fahrrad, kochen, bekommen, Tod, Brot, tot, Kopf, groß, Bruder, jung, müssen, Zug, Buch, Kuh, Mutter 
     const sentencesList = [
         "Ich helfe meiner Mama beim Kochen.",
         "Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
@@ -714,84 +729,99 @@
                 </svg>`;
     }
 
-    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase) {
-        let tasks = [];
-        const opsList = [];
-        if (operations.add) opsList.push('+');
-        if (operations.sub) opsList.push('-');
-        if (operations.mul) opsList.push('*');
-        if (operations.div) opsList.push('/');
-        if (operations.square) opsList.push('□');
-        if (operations.sqrt) opsList.push('√');
-        if (opsList.length === 0) opsList.push('+');
-        for (let i = 0; i < count; i++) {
-            let op = opsList[Math.floor(Math.random() * opsList.length)];
-            let taskText = "";
-            let valid = false;
-            let attempts = 0;
-            while (!valid && attempts < 40) {
-                if (op === '+') {
-                    let a = rand(0, maxNumber);
-                    let b = rand(0, maxNumber - a);
-                    taskText = `${a} + ${b} =`;
-                    valid = true;
-                } else if (op === '-') {
-                    let a = rand(0, maxNumber);
-                    let b = rand(0, a);
-                    taskText = `${a} - ${b} =`;
-                    valid = true;
-                } else if (op === '*') {
-                    if (selectedRows && selectedRows.length > 0) {
-                        let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
-                        let b = rand(0, 10);
-                        if (row * b <= maxNumber) {
-                            taskText = `${row} × ${b} =`;
-                            valid = true;
-                        }
-                    }
-                    if (!valid) {
-                        let a = rand(1, Math.min(10, maxNumber));
-                        let b = rand(1, Math.floor(maxNumber / a));
-                        taskText = `${a} × ${b} =`;
-                        valid = true;
-                    }
-                } else if (op === '/') {
-					// Nur Aufgaben aus dem kleinen Einmaleins (1×1 bis 10×10)
-					let maxB = 10;
+    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, operandMax) {
+	   // Sicherstellen, dass operandMax einen gültigen Wert hat
+
+		if (operandMax === undefined || isNaN(operandMax) || operandMax < 1) {
+			operandMax = 100;
+		}
+		let tasks = [];
+		const opsList = [];
+		if (operations.add) opsList.push('+');
+		if (operations.sub) opsList.push('-');
+		if (operations.mul) opsList.push('*');
+		if (operations.div) opsList.push('/');
+		if (operations.square) opsList.push('□');
+		if (operations.sqrt) opsList.push('√');
+		
+		if (opsList.length === 0) opsList.push('+');
+		
+		for (let i = 0; i < count; i++) {
+			let op = opsList[Math.floor(Math.random() * opsList.length)];
+			let taskText = "";
+			let valid = false;
+			let attempts = 0;
+			
+			while (!valid && attempts < 40) {
+				if (op === '+') {
+					let a = rand(0, maxNumber);  //a = 50
+					let maxPossibleB = maxNumber - a; // maxpossibleb 100-50 = 50
+					// Falls maxPossibleB negativ ist (kann eigentlich nicht passieren), auf 0 setzen
+					if (maxPossibleB < 0) maxPossibleB = 0;
+					let maxB = Math.min(maxPossibleB, operandMax);
+					let b = rand(0, maxB);
+					taskText = `${a} + ${b} =`;
+					//taskText = `${operandMax}`;					
+					//taskText = getMathOperandMax();
+					valid = true;
+				} 
+				else if (op === '-') {
+					let a = rand(0, maxNumber);
+					let maxPossibleB = a;
+					let maxB = Math.min(maxPossibleB, operandMax);
+					let b = rand(0, maxB);
+					taskText = `${a} - ${b} =`;
+					valid = true;
+				} 
+				else if (op === '*') {
+					if (selectedRows && selectedRows.length > 0) {
+						let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
+						let b = rand(0, 10);
+						if (row * b <= maxNumber) {
+							taskText = `${row} × ${b} =`;
+							valid = true;
+						}
+					}
+					if (!valid) {
+						let a = rand(1, Math.min(10, maxNumber));
+						let b = rand(1, Math.floor(maxNumber / a));
+						taskText = `${a} × ${b} =`;
+						valid = true;
+					}
+				} 
+				else if (op === '/') {
 					let validDivision = false;
 					let attempts2 = 0;
-					
 					while (!validDivision && attempts2 < 30) {
-						let divisor = rand(1, 10);      // Divisor (b) zwischen 1 und 10
-						let quotient = rand(1, 10);     // Ergebnis (Quotient) zwischen 1 und 10
-						let dividend = divisor * quotient; // Dividend = Divisor × Quotient
-						
+						let divisor = rand(1, 10);
+						let quotient = rand(1, 10);
+						let dividend = divisor * quotient;
 						if (dividend <= maxNumber) {
 							taskText = `${dividend} : ${divisor} =`;
 							validDivision = true;
 						}
 						attempts2++;
 					}
-					if (!validDivision) {
-						taskText = `4 : 2 =`; // Fallback
-					}
+					if (!validDivision) taskText = `4 : 2 =`;
 					valid = true;
-				} else if (op === '□') {
-                    let sq = generateSquareTask(squareMaxBase);
-                    taskText = sq.display;
-                    valid = true;
-                } else if (op === '√') {
-                    let sqrtT = generateSqrtTask(maxNumber);
-                    taskText = sqrtT.display;
-                    valid = true;
-                }
-                attempts++;
-            }
-            if (!valid) taskText = `1 + 1 =`;
-            tasks.push({ text: taskText });
-        }
-        return tasks;
-    }
+				}
+				else if (op === '□') {
+					let sq = generateSquareTask(squareMaxBase);
+					taskText = sq.display;
+					valid = true;
+				}
+				else if (op === '√') {
+					let sqrtT = generateSqrtTask(maxNumber);
+					taskText = sqrtT.display;
+					valid = true;
+				}
+				attempts++;
+			}
+			if (!valid) taskText = `1 + 1 =`;
+			tasks.push({ text: taskText });
+		}
+		return tasks;
+	}
     
     // Deutsch-Aufgaben - Eigene Wörter zuerst (keine Duplikate), dann Auffüllen mit Listen-Wörtern
 function generateGermanTasks(count, types, difficulty) {
@@ -927,6 +957,9 @@ function generateGermanTasks(count, types, difficulty) {
             time: document.getElementById('timeCheck')?.checked || false
         };
     }
+	function getMathOperandMax() {
+		return parseInt(document.getElementById('maxOperand')?.value) || 100;
+	}
     
     function getDeutschTypes() {
         const sentencesActive = document.getElementById('sentencesCheck')?.checked || false;
@@ -987,7 +1020,8 @@ function generateGermanTasks(count, types, difficulty) {
                     tasksGrid.appendChild(taskDiv);
                 });
             } else {
-                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase);
+				
+                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase,getMathOperandMax());
                 tasks.forEach(task => {
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item math-task';
@@ -1104,6 +1138,12 @@ function generateGermanTasks(count, types, difficulty) {
         if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
         const timeSet = document.getElementById('timeSettings');
         if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
+		const maxOperandGroup = document.getElementById('maxOperandGroup');
+		if (maxOperandGroup) {
+			// Nur anzeigen, wenn Addition oder Subtraktion aktiv ist
+			const showMaxOperand = (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div;
+			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
+		}
     }
     
     function printWorksheets() { window.print(); }
