@@ -191,6 +191,11 @@
         .deutsch-grid {
             grid-template-columns: repeat(2, 1fr);
         }
+        
+        .pyramid-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
 
         .task-item {
             break-inside: avoid;
@@ -236,6 +241,53 @@
             vertical-align: middle;
             flex-shrink: 0;
         }
+
+        /* Pyramiden-Stil - kompakter für den Druck */
+		.pyramid-task {
+			border: 1px solid #fde047;
+			border-radius: 16px;
+			padding: 15px 10px;
+			white-space: normal;
+			overflow: visible;
+		}
+
+		.pyramid-cell {
+			width: 50px;
+			height: 42px;
+			border: 2px solid #334155;
+			border-radius: 6px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #fff7ed;
+			font-family: monospace;
+			font-size: 0.9rem;
+			font-weight: bold;
+		}
+
+		@media print {
+			.pyramid-cell {
+				width: 40px;
+				height: 33px;
+				font-size: 0.8rem;
+			}
+			
+			.pyramid-task {
+				padding: 5px 3px;
+			}
+			
+			.pyramid-grid {
+				gap: 15px;
+			}
+		}
+
+		@media (max-width: 900px) {
+			.pyramid-cell {
+				width: 42px;
+				height: 36px;
+				font-size: 0.75rem;
+			}
+		}
 
         .deutsch-task {
             margin-bottom: 12px;
@@ -418,6 +470,10 @@
                 grid-template-columns: repeat(4, 1fr);
             }
             
+            .pyramid-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .deutsch-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -469,6 +525,12 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            
+            .pyramid-cell {
+                width: 60px;
+                height: 50px;
+                font-size: 0.9rem;
+            }
         }
 
         .math-equation.small-numbers span:first-child {
@@ -485,6 +547,11 @@
             .result-box {
                 width: 55px;
                 height: 26px;
+            }
+            .pyramid-cell {
+                width: 50px;
+                height: 45px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -523,11 +590,12 @@
                 <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
                 <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
                 <label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
+                <label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
             </div>
         </div>
         
         <div id="mathRangeGroup" class="control-group hidden">
-            <label>Zahlenraum Grundrechenarten:</label>
+            <label>Zahlenraum:</label>
             <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
         </div>
 		
@@ -555,6 +623,15 @@
                 <option value="fiveMinutes">5-Minuten-Schritte</option>
             </select>
             <small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
+        </div>
+
+        <div id="pyramidSettings" class="control-group hidden">
+            <label>🏔️ Mal-Pyramiden-Schwierigkeit:</label>
+            <select id="pyramidDifficulty">
+                <option value="easy" selected>Leicht (3 Etagen)</option>
+                <option value="medium">Mittel (4 Etagen)</option>
+                <option value="hard">Schwer (5 Etagen)</option>
+            </select>
         </div>
 
         <div id="deutschControls" class="control-group hidden">
@@ -594,12 +671,14 @@
 		"Fahrrad", "Platz", "Stadt", "tragen", "wachsen", "fällt", "gefährlich", 
 		"Hand", "lassen", "bauen", "läuft", "Baum", "laufen", "brauchen", "Maus", "Haus", 
 		"Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", 
-		"erklären", "fallen", "gefallen", "hat", , "kochen", "bekommen", "Tod", "Brot", "tot", 
+		"erklären", "fallen", "gefallen", "hat", "kochen", "bekommen", "Tod", "Brot", "tot", 
 		"Kopf", "groß", 
-		"Bruder", "jung", "müssen", "Zug", "Buch", "Kuh", "Mutter"],
-        hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"]
-    };
-//Platz, Stadt, tragen, wachsen, fällt, gefährlich, Hand, lassen, bauen, läuft, Baum, laufen, brauchen, Maus, Haus, Rauch, Wald, Auge, kaufen, Verkäufer, loslassen, schläft, Tag, Vater, erklären, fallen, gefallen, hat, tanzen, malen, lernen, arbeiten, schnell, langsam, fröhlich, traurig, leise, Sonne, Regen, Fahrrad, kochen, bekommen, Tod, Brot, tot, Kopf, groß, Bruder, jung, müssen, Zug, Buch, Kuh, Mutter 
+		"Bruder", "jung", "müssen", "Zug", "Buch", "Kuh", "Mutter",
+		"Korb", "Vogel", "Hose", "Nashorn", "Wolke", "Knopf", "Rock"],
+        hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
+		custom: []
+	};
+	
     const sentencesList = [
         "Ich helfe meiner Mama beim Kochen.",
         "Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
@@ -729,6 +808,151 @@
                 </svg>`;
     }
 
+
+	// ========== MALPYRAMIDEN ==========
+	function generatePyramid(levels, maxNumber, missingCount) {
+
+		// Kleine Basiszahlen verwenden,
+		// damit die Ergebnisse nicht explodieren
+		let baseMax;
+
+		if (levels === 3) {
+			baseMax = 5;
+		} else if (levels === 4) {
+			baseMax = 4;
+		} else {
+			baseMax = 3;
+		}
+
+		let pyramid = [];
+		let valid = false;
+		let attempts = 0;
+
+		while (!valid && attempts < 200) {
+
+			attempts++;
+
+			// -----------------------------
+			// UNTERSTE REIHE ERZEUGEN
+			// -----------------------------
+			let bottom = [];
+
+			for (let i = 0; i < levels; i++) {
+				bottom.push(rand(1, baseMax));
+			}
+
+			// -----------------------------
+			// PYRAMIDE AUFBAUEN
+			// -----------------------------
+			let temp = [];
+			temp.push(bottom);
+
+			valid = true;
+
+			while (temp[temp.length - 1].length > 1) {
+
+				let below = temp[temp.length - 1];
+				let next = [];
+
+				for (let i = 0; i < below.length - 1; i++) {
+
+					let value = below[i] * below[i + 1];
+
+					// Falls Zahl zu groß wird -> neue Pyramide erzeugen
+					if (value > maxNumber) {
+						valid = false;
+						break;
+					}
+
+					next.push(value);
+				}
+
+				if (!valid) {
+					break;
+				}
+
+				temp.push(next);
+			}
+
+			if (valid) {
+				pyramid = temp.reverse();
+			}
+		}
+
+		// Fallback
+		if (!valid) {
+			pyramid = [
+				[16],
+				[4, 4],
+				[2, 2, 2]
+			];
+		}
+
+		// -----------------------------
+		// LÖSUNG SPEICHERN
+		// -----------------------------
+		const solution = JSON.parse(JSON.stringify(pyramid));
+
+		// -----------------------------
+		// FELDER ZUM AUSBLENDEN
+		// -----------------------------
+		let positions = [];
+
+		for (let row = 0; row < pyramid.length; row++) {
+			for (let col = 0; col < pyramid[row].length; col++) {
+
+				// Spitze NIE entfernen
+				if (!(row === 0 && col === 0)) {
+					positions.push({ row, col });
+				}
+			}
+		}
+
+		// Mischen
+		for (let i = positions.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[positions[i], positions[j]] = [positions[j], positions[i]];
+		}
+
+		// Nicht zu viele Felder entfernen
+		const actualMissing = Math.min(
+			missingCount,
+			Math.floor(positions.length * 0.5)
+		);
+
+		for (let i = 0; i < actualMissing; i++) {
+			const pos = positions[i];
+			pyramid[pos.row][pos.col] = null;
+		}
+
+		return {
+			pyramid,
+			solution,
+			levels
+		};
+	}
+
+    
+    function drawPyramid(pyramidData) {
+		const levels = pyramidData.length;
+		let html = '<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">';
+		
+		for (let e = 0; e < levels; e++) {
+			let levelData = pyramidData[e];
+			let levelWidth = levelData.length * 75;
+			
+			html += `<div style="display: flex; justify-content: center; gap: 12px; margin: 0 auto;">`;
+			for (let i = 0; i < levelData.length; i++) {
+				let value = levelData[i];
+				let displayValue = (value === null || value === undefined) ? '___' : value;
+				html += `<div style="width: 65px; height: 55px; border: 2px solid #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fff7ed; font-family: monospace; font-size: 1rem; font-weight: bold;">${displayValue}</div>`;
+			}
+			html += `</div>`;
+		}
+		html += '</div>';
+		return html;
+	}
+
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, operandMax) {
 	   // Sicherstellen, dass operandMax einen gültigen Wert hat
 
@@ -824,69 +1048,69 @@
 	}
     
     // Deutsch-Aufgaben - Eigene Wörter zuerst (keine Duplikate), dann Auffüllen mit Listen-Wörtern
-function generateGermanTasks(count, types, difficulty) {
-    let tasks = [];
-    const useCustom = document.getElementById('useCustomWords')?.checked || false;
-    const customInput = document.getElementById('customWordsInput')?.value || '';
-    let customWords = [];
-    
-    if (useCustom && customInput.trim()) {
-        customWords = parseCustomWords(customInput);
-    }
-    
-    // Nur Sätze
-    if (types.sentences) {
-        let sentencePool = [...sentencesList];
-        // Sätze mischen
-        for (let i = sentencePool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [sentencePool[i], sentencePool[j]] = [sentencePool[j], sentencePool[i]];
-        }
-        for (let i = 0; i < Math.min(6, sentencePool.length); i++) {
-            tasks.push({ prompt: `📖 ${sentencePool[i]}`, lineCount: 3 });
-        }
-        return tasks;
-    }
-    
-    // Basis-Wortliste aus der Schwierigkeitsstufe
-    let baseWordPool = [...(wordLists[difficulty] || wordLists.medium)];
-    
-    // Mischen der Basis-Wortliste
-    for (let i = baseWordPool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [baseWordPool[i], baseWordPool[j]] = [baseWordPool[j], baseWordPool[i]];
-    }
-    
-    // Eigene Wörter zuerst (wenn vorhanden), danach Basis-Wörter
-    let finalWordPool = [];
-    
-    // 1. Eigene Wörter hinzufügen (ohne Duplikate)
-    if (useCustom && customWords.length > 0) {
-        // Eigene Wörter ebenfalls mischen
-        for (let i = customWords.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [customWords[i], customWords[j]] = [customWords[j], customWords[i]];
-        }
-        finalWordPool.push(...customWords);
-    }
-    
-    // 2. Basis-Wörter hinzufügen (nur die, die nicht schon in den eigenen Wörtern vorkommen)
-    for (let word of baseWordPool) {
-        if (!finalWordPool.includes(word)) {
-            finalWordPool.push(word);
-        }
-    }
-    
-    // Maximale Aufgaben: 14, aber nicht mehr als verfügbare Wörter
-    let taskCount = Math.min(14, finalWordPool.length);
-    
-    // Aufgaben erstellen (jedes Wort genau einmal)
-    for (let i = 0; i < taskCount; i++) {
-        tasks.push({ prompt: `📝 ${finalWordPool[i]}`, lineCount: 1 });
-    }
-    
-    return tasks;
-}
+	function generateGermanTasks(count, types, difficulty) {
+		let tasks = [];
+		const useCustom = document.getElementById('useCustomWords')?.checked || false;
+		const customInput = document.getElementById('customWordsInput')?.value || '';
+		let customWords = [];
+		
+		if (useCustom && customInput.trim()) {
+			customWords = parseCustomWords(customInput);
+		}
+		
+		// Nur Sätze
+		if (types.sentences) {
+			let sentencePool = [...sentencesList];
+			// Sätze mischen
+			for (let i = sentencePool.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[sentencePool[i], sentencePool[j]] = [sentencePool[j], sentencePool[i]];
+			}
+			for (let i = 0; i < Math.min(6, sentencePool.length); i++) {
+				tasks.push({ prompt: `📖 ${sentencePool[i]}`, lineCount: 3 });
+			}
+			return tasks;
+		}
+		
+		// Basis-Wortliste aus der Schwierigkeitsstufe
+		let baseWordPool = [...(wordLists[difficulty] || wordLists.medium)];
+		
+		// Mischen der Basis-Wortliste
+		for (let i = baseWordPool.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[baseWordPool[i], baseWordPool[j]] = [baseWordPool[j], baseWordPool[i]];
+		}
+		
+		// Eigene Wörter zuerst (wenn vorhanden), danach Basis-Wörter
+		let finalWordPool = [];
+		
+		// 1. Eigene Wörter hinzufügen (ohne Duplikate)
+		if (useCustom && customWords.length > 0) {
+			// Eigene Wörter ebenfalls mischen
+			for (let i = customWords.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[customWords[i], customWords[j]] = [customWords[j], customWords[i]];
+			}
+			finalWordPool.push(...customWords);
+		}
+		
+		// 2. Basis-Wörter hinzufügen (nur die, die nicht schon in den eigenen Wörtern vorkommen)
+		for (let word of baseWordPool) {
+			if (!finalWordPool.includes(word)) {
+				finalWordPool.push(word);
+			}
+		}
+		
+		// Maximale Aufgaben: 14, aber nicht mehr als verfügbare Wörter
+		let taskCount = Math.min(14, finalWordPool.length);
+		
+		// Aufgaben erstellen (jedes Wort genau einmal)
+		for (let i = 0; i < taskCount; i++) {
+			tasks.push({ prompt: `📝 ${finalWordPool[i]}`, lineCount: 1 });
+		}
+		
+		return tasks;
+	}
     
     function calculateOptimalTaskCount(types, difficulty) {
         const MAX_HEIGHT = 950;
@@ -939,7 +1163,7 @@ function generateGermanTasks(count, types, difficulty) {
         } else {
             mathControlsDiv.classList.add('hidden');
             deutschControlsDiv.classList.remove('hidden');
-            document.querySelectorAll('#mathRangeGroup, #multiplicationRowGroup, #squareSettings, #timeSettings').forEach(el => {
+            document.querySelectorAll('#mathRangeGroup, #multiplicationRowGroup, #squareSettings, #timeSettings, #pyramidSettings').forEach(el => {
                 if (el) el.classList.add('hidden');
             });
         }
@@ -954,7 +1178,8 @@ function generateGermanTasks(count, types, difficulty) {
             div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
             square: document.getElementById('squareCheck')?.checked || false,
             sqrt: document.getElementById('sqrtCheck')?.checked || false,
-            time: document.getElementById('timeCheck')?.checked || false
+            time: document.getElementById('timeCheck')?.checked || false,
+            pyramid: document.getElementById('pyramidCheck')?.checked || false
         };
     }
 	function getMathOperandMax() {
@@ -1000,13 +1225,17 @@ function generateGermanTasks(count, types, difficulty) {
         nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
         header.appendChild(title);
         header.appendChild(nameDate);
-        const tasksGrid = document.createElement('div');
-        tasksGrid.className = `tasks-grid ${mode === 'math' ? 'math-grid' : 'deutsch-grid'}`;
+        
+        let tasksGrid;
+        
         if (mode === 'math') {
             let ops = getMathOperations();
             let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
             let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 10;
+            
             if (ops.time) {
+                tasksGrid = document.createElement('div');
+                tasksGrid.className = 'tasks-grid math-grid';
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
                 let timeTasks = generateTimeTasks(12, timeDifficulty);
                 timeTasks.forEach(task => {
@@ -1019,9 +1248,45 @@ function generateGermanTasks(count, types, difficulty) {
                     }
                     tasksGrid.appendChild(taskDiv);
                 });
-            } else {
+            } else if (ops.pyramid) {
+				tasksGrid = document.createElement('div');
+				tasksGrid.className = 'tasks-grid pyramid-grid';
 				
-                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase,getMathOperandMax());
+				let pyramidDifficulty = document.getElementById('pyramidDifficulty').value;
+				let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
+				let levels, missingCount, tasksPerPage;
+				
+				if (pyramidDifficulty === 'easy') {
+					levels = 3;
+					missingCount = 3;
+					tasksPerPage = 4;
+				} else if (pyramidDifficulty === 'medium') {
+					levels = 4;
+					missingCount = 5;
+					tasksPerPage = 3;
+				} else {
+					levels = 5;
+					missingCount = 7;
+					tasksPerPage = 2;
+				}
+				
+				for (let p = 0; p < tasksPerPage; p++) {
+					let pyramid = generatePyramid(levels, maxNum, missingCount);
+					const taskDiv = document.createElement('div');
+					taskDiv.className = 'task-item pyramid-task';
+					taskDiv.innerHTML = `
+						<div style="text-align: center;">
+							${drawPyramid(pyramid.pyramid)}
+							<div class="time-answer" style="margin-top: 15px; justify-content: center;">
+							</div>
+						</div>
+					`;
+					tasksGrid.appendChild(taskDiv);
+				}
+			} else {
+                tasksGrid = document.createElement('div');
+                tasksGrid.className = 'tasks-grid math-grid';
+                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase, getMathOperandMax());
                 tasks.forEach(task => {
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item math-task';
@@ -1031,6 +1296,8 @@ function generateGermanTasks(count, types, difficulty) {
                 });
             }
         } else {
+            tasksGrid = document.createElement('div');
+            tasksGrid.className = 'tasks-grid deutsch-grid';
             let types = getDeutschTypes();
             let difficulty = document.getElementById('difficultySelect').value;
             let taskCount = calculateOptimalTaskCount(types, difficulty);
@@ -1043,9 +1310,11 @@ function generateGermanTasks(count, types, difficulty) {
                 tasksGrid.appendChild(taskDiv);
             });
         }
+        
         const pointsField = document.createElement('div');
         pointsField.className = 'points-field';
         pointsField.innerHTML = `<div>Punkte: ______ / ______</div><div>Bemerkung: _______________</div>`;
+        
         worksheetDiv.appendChild(header);
         worksheetDiv.appendChild(tasksGrid);
         worksheetDiv.appendChild(pointsField);
@@ -1062,7 +1331,7 @@ function generateGermanTasks(count, types, difficulty) {
     }
     
     function setupSpecialOpsExclusive() {
-        const specialOps = ['square', 'sqrt', 'time'];
+        const specialOps = ['square', 'sqrt', 'time', 'pyramid'];
         const basicOps = ['add', 'sub', 'mul', 'div'];
         specialOps.forEach(opId => {
             const checkbox = document.getElementById(`${opId}Check`);
@@ -1124,28 +1393,44 @@ function generateGermanTasks(count, types, difficulty) {
         if (lettersCheck) lettersCheck.addEventListener('change', disableSentences);
     }
     
-    function updateVisibilityBasedOnSelection() {
-        let ops;
-        try {
-            ops = getMathOperations();
-        } catch(e) { return; }
-        const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
-        const mathRange = document.getElementById('mathRangeGroup');
-        if (mathRange) anyBasicActive ? mathRange.classList.remove('hidden') : mathRange.classList.add('hidden');
-        const multRow = document.getElementById('multiplicationRowGroup');
-        if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
-        const squareSet = document.getElementById('squareSettings');
-        if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
-        const timeSet = document.getElementById('timeSettings');
-        if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
+	function updateVisibilityBasedOnSelection() {
+		let ops;
+		try {
+			ops = getMathOperations();
+		} catch(e) { return; }
+		
+		const mode = modeSelect.value;
+		const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
+		const mathRange = document.getElementById('mathRangeGroup');
+		
+		// Zahlenraum anzeigen, wenn Grundrechenarten ODER Pyramiden aktiv sind (nur im Mathe-Modus)
+		if (mathRange) {
+			if (mode === 'math' && (anyBasicActive || ops.pyramid)) {
+				mathRange.classList.remove('hidden');
+			} else {
+				mathRange.classList.add('hidden');
+			}
+		}
+		
+		const multRow = document.getElementById('multiplicationRowGroup');
+		if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
+		
+		const squareSet = document.getElementById('squareSettings');
+		if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
+		
+		const timeSet = document.getElementById('timeSettings');
+		if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
+		
+		const pyramidSet = document.getElementById('pyramidSettings');
+		if (pyramidSet) ops.pyramid ? pyramidSet.classList.remove('hidden') : pyramidSet.classList.add('hidden');
+		
 		const maxOperandGroup = document.getElementById('maxOperandGroup');
 		if (maxOperandGroup) {
-			// Nur anzeigen, wenn Addition oder Subtraktion aktiv ist
-			const showMaxOperand = (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div;
+			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
+			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid;
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
 		}
-    }
-    
+	}    
     function printWorksheets() { window.print(); }
     
     modeSelect.addEventListener('change', () => { toggleModeUI(); generateMultiPage(); });
