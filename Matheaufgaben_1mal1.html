@@ -586,6 +586,15 @@
                 <label><input type="checkbox" value="mul" checked> ×</label>
                 <label><input type="checkbox" value="div"> :</label>
             </div>
+			<div id="divisionOptions" class="control-group hidden">
+				<label>➗ Divisionseinstellungen:</label>
+				<div class="checkbox-group">
+					<label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
+					<label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
+				</div>
+				<small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
+			</div>
+			
             <div class="checkbox-group" id="mathOpsSpecial">
                 <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
                 <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
@@ -1014,20 +1023,68 @@
 					}
 				} 
 				else if (op === '/') {
+					let remainderMode = document.getElementById('divisionWithRemainder')?.checked || false;
+					let decimalMode = document.getElementById('divisionWithDecimal')?.checked || false;
+					
 					let validDivision = false;
 					let attempts2 = 0;
-					while (!validDivision && attempts2 < 30) {
-						let divisor = rand(1, 10);
-						let quotient = rand(1, 10);
-						let dividend = divisor * quotient;
-						if (dividend <= maxNumber) {
-							taskText = `${dividend} : ${divisor} =`;
-							validDivision = true;
+					
+					if (remainderMode) {
+						// Division MIT Rest
+						while (!validDivision && attempts2 < 40) {
+							let divisor = rand(2, 12);           // Divisor (2-12)
+							let quotient = rand(1, 20);          // Quotient (1-20)
+							let remainder = rand(0, divisor - 1); // Rest zwischen 0 und divisor-1
+							let dividend = divisor * quotient + remainder;
+							
+							if (dividend <= maxNumber && remainder > 0) {
+								//taskText = `${dividend} : ${divisor} = ${quotient} R ${remainder}`;
+								taskText = `${dividend} : ${divisor} =`;
+								validDivision = true;
+							}
+							attempts2++;
 						}
-						attempts2++;
+						if (!validDivision) {
+							taskText = `9 : 4 = 2 R 1`;
+						}
+						valid = true;
+					} 
+					else if (decimalMode) {
+						// Division MIT Nachkommastellen
+						while (!validDivision && attempts2 < 40) {
+							let divisor = rand(2, 12);
+							let dividend = rand(1, maxNumber);
+							
+							// Ergebnis auf 2 Nachkommastellen berechnen
+							let result = dividend / divisor;
+							if (result % 1 !== 0 && result <= maxNumber) { // nicht glatt
+								let resultRounded = Math.round(result * 100) / 100;
+								//taskText = `${dividend} : ${divisor} = ${resultRounded}`;
+								taskText = `${dividend} : ${divisor} =`;
+								validDivision = true;
+							}
+							attempts2++;
+						}
+						if (!validDivision) {
+							taskText = `9 : 4 = 2,25`;
+						}
+						valid = true;
 					}
-					if (!validDivision) taskText = `4 : 2 =`;
-					valid = true;
+					else {
+						// Glatte Division (wie gehabt)
+						while (!validDivision && attempts2 < 30) {
+							let divisor = rand(1, 10);
+							let quotient = rand(1, 10);
+							let dividend = divisor * quotient;
+							if (dividend <= maxNumber) {
+								taskText = `${dividend} : ${divisor} =`;
+								validDivision = true;
+							}
+							attempts2++;
+						}
+						if (!validDivision) taskText = `4 : 2 =`;
+						valid = true;
+					}
 				}
 				else if (op === '□') {
 					let sq = generateSquareTask(squareMaxBase);
@@ -1429,6 +1486,13 @@
 			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
 			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid;
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
+		}
+		
+		const divisionOptions = document.getElementById('divisionOptions');
+		if (divisionOptions) {
+			// Nur anzeigen, wenn Division aktiv ist und keine anderen Sonderaufgaben
+			const showDivisionOptions = (mode === 'math') && ops.div && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+			showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
 		}
 	}    
     function printWorksheets() { window.print(); }
