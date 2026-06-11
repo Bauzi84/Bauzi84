@@ -591,8 +591,10 @@
 				<div class="checkbox-group">
 					<label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
 					<label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
+					<label><input type="checkbox" id="divisionOnlyTable" checked> Nur 1×1-Reihen (2-10)</label>
 				</div>
 				<small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
+				    <small>Bei "Nur 1×1-Reihen" bleiben alle Zahlen innerhalb des kleinen Einmaleins</small>
 			</div>
 			
             <div class="checkbox-group" id="mathOpsSpecial">
@@ -672,18 +674,24 @@
 
 <script>
     const wordLists = {
-        easy: ["Hund", "Katze", "Sonne", "Maus", "Ball", "Auto", "Haus", "Tisch", "Blume", "Baum", "Fisch", "Kind", "Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", "spielen", "gut", "rot", "blau", "alt", "neu", "klein", "groß"],
-        medium: ["Freund", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
+        easy: ["Hund", "Katze", "Maus", "Ball", "Auto", "Haus", "Tisch", "Baum", "Fisch", "Kind", 
+		"Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", 
+		"gut", "rot", "blau", "alt", "neu", "klein"],
+		
+        medium: ["Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
 		"Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", 
-		"Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", "lernen", 
+		"Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", 
 		"arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", 
 		"Fahrrad", "Platz", "Stadt", "tragen", "wachsen", "fällt", "gefährlich", 
-		"Hand", "lassen", "bauen", "läuft", "Baum", "laufen", "brauchen", "Maus", "Haus", 
+		"Hand", "lassen", "bauen", "läuft", "laufen", "brauchen", 
 		"Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", 
-		"erklären", "fallen", "gefallen", "hat", "kochen", "bekommen", "Tod", "Brot", "tot", 
+		"erklären", "fallen", "gefallen", "hat", "kochen", "bekommen", "Brot", "tot", 
 		"Kopf", "groß", 
-		"Bruder", "jung", "müssen", "Zug", "Buch", "Kuh", "Mutter",
-		"Korb", "Vogel", "Hose", "Nashorn", "Wolke", "Knopf", "Rock"],
+		"Bruder", "jung", "müssen", "Zug", "Kuh", "Mutter",
+		"Korb", "Vogel", "Hose", "Nashorn", "Wolke", "Knopf", "Rock",
+		"Fuß","kurz","Puppe","Geburt","Minute","Stunde","grüßen","Mund",
+		"Sekunde","wütend","Abend","Freund","Mond","Tod","Advent","Monat","Jahr"
+		],
         hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
 		custom: []
 	};
@@ -1007,7 +1015,10 @@
 					valid = true;
 				} 
 				else if (op === '*') {
-					if (selectedRows && selectedRows.length > 0) {
+					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
+					
+					if (onlyTable && selectedRows && selectedRows.length > 0) {
+						// Nur ausgewählte 1×1-Reihen
 						let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
 						let b = rand(0, 10);
 						if (row * b <= maxNumber) {
@@ -1016,15 +1027,29 @@
 						}
 					}
 					if (!valid) {
-						let a = rand(1, Math.min(10, maxNumber));
-						let b = rand(1, Math.floor(maxNumber / a));
-						taskText = `${a} × ${b} =`;
-						valid = true;
+						if (onlyTable) {
+							// Nur 1×1-Reihen (1-10)
+							let a = rand(1, 10);
+							let b = rand(1, 10);
+							if (a * b <= maxNumber) {
+								taskText = `${a} × ${b} =`;
+								valid = true;
+							}
+						} else {
+							// Auch größere Zahlen erlauben
+							let a = rand(1, Math.min(20, maxNumber));
+							let b = rand(1, Math.floor(maxNumber / a));
+							if (a * b <= maxNumber && a * b > 0) {
+								taskText = `${a} × ${b} =`;
+								valid = true;
+							}
+						}
 					}
 				} 
 				else if (op === '/') {
 					let remainderMode = document.getElementById('divisionWithRemainder')?.checked || false;
 					let decimalMode = document.getElementById('divisionWithDecimal')?.checked || false;
+					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false; // Standardmäßig true
 					
 					let validDivision = false;
 					let attempts2 = 0;
@@ -1032,50 +1057,74 @@
 					if (remainderMode) {
 						// Division MIT Rest
 						while (!validDivision && attempts2 < 40) {
-							let divisor = rand(2, 12);           // Divisor (2-12)
-							let quotient = rand(1, 20);          // Quotient (1-20)
-							let remainder = rand(0, divisor - 1); // Rest zwischen 0 und divisor-1
-							let dividend = divisor * quotient + remainder;
+							let divisor, quotient, remainder, dividend;
+							
+							if (onlyTable) {
+								// Nur 1×1-Reihen
+								divisor = rand(2, 10);
+								quotient = rand(1, 10);
+								remainder = rand(1, divisor - 1);
+								dividend = divisor * quotient + remainder;
+							} else {
+								// Auch größere Zahlen
+								divisor = rand(2, Math.min(20, maxNumber));
+								quotient = rand(1, Math.floor(maxNumber / divisor));
+								remainder = rand(1, divisor - 1);
+								dividend = divisor * quotient + remainder;
+							}
 							
 							if (dividend <= maxNumber && remainder > 0) {
-								//taskText = `${dividend} : ${divisor} = ${quotient} R ${remainder}`;
 								taskText = `${dividend} : ${divisor} =`;
 								validDivision = true;
 							}
 							attempts2++;
 						}
-						if (!validDivision) {
-							taskText = `9 : 4 = 2 R 1`;
-						}
+						if (!validDivision) taskText = `9 : 4 =`;
 						valid = true;
 					} 
 					else if (decimalMode) {
 						// Division MIT Nachkommastellen
 						while (!validDivision && attempts2 < 40) {
-							let divisor = rand(2, 12);
-							let dividend = rand(1, maxNumber);
+							let divisor, dividend;
 							
-							// Ergebnis auf 2 Nachkommastellen berechnen
-							let result = dividend / divisor;
-							if (result % 1 !== 0 && result <= maxNumber) { // nicht glatt
-								let resultRounded = Math.round(result * 100) / 100;
-								//taskText = `${dividend} : ${divisor} = ${resultRounded}`;
+							if (onlyTable) {
+								divisor = rand(2, 10);
+								dividend = rand(1, maxNumber);
+								if (dividend % divisor !== 0 && dividend / divisor <= 20) {
+									validDivision = true;
+								}
+							} else {
+								divisor = rand(2, Math.min(20, maxNumber));
+								dividend = rand(1, maxNumber);
+								if (dividend % divisor !== 0) {
+									validDivision = true;
+								}
+							}
+							
+							if (validDivision) {
 								taskText = `${dividend} : ${divisor} =`;
 								validDivision = true;
 							}
 							attempts2++;
 						}
-						if (!validDivision) {
-							taskText = `9 : 4 = 2,25`;
-						}
+						if (!validDivision) taskText = `9 : 4 =`;
 						valid = true;
 					}
 					else {
-						// Glatte Division (wie gehabt)
+						// Glatte Division
 						while (!validDivision && attempts2 < 30) {
-							let divisor = rand(1, 10);
-							let quotient = rand(1, 10);
-							let dividend = divisor * quotient;
+							let divisor, quotient, dividend;
+							
+							if (onlyTable) {
+								divisor = rand(1, 10);
+								quotient = rand(1, 10);
+								dividend = divisor * quotient;
+							} else {
+								divisor = rand(1, Math.min(12, maxNumber));
+								quotient = rand(1, Math.floor(maxNumber / divisor));
+								dividend = divisor * quotient;
+							}
+							
 							if (dividend <= maxNumber) {
 								taskText = `${dividend} : ${divisor} =`;
 								validDivision = true;
@@ -1488,11 +1537,11 @@
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
 		}
 		
-		const divisionOptions = document.getElementById('divisionOptions');
-		if (divisionOptions) {
-			// Nur anzeigen, wenn Division aktiv ist und keine anderen Sonderaufgaben
-			const showDivisionOptions = (mode === 'math') && ops.div && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
-			showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
+		const onlyTableOptions = document.getElementById('divisionOptions');
+		if (onlyTableOptions) {
+			// Anzeigen, wenn Multiplikation ODER Division aktiv ist (und keine anderen Sonderaufgaben)
+			const showOnlyTableOptions = (mode === 'math') && (ops.mul || ops.div) && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+			showOnlyTableOptions ? onlyTableOptions.classList.remove('hidden') : onlyTableOptions.classList.add('hidden');
 		}
 	}    
     function printWorksheets() { window.print(); }
