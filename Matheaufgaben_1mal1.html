@@ -1049,7 +1049,7 @@
 				else if (op === '/') {
 					let remainderMode = document.getElementById('divisionWithRemainder')?.checked || false;
 					let decimalMode = document.getElementById('divisionWithDecimal')?.checked || false;
-					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false; // Standardmäßig true
+					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
 					
 					let validDivision = false;
 					let attempts2 = 0;
@@ -1059,8 +1059,15 @@
 						while (!validDivision && attempts2 < 40) {
 							let divisor, quotient, remainder, dividend;
 							
-							if (onlyTable) {
-								// Nur 1×1-Reihen
+							if (onlyTable && selectedRows && selectedRows.length > 0) {
+								// Nur aus den ausgewählten 1×1-Reihen
+								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
+								if (divisor === 0) divisor = 1;
+								quotient = rand(1, 10);
+								remainder = rand(1, divisor - 1);
+								dividend = divisor * quotient + remainder;
+							} else if (onlyTable) {
+								// Nur 1×1-Reihen (1-10)
 								divisor = rand(2, 10);
 								quotient = rand(1, 10);
 								remainder = rand(1, divisor - 1);
@@ -1087,7 +1094,14 @@
 						while (!validDivision && attempts2 < 40) {
 							let divisor, dividend;
 							
-							if (onlyTable) {
+							if (onlyTable && selectedRows && selectedRows.length > 0) {
+								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
+								if (divisor === 0) divisor = 1;
+								dividend = rand(1, maxNumber);
+								if (dividend % divisor !== 0 && dividend / divisor <= 20) {
+									validDivision = true;
+								}
+							} else if (onlyTable) {
 								divisor = rand(2, 10);
 								dividend = rand(1, maxNumber);
 								if (dividend % divisor !== 0 && dividend / divisor <= 20) {
@@ -1115,7 +1129,13 @@
 						while (!validDivision && attempts2 < 30) {
 							let divisor, quotient, dividend;
 							
-							if (onlyTable) {
+							if (onlyTable && selectedRows && selectedRows.length > 0) {
+								// Nur aus den ausgewählten Reihen
+								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
+								if (divisor === 0) divisor = 1;
+								quotient = rand(1, 10);
+								dividend = divisor * quotient;
+							} else if (onlyTable) {
 								divisor = rand(1, 10);
 								quotient = rand(1, 10);
 								dividend = divisor * quotient;
