@@ -318,33 +318,26 @@
         }
 
 
-        /* Deutsch-Spezialmodule */
-        .de-special { margin-top:8px; }
-        .de-instruction { font-weight:700; font-size:1.05rem; margin:5px 0 10px; color:#0f172a; }
-        .de-table-grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-        .de-table-grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-        .de-table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:.86rem; }
-        .de-table th,.de-table td { border:1px solid #64748b; padding:5px 4px; height:31px; text-align:center; }
-        .de-table th { background:#e0f2fe; font-weight:700; }
-        .de-table th:first-child,.de-table td:first-child { text-align:left; width:42%; }
-        .de-check { display:inline-block; width:15px; height:15px; border:1.5px solid #334155; border-radius:3px; }
-        .consonant-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 16px; }
-        .consonant-card,.syllable-row { border:1px solid #bae6fd; background:#f8fcff; border-radius:9px; padding:7px 9px; break-inside:avoid; }
-        .hint-letter { display:inline-block; min-width:24px; font-weight:800; color:#0c4a6e; }
-        .de-word { font-family:'Patrick Hand','Comic Neue',cursive; font-size:1.12rem; }
-        .de-write-line { display:inline-block; min-width:105px; height:20px; margin-left:7px; border-bottom:1.5px solid #334155; vertical-align:bottom; }
-        .syllable-section { margin:8px 0 14px; break-inside:avoid; }
-        .syllable-title { background:#e0f2fe; border-radius:8px; padding:5px 8px; margin-bottom:7px; font-weight:700; }
-        .syllable-rows { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 12px; }
-        .syllable-work { display:block; height:21px; border-bottom:1.5px solid #64748b; margin-top:4px; }
-        .syllable-count { display:inline-block; width:28px; height:25px; border:1.5px solid #334155; border-radius:5px; margin-left:8px; vertical-align:middle; }
+        /* Zahlenstrahl */
+        .numberline-sheet { display:flex; flex-direction:column; gap:14px; margin:8px 0; }
+        .numberline-block { break-inside:avoid; page-break-inside:avoid; }
+        .numberline-title { font-weight:700; font-size:1rem; color:#0f172a; margin:0 0 5px; }
+        .numberline-svg { width:100%; height:auto; display:block; overflow:visible; }
+        .numberline-note { color:#475569; font-size:.78rem; margin-top:2px; }
         @media print {
-            .de-table-grid-2 { gap:9px; } .de-table-grid-3 { gap:7px; }
-            .de-table { font-size:.74rem; } .de-table th,.de-table td { height:25px; padding:3px; }
-            .consonant-grid,.syllable-rows { gap:5px 9px; }
-            .consonant-card,.syllable-row { padding:5px 7px; }
-            .de-word { font-size:.96rem; } .syllable-section { margin:5px 0 9px; }
+            .numberline-sheet { gap:4px; margin:2px 0; }
+            .numberline-title { font-size:.86rem; margin-bottom:1px; }
+            .numberline-note { display:none; }
         }
+
+        /* Deutsch-Spezialmodule */
+        .de-special{margin-top:8px}.de-instruction{font-weight:700;font-size:1.05rem;margin:5px 0 10px;color:#0f172a}
+        .de-table-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.de-table-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+        .de-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.86rem}.de-table th,.de-table td{border:1px solid #64748b;padding:5px 4px;height:31px;text-align:center}.de-table th{background:#e0f2fe;font-weight:700}.de-table th:first-child,.de-table td:first-child{text-align:left;width:42%}
+        .de-check{display:inline-block;width:15px;height:15px;border:1.5px solid #334155;border-radius:3px}.consonant-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 16px}.consonant-card,.syllable-row{border:1px solid #bae6fd;background:#f8fcff;border-radius:9px;padding:7px 9px;break-inside:avoid}
+        .hint-letter{display:inline-block;min-width:24px;font-weight:800;color:#0c4a6e}.de-word{font-family:'Patrick Hand','Comic Neue',cursive;font-size:1.12rem}.de-write-line{display:inline-block;min-width:105px;height:20px;margin-left:7px;border-bottom:1.5px solid #334155;vertical-align:bottom}
+        .syllable-section{margin:8px 0 14px;break-inside:avoid}.syllable-title{background:#e0f2fe;border-radius:8px;padding:5px 8px;margin-bottom:7px;font-weight:700}.syllable-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px}.syllable-work{display:block;height:21px;border-bottom:1.5px solid #64748b;margin-top:4px}.syllable-count{display:inline-block;width:28px;height:25px;border:1.5px solid #334155;border-radius:5px;margin-left:8px;vertical-align:middle}
+        @media print{.de-table-grid-2{gap:9px}.de-table-grid-3{gap:7px}.de-table{font-size:.74rem}.de-table th,.de-table td{height:25px;padding:3px}.consonant-grid,.syllable-rows{gap:5px 9px}.consonant-card,.syllable-row{padding:5px 7px}.de-word{font-size:.96rem}.syllable-section{margin:5px 0 9px}}
         .points-field {
             margin-top: 25px;
             display: flex;
@@ -524,6 +517,9 @@
                 font-size: 1.3rem;
             }
             
+            .worksheet:has(.numberline-container) .worksheet-header { margin-bottom:8px; padding-bottom:6px; }
+            .worksheet:has(.numberline-container) .points-field { margin-top:6px; padding-top:6px; gap:18px; font-size:.78rem; break-inside:avoid; page-break-inside:avoid; }
+            .worksheet:has(.numberline-container) .numberline-block { break-inside:avoid; page-break-inside:avoid; }
             .math-equation.small-numbers span:first-child {
                 font-size: 0.75rem;
             }
@@ -625,17 +621,18 @@
                 <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
                 <label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
                 <label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
+                <label><input type="checkbox" value="numberline" id="numberlineCheck"> ↔️ Zahlenstrahl</label>
             </div>
         </div>
         
         <div id="mathRangeGroup" class="control-group hidden">
             <label>Zahlenraum:</label>
-            <input type="number" id="numberRange" value="100" min="10" max="500" step="5" style="width: 80px;">
+            <input type="number" id="numberRange" value="1000" min="10" max="5000" step="10" style="width: 80px;">
         </div>
 		
 		<div id="maxOperandGroup" class="control-group hidden">
 			<label>🔢 Max. Operand für +/-:</label>
-			<input type="number" id="maxOperand" value="100" min="1" max="500" step="5" style="width: 80px;">
+			<input type="number" id="maxOperand" value="500" min="1" max="5000" step="10" style="width: 80px;">
 			<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
 		</div>
 
@@ -681,6 +678,16 @@
             </select>
         </div>
 
+        <div id="numberlineSettings" class="control-group hidden">
+            <label>↔️ Zahlenstrahl-Aufgaben:</label>
+            <select id="numberlineMode">
+                <option value="mixed" selected>Gemischt</option>
+                <option value="read">Zahlen ablesen</option>
+                <option value="connect">Zahlen verbinden</option>
+                <option value="sections">Zahlenstrahl-Ausschnitte</option>
+            </select>
+            <small>Verwendet den oben eingestellten Zahlenraum. Volle Zahlenstrahlen in 10er-Schritten, Ausschnitte in 1er-Schritten.</small>
+        </div>
         <div id="deutschControls" class="control-group hidden">
             <label>✍️ Übungstyp:</label>
             <div class="checkbox-group" id="deutschTypesBasic">
@@ -746,28 +753,10 @@
 		custom: []
 	};
 	
-    const extraRegularWords = {
-      easy:["Hase","Nase","Ofen","Oma","Teller","Kissen","Sonne","Zimmer"],
-      medium:["Klasse","Messer","Hammer","Koffer","Ritter","Wetter","klettern","sammeln","rollen","brennen","mutig","freundlich"],
-      hard:["Klassenzimmer","Sonnenblume","Wassermelone","Schulranzen","Sommerferien","Regenjacke","Klettergerüst"]
-    };
-    Object.keys(extraRegularWords).forEach(level=>{ const seen=new Set(wordLists[level].map(w=>w.toLowerCase())); extraRegularWords[level].forEach(w=>{if(!seen.has(w.toLowerCase())) wordLists[level].push(w);}); });
-
-    const wordTypeList = [
-      ...["Hund","Katze","Haus","Baum","Schule","Lehrer","Wasser","Fenster","Blume","Garten","Sommer","Sonne","Mutter","Bruder","Wolke","Freund","Tafel","Pferd"].map(word=>({word,type:"noun"})),
-      ...["spielen","springen","tanzen","malen","arbeiten","tragen","wachsen","bauen","laufen","kaufen","kochen","gewinnen","vergessen","versuchen","rennen","sammeln","fallen","erklären"].map(word=>({word,type:"verb"})),
-      ...["gut","rot","blau","alt","neu","klein","schnell","langsam","fröhlich","traurig","leise","gefährlich","groß","jung","kurz","wütend","gesund","vorsichtig","mutig","freundlich"].map(word=>({word,type:"adjective"}))
-    ];
-    const consonantList = [
-      {word:"Wasser",letter:"S",gap:"Wa__er",answer:"ss"},{word:"Sommer",letter:"M",gap:"So__er",answer:"mm"},{word:"Mutter",letter:"T",gap:"Mu__er",answer:"tt"},{word:"Puppe",letter:"P",gap:"Pu__e",answer:"pp"},{word:"Klasse",letter:"S",gap:"Kla__e",answer:"ss"},{word:"Sonne",letter:"N",gap:"So__e",answer:"nn"},{word:"Zimmer",letter:"M",gap:"Zi__er",answer:"mm"},{word:"Kissen",letter:"S",gap:"Ki__en",answer:"ss"},{word:"Messer",letter:"S",gap:"Me__er",answer:"ss"},{word:"Teller",letter:"L",gap:"Te__er",answer:"ll"},{word:"Vogel",letter:"G",gap:"Vo__el",answer:"g"},{word:"Hase",letter:"S",gap:"Ha__e",answer:"s"},{word:"Nase",letter:"S",gap:"Na__e",answer:"s"},{word:"Blume",letter:"M",gap:"Blu__e",answer:"m"},{word:"Tafel",letter:"F",gap:"Ta__el",answer:"f"},{word:"Regen",letter:"G",gap:"Re__en",answer:"g"},{word:"Korb",letter:"R",gap:"Ko__b",answer:"r"},{word:"Mund",letter:"N",gap:"Mu__d",answer:"n"},{word:"Bruder",letter:"D",gap:"Bru__er",answer:"d"},{word:"Schule",letter:"L",gap:"Schu__e",answer:"l"},{word:"Garten",letter:"T",gap:"Gar__en",answer:"t"},{word:"Wolke",letter:"L",gap:"Wo__ke",answer:"l"}
-    ];
-    const vowelLengthList = [
-      {word:"Ball",length:"short"},{word:"Mutter",length:"short"},{word:"Sonne",length:"short"},{word:"Kissen",length:"short"},{word:"Teller",length:"short"},{word:"Sommer",length:"short"},{word:"Wasser",length:"short"},{word:"Zimmer",length:"short"},{word:"Kopf",length:"short"},{word:"kurz",length:"short"},
-      {word:"Nase",length:"long"},{word:"Hase",length:"long"},{word:"Schule",length:"long"},{word:"Blume",length:"long"},{word:"Hose",length:"long"},{word:"Vogel",length:"long"},{word:"Ofen",length:"long"},{word:"Oma",length:"long"},{word:"Brot",length:"long"},{word:"Mond",length:"long"},{word:"Fuß",length:"long"},{word:"Tag",length:"long"}
-    ];
-    const syllableList = [
-      {word:"Schule",parts:["Schu","le"]},{word:"Lehrer",parts:["Leh","rer"]},{word:"Wasser",parts:["Was","ser"]},{word:"Fenster",parts:["Fens","ter"]},{word:"Blume",parts:["Blu","me"]},{word:"Garten",parts:["Gar","ten"]},{word:"Sommer",parts:["Som","mer"]},{word:"Tafel",parts:["Ta","fel"]},{word:"Pause",parts:["Pau","se"]},{word:"Sonne",parts:["Son","ne"]},{word:"Regen",parts:["Re","gen"]},{word:"Mutter",parts:["Mut","ter"]},{word:"Puppe",parts:["Pup","pe"]},{word:"Minute",parts:["Mi","nu","te"]},{word:"Sekunde",parts:["Se","kun","de"]},{word:"Monat",parts:["Mo","nat"]},{word:"Beispiel",parts:["Bei","spiel"]},{word:"Fernseher",parts:["Fern","se","her"]},{word:"Mittag",parts:["Mit","tag"]},{word:"Sonntag",parts:["Sonn","tag"]},{word:"Dienstag",parts:["Diens","tag"]},{word:"Mittwoch",parts:["Mitt","woch"]},{word:"Donnerstag",parts:["Don","ners","tag"]},{word:"Freitag",parts:["Frei","tag"]},{word:"Samstag",parts:["Sams","tag"]},{word:"Erdbeere",parts:["Erd","bee","re"]},{word:"Nachmittag",parts:["Nach","mit","tag"]},{word:"Frühstück",parts:["Früh","stück"]},{word:"Schmetterling",parts:["Schmet","ter","ling"]},{word:"Schokolade",parts:["Scho","ko","la","de"]},{word:"Elefant",parts:["E","le","fant"]},{word:"Krankenhaus",parts:["Kran","ken","haus"]},{word:"Regenbogen",parts:["Re","gen","bo","gen"]},{word:"Feuerwehr",parts:["Feu","er","wehr"]},{word:"Geburtstag",parts:["Ge","burts","tag"]}
-    ];
+    const wordTypeList=[...['Hund','Katze','Haus','Baum','Schule','Lehrer','Wasser','Fenster','Blume','Garten','Sommer','Sonne','Mutter','Bruder','Wolke','Freund','Tafel','Pferd'].map(word=>({word,type:'noun'})),...['spielen','springen','tanzen','malen','arbeiten','tragen','wachsen','bauen','laufen','kaufen','kochen','gewinnen','vergessen','versuchen','rennen','sammeln','fallen','erklären'].map(word=>({word,type:'verb'})),...['gut','rot','blau','alt','neu','klein','schnell','langsam','fröhlich','traurig','leise','gefährlich','groß','jung','kurz','wütend','gesund','vorsichtig','mutig','freundlich'].map(word=>({word,type:'adjective'}))];
+    const consonantList=[['Wasser','S','Wa__er','ss'],['Sommer','M','So__er','mm'],['Mutter','T','Mu__er','tt'],['Puppe','P','Pu__e','pp'],['Klasse','S','Kla__e','ss'],['Sonne','N','So__e','nn'],['Zimmer','M','Zi__er','mm'],['Kissen','S','Ki__en','ss'],['Messer','S','Me__er','ss'],['Teller','L','Te__er','ll'],['Vogel','G','Vo__el','g'],['Hase','S','Ha__e','s'],['Nase','S','Na__e','s'],['Blume','M','Blu__e','m'],['Tafel','F','Ta__el','f'],['Regen','G','Re__en','g'],['Korb','R','Ko__b','r'],['Mund','N','Mu__d','n'],['Bruder','D','Bru__er','d'],['Schule','L','Schu__e','l'],['Garten','T','Gar__en','t'],['Wolke','L','Wo__ke','l']].map(([word,letter,gap,answer])=>({word,letter,gap,answer}));
+    const vowelLengthList=[...['Ball','Mutter','Sonne','Kissen','Teller','Sommer','Wasser','Zimmer','Kopf','kurz'].map(word=>({word,length:'short'})),...['Nase','Hase','Schule','Blume','Hose','Vogel','Ofen','Oma','Brot','Mond','Fuß','Tag'].map(word=>({word,length:'long'}))];
+    const syllableList=[['Schule',['Schu','le']],['Lehrer',['Leh','rer']],['Wasser',['Was','ser']],['Fenster',['Fens','ter']],['Blume',['Blu','me']],['Garten',['Gar','ten']],['Sommer',['Som','mer']],['Tafel',['Ta','fel']],['Pause',['Pau','se']],['Sonne',['Son','ne']],['Regen',['Re','gen']],['Mutter',['Mut','ter']],['Puppe',['Pup','pe']],['Minute',['Mi','nu','te']],['Sekunde',['Se','kun','de']],['Monat',['Mo','nat']],['Beispiel',['Bei','spiel']],['Fernseher',['Fern','se','her']],['Mittag',['Mit','tag']],['Sonntag',['Sonn','tag']],['Dienstag',['Diens','tag']],['Mittwoch',['Mitt','woch']],['Donnerstag',['Don','ners','tag']],['Freitag',['Frei','tag']],['Samstag',['Sams','tag']],['Erdbeere',['Erd','bee','re']],['Nachmittag',['Nach','mit','tag']],['Frühstück',['Früh','stück']],['Schmetterling',['Schmet','ter','ling']],['Schokolade',['Scho','ko','la','de']],['Elefant',['E','le','fant']],['Krankenhaus',['Kran','ken','haus']],['Regenbogen',['Re','gen','bo','gen']],['Feuerwehr',['Feu','er','wehr']],['Geburtstag',['Ge','burts','tag']]].map(([word,parts])=>({word,parts}));
 
     const sentencesList = [
         "Ich helfe meiner Mama beim Kochen.",
@@ -1180,7 +1169,7 @@
         return op === '+' ? '1 + 1 =' : '1 - 1 =';
     }
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber, operandMax, state) {
-        operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 100;
+        operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 500;
         const opsList = [];
         if (operations.add) opsList.push('+');
         if (operations.sub) opsList.push('-');
@@ -1214,14 +1203,14 @@
         return tasks;
     }
     // Deutsch-Aufgaben: innerhalb einer Generierung ohne Wiederholung, bis der Pool leer ist.
-    function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    function chunks(items,n){const a=Array.from({length:n},()=>[]);items.forEach((x,i)=>a[i%n].push(x));return a;}
+    function deEsc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function deChunks(items,n){const a=Array.from({length:n},()=>[]);items.forEach((x,i)=>a[i%n].push(x));return a;}
     function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.wordTypes,x=>x.word+':'+x.type],consonants:[consonantList,state.consonants,x=>x.word],vowelLength:[vowelLengthList,state.vowelLength,x=>x.word],syllables:[syllableList,state.syllables,x=>x.word]};const m=map[type];return takeWithoutRepeats(m[0],count,m[1],m[2]);}
-    function renderWordTypes(items){return `<div class="de-special"><div class="de-instruction">Bestimme die Wortart.</div><div class="de-table-grid-2">${chunks(items,2).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Nomen</th><th>Verb</th><th>Adjektiv</th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
-    function renderConsonants(items){return `<div class="de-special"><div class="de-instruction">Ergänze den oder die fehlenden Konsonanten und schreibe das Wort richtig auf.</div><div class="consonant-grid">${items.map(x=>`<div class="consonant-card"><span class="hint-letter">${esc(x.letter)}:</span><span class="de-word">${esc(x.gap)}</span><span class="de-write-line"></span></div>`).join('')}</div></div>`;}
-    function renderVowels(items){return `<div class="de-special"><div class="de-instruction">Bestimme den Selbstlaut.</div><div class="de-table-grid-3">${chunks(items,3).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Kurz</th><th>Lang</th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
-    function renderSyllableSection(title,items,kind){return `<section class="syllable-section"><div class="syllable-title">${title}</div><div class="syllable-rows">${items.map(x=>{if(kind==='count')return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="syllable-count"></span> Silben</div>`;if(kind==='arcs')return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="syllable-work"></span></div>`;return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="de-write-line"></span></div>`;}).join('')}</div></section>`;}
-    function renderSyllables(items){const a=items.slice(0,6),b=items.slice(6,12),c=items.slice(12,18);return `<div class="de-special">${renderSyllableSection('1. Trenne die Wörter in Silben.',a,'split')}${renderSyllableSection('2. Zeichne Silbenbögen.',b,'arcs')}${renderSyllableSection('3. Zähle die Silben.',c,'count')}</div>`;}
+    function renderWordTypes(items){return `<div class="de-special"><div class="de-instruction">Bestimme die Wortart.</div><div class="de-table-grid-2">${deChunks(items,2).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Nomen</th><th>Verb</th><th>Adjektiv</th></tr></thead><tbody>${c.map(x=>`<tr><td>${deEsc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
+    function renderConsonants(items){return `<div class="de-special"><div class="de-instruction">Ergänze den oder die fehlenden Konsonanten und schreibe das Wort richtig auf.</div><div class="consonant-grid">${items.map(x=>`<div class="consonant-card"><span class="hint-letter">${x.letter}:</span><span class="de-word">${x.gap}</span><span class="de-write-line"></span></div>`).join('')}</div></div>`;}
+    function renderVowels(items){return `<div class="de-special"><div class="de-instruction">Bestimme den Selbstlaut.</div><div class="de-table-grid-3">${deChunks(items,3).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Kurz</th><th>Lang</th></tr></thead><tbody>${c.map(x=>`<tr><td>${deEsc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
+    function renderSyllableSection(title,items,kind){return `<section class="syllable-section"><div class="syllable-title">${title}</div><div class="syllable-rows">${items.map(x=>kind==='count'?`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="syllable-count"></span> Silben</div>`:kind==='arcs'?`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="syllable-work"></span></div>`:`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="de-write-line"></span></div>`).join('')}</div></section>`;}
+    function renderSyllables(items){return `<div class="de-special">${renderSyllableSection('1. Trenne die Wörter in Silben.',items.slice(0,6),'split')}${renderSyllableSection('2. Zeichne Silbenbögen.',items.slice(6,12),'arcs')}${renderSyllableSection('3. Zähle die Silben.',items.slice(12,18),'count')}</div>`;}
 
     function generateGermanTasks(count, types, difficulty, state) {
         if (types.letters) {
@@ -1243,9 +1232,97 @@
         }
         return takeWithoutRepeats(pool, count, state.words, w => w.toLocaleLowerCase('de-DE')).map(word => ({ prompt: `📝 ${word}`, lineCount: 1 }));
     }
+    // ========== ZAHLENSTRAHL ==========
+    function makeNumberlineRange(start, end, step, targetCount, usedSet, keyPrefix) {
+        const candidates = [];
+        for (let n = start + step; n < end; n += step) candidates.push(n);
+        const targets = takeWithoutRepeats(candidates, Math.min(targetCount, candidates.length), usedSet, n => `${keyPrefix}:${start}:${end}:${n}`);
+        return { start, end, step, targets: [...targets].sort((a,b) => a-b) };
+    }
+    function numberlineSvg(task) {
+        const {start,end,step,targets,type} = task;
+        const W=760, x0=36, x1=724, y=44;
+        const H = type === 'connect' ? 112 : 135;
+        const span=end-start;
+        const sx=n=>x0+((n-start)/span)*(x1-x0);
+        let out=`<svg class="numberline-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+        out+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#111827" stroke-width="1.5"/>`;
+        const tickCount=Math.round(span/step);
+        for(let i=0;i<=tickCount;i++){
+            const n=start+i*step, x=sx(n);
+            const major = type==='sections' ? (n%10===0) : (n%100===0);
+            const medium = type!=='sections' && !major && n%50===0;
+            const len = major ? 13 : medium ? 10 : 7;
+            out+=`<line x1="${x}" y1="${y-len}" x2="${x}" y2="${y+len}" stroke="#111827" stroke-width="${major?1.6:1}"/>`;
+            if(type!=='sections' && major && n!==start && n!==end) out+=`<text x="${x}" y="${y-17}" font-size="10" text-anchor="middle" fill="#475569">${n}</text>`;
+        }
+        out+=`<text x="${x0}" y="${y+29}" font-size="12" text-anchor="middle">${start}</text>`;
+        out+=`<text x="${x1}" y="${y+29}" font-size="12" text-anchor="middle">${end}</text>`;
+        if(type==='read' || type==='sections'){
+            let previousX=-999, previousLane=0;
+            targets.forEach((n,i)=>{
+                const x=sx(n), close=(x-previousX)<54, lane=close?(previousLane===0?1:0):0;
+                const boxY=y+42+lane*24, boxX=Math.max(9,Math.min(W-51,x-21));
+                out+=`<line x1="${x}" y1="${y+9}" x2="${boxX+21}" y2="${boxY}" stroke="#64748b" stroke-width="1"/>`;
+                out+=`<rect x="${boxX}" y="${boxY}" width="42" height="22" rx="1" fill="white" stroke="#374151"/>`;
+                previousX=x; previousLane=lane;
+            });
+        } else if(type==='connect'){
+            const boxY=y+45, count=targets.length;
+            targets.forEach((n,i)=>{
+                const cx=42+i*((W-84)/Math.max(1,count-1));
+                out+=`<rect x="${cx-22}" y="${boxY}" width="44" height="22" rx="1" fill="white" stroke="#374151"/>`;
+                out+=`<text x="${cx}" y="${boxY+15}" font-size="11" text-anchor="middle">${n}</text>`;
+            });
+        }
+        return out+'</svg>';
+    }
+    function alignedFullRanges(maxValue) {
+        const max=Math.max(100,Math.floor(maxValue/10)*10);
+        let split=Math.floor((max/2)/10)*10;
+        split=Math.max(10,Math.min(max-10,split));
+        return [[0,split],[split,max]];
+    }
+    function randomSection(maxValue, usedSet, index) {
+        const upper=Math.max(100,Math.min(maxValue,5000));
+        const width=40;
+        const maxStart=Math.max(0,upper-width);
+        let start=Math.floor(rand(0,maxStart)/10)*10;
+        start=Math.min(start,maxStart);
+        const base=makeNumberlineRange(start,start+width,1,6,usedSet,`section${index}`);
+        return {...base,type:'sections'};
+    }
+    function generateNumberlineTasks(mode,maxValue,usedSet,requestedCount) {
+        const max=Math.max(100,Math.min(5000,Number(maxValue)||1000));
+        const ranges=alignedFullRanges(max);
+        const wanted=Math.max(1,Math.min(36,Number(requestedCount)||36));
+        const counts=Array.from({length:6},(_,i)=>Math.floor(wanted/6)+(i<wanted%6?1:0));
+        const full=(type,index,count)=>{
+            const baseRange=ranges[index%2];
+            return {...makeNumberlineRange(baseRange[0],baseRange[1],10,Math.min(6,count),usedSet,`${type}${index}`),type};
+        };
+        const section=(index,count)=>{const t=randomSection(max,usedSet,index);t.targets=t.targets.slice(0,Math.min(6,count));return t;};
+        let tasks=[];
+        if(mode==='read') tasks=counts.map((c,i)=>full('read',i,c));
+        else if(mode==='connect') tasks=counts.map((c,i)=>full('connect',i,c));
+        else if(mode==='sections') tasks=counts.map((c,i)=>section(i,c));
+        else tasks=[full('read',0,counts[0]),full('read',1,counts[1]),full('connect',0,counts[2]),full('connect',1,counts[3]),section(0,counts[4]),section(1,counts[5])];
+        return tasks.filter(t=>t.targets.length);
+    }
+    function renderNumberlineTasks(tasks) {
+        const titles={read:'1. Lies die markierten Zahlen ab.',connect:'2. Verbinde die Zahlen mit der richtigen Stelle.',sections:'3. Bestimme die markierten Zahlen im Ausschnitt.'};
+        const seen={}; let html='<div class="numberline-sheet">';
+        for(const task of tasks){
+            const first=!seen[task.type]; seen[task.type]=true;
+            html+=`<div class="numberline-block">${first?`<div class="numberline-title">${titles[task.type]}</div>`:''}${numberlineSvg(task)}</div>`;
+        }
+        return html+'</div>';
+    }
+
     function getTaskCountMaximum() {
         if (modeSelect.value === 'math') {
             const ops = getMathOperations();
+            if (ops.numberline) return 36;
             if (ops.time) return 12;
             if (ops.pyramid) {
                 const difficulty = document.getElementById('pyramidDifficulty')?.value || 'easy';
@@ -1313,7 +1390,7 @@
         } else {
             mathControlsDiv.classList.add('hidden');
             deutschControlsDiv.classList.remove('hidden');
-            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings').forEach(el => {
+            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings, #numberlineSettings').forEach(el => {
                 if (el) el.classList.add('hidden');
             });
         }
@@ -1329,16 +1406,15 @@
             square: document.getElementById('squareCheck')?.checked || false,
             sqrt: document.getElementById('sqrtCheck')?.checked || false,
             time: document.getElementById('timeCheck')?.checked || false,
-            pyramid: document.getElementById('pyramidCheck')?.checked || false
+            pyramid: document.getElementById('pyramidCheck')?.checked || false,
+            numberline: document.getElementById('numberlineCheck')?.checked || false
         };
     }
 	function getMathOperandMax() {
-		return parseInt(document.getElementById('maxOperand')?.value) || 100;
+		return parseInt(document.getElementById('maxOperand')?.value) || 500;
 	}
     
-    function getDeutschTypes() {
-        return {copyWords:document.getElementById('wordsCheck')?.checked||false,letters:document.getElementById('lettersCheck')?.checked||false,sentences:document.getElementById('sentencesCheck')?.checked||false,wordTypes:document.getElementById('wordTypesCheck')?.checked||false,consonants:document.getElementById('consonantsCheck')?.checked||false,vowelLength:document.getElementById('vowelLengthCheck')?.checked||false,syllables:document.getElementById('syllablesCheck')?.checked||false};
-    }
+    function getDeutschTypes(){return {copyWords:document.getElementById('wordsCheck')?.checked||false,letters:document.getElementById('lettersCheck')?.checked||false,sentences:document.getElementById('sentencesCheck')?.checked||false,wordTypes:document.getElementById('wordTypesCheck')?.checked||false,consonants:document.getElementById('consonantsCheck')?.checked||false,vowelLength:document.getElementById('vowelLengthCheck')?.checked||false,syllables:document.getElementById('syllablesCheck')?.checked||false};}
     function updateCustomWordsVisibility() {
         const isDeutschMode = modeSelect.value === 'deutsch';
         const types = getDeutschTypes();
@@ -1370,11 +1446,16 @@
         
         if (mode === 'math') {
             let ops = getMathOperations();
-            let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
+            let maxNum = parseInt(document.getElementById('numberRange').value) || 1000;
             let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 10;
             let sqrtMaxNumber = parseInt(document.getElementById('maxSqrtNumber')?.value, 10) || 100;
             
-            if (ops.time) {
+            if (ops.numberline) {
+                tasksGrid = document.createElement('div');
+                tasksGrid.className = 'numberline-container';
+                const nlMode = document.getElementById('numberlineMode')?.value || 'mixed';
+                tasksGrid.innerHTML = renderNumberlineTasks(generateNumberlineTasks(nlMode,maxNum,generationState.numberline,getRequestedTaskCount()));
+            } else if (ops.time) {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
@@ -1449,10 +1530,10 @@
                 });
             }
         } else {
-            const types=getDeutschTypes(); const difficulty=document.getElementById('difficultySelect').value;
+            const types=getDeutschTypes(),difficulty=document.getElementById('difficultySelect').value;
             const special=types.wordTypes?'wordTypes':types.consonants?'consonants':types.vowelLength?'vowelLength':types.syllables?'syllables':null;
             if(special){tasksGrid=document.createElement('div');tasksGrid.className='deutsch-special-container';const items=specialPick(special,getRequestedTaskCount(),generationState.deutsch);tasksGrid.innerHTML=special==='wordTypes'?renderWordTypes(items):special==='consonants'?renderConsonants(items):special==='vowelLength'?renderVowels(items):renderSyllables(items);}
-            else {tasksGrid=document.createElement('div');tasksGrid.className='tasks-grid deutsch-grid';let deutschTasks=generateGermanTasks(getRequestedTaskCount(),types,difficulty,generationState.deutsch);deutschTasks.forEach(t=>{const taskDiv=document.createElement('div');taskDiv.className='task-item deutsch-task';const lineHeightPx=t.lineCount*56;taskDiv.innerHTML=`<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>`;tasksGrid.appendChild(taskDiv);});}
+            else{tasksGrid=document.createElement('div');tasksGrid.className='tasks-grid deutsch-grid';let deutschTasks=generateGermanTasks(getRequestedTaskCount(),types,difficulty,generationState.deutsch);deutschTasks.forEach(t=>{const taskDiv=document.createElement('div');taskDiv.className='task-item deutsch-task';const lineHeightPx=t.lineCount*56;taskDiv.innerHTML=`<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height:${lineHeightPx}px;height:${lineHeightPx}px;"></div>`;tasksGrid.appendChild(taskDiv);});}
         }
         
         const pointsField = document.createElement('div');
@@ -1471,9 +1552,10 @@
         multiPageContainer.innerHTML = '';
         const generationState = {
             math: { byOperation: {} },
-            deutsch: { words:new Set(), letters:new Set(), sentences:new Set(), wordTypes:new Set(), consonants:new Set(), vowelLength:new Set(), syllables:new Set() },
+            deutsch: {words:new Set(),letters:new Set(),sentences:new Set(),wordTypes:new Set(),consonants:new Set(),vowelLength:new Set(),syllables:new Set()},
             time: new Set(),
-            pyramids: new Set()
+            pyramids: new Set(),
+            numberline: new Set()
         };
         for (let i = 0; i < pageCount; i++) {
             multiPageContainer.appendChild(createWorksheet(i, pageCount, generationState));
@@ -1481,7 +1563,7 @@
     }
     
     function setupSpecialOpsExclusive() {
-        const specialOps = ['square', 'sqrt', 'time', 'pyramid'];
+        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline'];
         const basicOps = ['add', 'sub', 'mul', 'div'];
         specialOps.forEach(opId => {
             const checkbox = document.getElementById(`${opId}Check`);
@@ -1520,9 +1602,7 @@
         });
     }
     
-    function setupDeutschExclusive() {
-        const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck']; const checks=ids.map(id=>document.getElementById(id)).filter(Boolean); checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));
-    }
+    function setupDeutschExclusive(){const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck'];const checks=ids.map(id=>document.getElementById(id)).filter(Boolean);checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));}
     
 	function updateVisibilityBasedOnSelection() {
 		let ops;
@@ -1536,7 +1616,7 @@
 		
 		// Zahlenraum anzeigen, wenn Grundrechenarten ODER Pyramiden aktiv sind (nur im Mathe-Modus)
 		if (mathRange) {
-			if (mode === 'math' && (anyBasicActive || ops.pyramid)) {
+			if (mode === 'math' && (anyBasicActive || ops.pyramid || ops.numberline)) {
 				mathRange.classList.remove('hidden');
 			} else {
 				mathRange.classList.add('hidden');
@@ -1556,28 +1636,30 @@
 		
 		const pyramidSet = document.getElementById('pyramidSettings');
 		if (pyramidSet) ops.pyramid ? pyramidSet.classList.remove('hidden') : pyramidSet.classList.add('hidden');
+        const numberlineSet = document.getElementById('numberlineSettings');
+        if (numberlineSet) ops.numberline ? numberlineSet.classList.remove('hidden') : numberlineSet.classList.add('hidden');
 		
 		const maxOperandGroup = document.getElementById('maxOperandGroup');
 		if (maxOperandGroup) {
 			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
-			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid;
+			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid && !ops.numberline;
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
 		}
 		
         const tensCrossingGroup = document.getElementById('tensCrossingGroup');
         if (tensCrossingGroup) {
-            const showTensCrossing = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            const showTensCrossing = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
             showTensCrossing ? tensCrossingGroup.classList.remove('hidden') : tensCrossingGroup.classList.add('hidden');
         }
 
         const tableOnlyOptions = document.getElementById('tableOnlyOptions');
         if (tableOnlyOptions) {
-            const showTableOnlyOptions = (mode === 'math') && (ops.mul || ops.div) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            const showTableOnlyOptions = (mode === 'math') && (ops.mul || ops.div) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
             showTableOnlyOptions ? tableOnlyOptions.classList.remove('hidden') : tableOnlyOptions.classList.add('hidden');
         }
         const divisionOptions = document.getElementById('divisionOptions');
         if (divisionOptions) {
-            const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
             showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
         }
 	}    
@@ -1598,6 +1680,10 @@
         el.addEventListener('change', resetTaskCountToMaximum);
     });
     document.getElementById('pyramidDifficulty')?.addEventListener('change', resetTaskCountToMaximum);
+    document.getElementById('numberlineMode')?.addEventListener('change', () => { resetTaskCountToMaximum(); generateMultiPage(); });
+    function syncMaxOperandToRange(){const range=parseInt(document.getElementById('numberRange')?.value,10)||1000;const input=document.getElementById('maxOperand');if(input){input.max=String(range);input.value=String(Math.max(1,Math.floor(range*0.5)));}}
+    document.getElementById('numberRange')?.addEventListener('change',()=>{syncMaxOperandToRange();generateMultiPage();});
+
     document.getElementById('taskCount')?.addEventListener('change', getRequestedTaskCount);
     updateVisibilityBasedOnSelection();
     resetTaskCountToMaximum();
