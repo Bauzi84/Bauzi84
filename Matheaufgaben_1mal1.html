@@ -192,10 +192,9 @@
             grid-template-columns: repeat(2, 1fr);
         }
         
-        .pyramid-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
+        .pyramid-grid { justify-content:center; align-items:start; column-gap:24px; row-gap:20px; }
+        .pyramid-grid.pyramid-grid-easy { grid-template-columns:repeat(3,max-content); }
+        .pyramid-grid.pyramid-grid-medium, .pyramid-grid.pyramid-grid-hard { grid-template-columns:repeat(2,max-content); }
 
         .task-item {
             break-inside: avoid;
@@ -215,23 +214,15 @@
             overflow-y: hidden;
         }
 
-        .math-equation {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
-            white-space: nowrap;
+        .math-equation, .math-equation-remainder {
+            display:flex; align-items:center; justify-content:flex-start; flex-wrap:nowrap;
+            gap:4px; width:100%; min-width:0; margin:0; white-space:nowrap;
         }
-
-        .math-equation span:first-child {
-            flex-shrink: 1;
-            white-space: nowrap;
-            overflow-x: visible;
-            font-size: 0.95rem;
-        }
-
-        .result-box {
+        .math-expression { text-align:left; white-space:nowrap; font-size:0.95rem; flex:0 1 auto; min-width:0; }
+        .math-equals, .remainder-label { flex:0 0 auto; }
+        .math-equation:not(.math-equation-remainder) .result-box { width:48px; flex:0 0 48px; }
+        .math-equation-remainder .result-box { width:28px; height:24px; flex:0 0 28px; }
+.result-box {
             display: inline-block;
             width: 65px;
             height: 28px;
@@ -243,13 +234,7 @@
         }
 
         /* Pyramiden-Stil - kompakter für den Druck */
-		.pyramid-task {
-			border: 1px solid #fde047;
-			border-radius: 16px;
-			padding: 15px 10px;
-			white-space: normal;
-			overflow: visible;
-		}
+		.pyramid-task { border:none; border-radius:0; padding:0; background:transparent; white-space:normal; overflow:visible; width:fit-content; max-width:100%; justify-self:center; margin:0 auto; }
 
 		.pyramid-cell {
 			width: 50px;
@@ -332,6 +317,34 @@
             margin-bottom: 0;
         }
 
+
+        /* Deutsch-Spezialmodule */
+        .de-special { margin-top:8px; }
+        .de-instruction { font-weight:700; font-size:1.05rem; margin:5px 0 10px; color:#0f172a; }
+        .de-table-grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+        .de-table-grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+        .de-table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:.86rem; }
+        .de-table th,.de-table td { border:1px solid #64748b; padding:5px 4px; height:31px; text-align:center; }
+        .de-table th { background:#e0f2fe; font-weight:700; }
+        .de-table th:first-child,.de-table td:first-child { text-align:left; width:42%; }
+        .de-check { display:inline-block; width:15px; height:15px; border:1.5px solid #334155; border-radius:3px; }
+        .consonant-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 16px; }
+        .consonant-card,.syllable-row { border:1px solid #bae6fd; background:#f8fcff; border-radius:9px; padding:7px 9px; break-inside:avoid; }
+        .hint-letter { display:inline-block; min-width:24px; font-weight:800; color:#0c4a6e; }
+        .de-word { font-family:'Patrick Hand','Comic Neue',cursive; font-size:1.12rem; }
+        .de-write-line { display:inline-block; min-width:105px; height:20px; margin-left:7px; border-bottom:1.5px solid #334155; vertical-align:bottom; }
+        .syllable-section { margin:8px 0 14px; break-inside:avoid; }
+        .syllable-title { background:#e0f2fe; border-radius:8px; padding:5px 8px; margin-bottom:7px; font-weight:700; }
+        .syllable-rows { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 12px; }
+        .syllable-work { display:block; height:21px; border-bottom:1.5px solid #64748b; margin-top:4px; }
+        .syllable-count { display:inline-block; width:28px; height:25px; border:1.5px solid #334155; border-radius:5px; margin-left:8px; vertical-align:middle; }
+        @media print {
+            .de-table-grid-2 { gap:9px; } .de-table-grid-3 { gap:7px; }
+            .de-table { font-size:.74rem; } .de-table th,.de-table td { height:25px; padding:3px; }
+            .consonant-grid,.syllable-rows { gap:5px 9px; }
+            .consonant-card,.syllable-row { padding:5px 7px; }
+            .de-word { font-size:.96rem; } .syllable-section { margin:5px 0 9px; }
+        }
         .points-field {
             margin-top: 25px;
             display: flex;
@@ -426,7 +439,7 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 1.2cm;
+                margin: 0.8cm;
             }
             
             body {
@@ -470,9 +483,12 @@
                 grid-template-columns: repeat(4, 1fr);
             }
             
-            .pyramid-grid {
-                grid-template-columns: 1fr;
-            }
+            .pyramid-grid { justify-content:center; column-gap:8px; row-gap:6px; }
+            .pyramid-grid.pyramid-grid-easy { grid-template-columns:repeat(3,max-content); }
+            .pyramid-grid.pyramid-grid-medium { grid-template-columns:repeat(2,max-content); }
+            .pyramid-grid.pyramid-grid-hard { grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+            .pyramid-grid.pyramid-grid-easy .pyramid-task > div, .pyramid-grid.pyramid-grid-medium .pyramid-task > div { transform:scale(0.90); transform-origin:center top; }
+            .pyramid-grid.pyramid-grid-hard .pyramid-task > div { transform:scale(0.85); transform-origin:center top; }
             
             .deutsch-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -517,9 +533,10 @@
                 white-space: normal;
             }
             
-            .math-equation {
-                flex-wrap: wrap;
+            .math-equation, .math-equation-remainder {
+                display:flex !important; flex-wrap:nowrap !important; justify-content:flex-start !important; margin:0 !important; gap:3px;
             }
+            .math-expression { text-align:left !important; }
             
             .clock-canvas {
                 -webkit-print-color-adjust: exact;
@@ -559,7 +576,6 @@
 <body>
 <div class="generator-container">
     <div class="control-group no-print">
-
 		<label>📄 Seitenanzahl:</label>
         <input type="number" id="pageCount" value="1" min="1" max="8" step="1" style="width: 70px;">
     </div>
@@ -589,17 +605,21 @@
                 <label><input type="checkbox" value="mul" checked> ×</label>
                 <label><input type="checkbox" value="div"> :</label>
             </div>
-			<div id="divisionOptions" class="control-group hidden">
-				<label>➗ Divisionseinstellungen:</label>
-				<div class="checkbox-group">
-					<label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
-					<label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
-					<label><input type="checkbox" id="divisionOnlyTable" checked> Nur 1×1-Reihen (2-10)</label>
-				</div>
-				<small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
-				    <small>Bei "Nur 1×1-Reihen" bleiben alle Zahlen innerhalb des kleinen Einmaleins</small>
-			</div>
-			
+            <div id="tableOnlyOptions" class="control-group hidden">
+                <label>✖️/➗ 1×1-Einstellungen:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="divisionOnlyTable" checked> Nur 1×1-Reihen (2-10)</label>
+                </div>
+                <small>Begrenzt Multiplikation und Division auf das kleine Einmaleins</small>
+            </div>
+            <div id="divisionOptions" class="control-group hidden">
+                <label>➗ Divisionseinstellungen:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
+                    <label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
+                </div>
+                <small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
+            </div>
             <div class="checkbox-group" id="mathOpsSpecial">
                 <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
                 <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
@@ -619,6 +639,19 @@
 			<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
 		</div>
 
+        <div id="sqrtSettings" class="control-group hidden">
+            <label>Wurzeln bis:</label>
+            <input type="number" id="maxSqrtNumber" value="100" min="4" max="10000" step="1" style="width: 80px;">
+        </div>
+        <div id="tensCrossingGroup" class="control-group hidden">
+            <label>Zehnerübergänge:</label>
+            <select id="tensCrossingSelect">
+                <option value="0">Keine</option>
+                <option value="1">Bis zu 1</option>
+                <option value="2">Bis zu 2</option>
+                <option value="any" selected>Beliebig</option>
+            </select>
+        </div>
         <div id="squareSettings" class="control-group hidden">
             <label>Quadratzahlen maximum:</label>
             <input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
@@ -656,6 +689,10 @@
             </div>
             <div class="checkbox-group" id="deutschTypesSpecial">
                 <label><input type="checkbox" value="sentences" id="sentencesCheck"> 📖 Sätze</label>
+                <label><input type="checkbox" value="wordTypes" id="wordTypesCheck"> Wortarten</label>
+                <label><input type="checkbox" value="consonants" id="consonantsCheck"> Konsonanten</label>
+                <label><input type="checkbox" value="vowelLength" id="vowelLengthCheck"> Selbstlaute kurz/lang</label>
+                <label><input type="checkbox" value="syllables" id="syllablesCheck"> Silben</label>
             </div>
             <label>📖 Schwierigkeit:</label>
             <select id="difficultySelect">
@@ -672,10 +709,15 @@
         </div>
     </div>
 
+    <div id="taskCountGroup" class="control-group no-print">
+        <label>Aufgaben pro Seite:</label>
+        <div><input type="number" id="taskCount" value="40" min="1" step="1" style="width:70px"><span id="taskCountMax" style="margin-left:8px">max. 40</span></div>
+    </div>
     <div id="multiPageContainer" class="multi-page-container"></div>
 </div>
 
 <script>
+    // Geplant: Zehnerübergänge, Standard "Beliebig".
     const wordLists = {
         easy: ["Hund", "Katze", "Maus", "Ball", "Auto", "Haus", "Tisch", "Baum", "Fisch", "Kind", 
 		"Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", 
@@ -693,12 +735,40 @@
 		"Bruder", "jung", "müssen", "Zug", "Kuh", "Mutter",
 		"Korb", "Vogel", "Hose", "Nashorn", "Wolke", "Knopf", "Rock",
 		"Fuß","kurz","Puppe","Geburt","Minute","Stunde","grüßen","Mund",
-		"Sekunde","wütend","Abend","Freund","Mond","Tod","Advent","Monat","Jahr"
+		"Sekunde","wütend","Abend","Freund","Mond","Tod","Advent","Monat","Jahr", "sind", "rund",
+		"Hund", "Pferd", "wütend", "Kind", "sind", "und", "rund", "Beispiel","Fernseher","Mittag",
+		"Sonntag","Dienstag","Feuerwehr","Mittwoch","Montag","Donnerstag","Freitag","Samstag","Morgen","Abend",
+		"gelb","lieb","gibt","ob","Dieb","Weihnachten","Ergebnis","Laub","Flugzeug","Erdbeere","Nachmittag",
+		"Frühstück","verletzten","verspricht","Geschichte","verbieten","vor","Vorschlag","verstecken","gesund","verdoppeln",
+		"verlieren","voraus","vorsichtig","gewinnen","vergessen","vermissen","versuchen"
 		],
         hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
 		custom: []
 	};
 	
+    const extraRegularWords = {
+      easy:["Hase","Nase","Ofen","Oma","Teller","Kissen","Sonne","Zimmer"],
+      medium:["Klasse","Messer","Hammer","Koffer","Ritter","Wetter","klettern","sammeln","rollen","brennen","mutig","freundlich"],
+      hard:["Klassenzimmer","Sonnenblume","Wassermelone","Schulranzen","Sommerferien","Regenjacke","Klettergerüst"]
+    };
+    Object.keys(extraRegularWords).forEach(level=>{ const seen=new Set(wordLists[level].map(w=>w.toLowerCase())); extraRegularWords[level].forEach(w=>{if(!seen.has(w.toLowerCase())) wordLists[level].push(w);}); });
+
+    const wordTypeList = [
+      ...["Hund","Katze","Haus","Baum","Schule","Lehrer","Wasser","Fenster","Blume","Garten","Sommer","Sonne","Mutter","Bruder","Wolke","Freund","Tafel","Pferd"].map(word=>({word,type:"noun"})),
+      ...["spielen","springen","tanzen","malen","arbeiten","tragen","wachsen","bauen","laufen","kaufen","kochen","gewinnen","vergessen","versuchen","rennen","sammeln","fallen","erklären"].map(word=>({word,type:"verb"})),
+      ...["gut","rot","blau","alt","neu","klein","schnell","langsam","fröhlich","traurig","leise","gefährlich","groß","jung","kurz","wütend","gesund","vorsichtig","mutig","freundlich"].map(word=>({word,type:"adjective"}))
+    ];
+    const consonantList = [
+      {word:"Wasser",letter:"S",gap:"Wa__er",answer:"ss"},{word:"Sommer",letter:"M",gap:"So__er",answer:"mm"},{word:"Mutter",letter:"T",gap:"Mu__er",answer:"tt"},{word:"Puppe",letter:"P",gap:"Pu__e",answer:"pp"},{word:"Klasse",letter:"S",gap:"Kla__e",answer:"ss"},{word:"Sonne",letter:"N",gap:"So__e",answer:"nn"},{word:"Zimmer",letter:"M",gap:"Zi__er",answer:"mm"},{word:"Kissen",letter:"S",gap:"Ki__en",answer:"ss"},{word:"Messer",letter:"S",gap:"Me__er",answer:"ss"},{word:"Teller",letter:"L",gap:"Te__er",answer:"ll"},{word:"Vogel",letter:"G",gap:"Vo__el",answer:"g"},{word:"Hase",letter:"S",gap:"Ha__e",answer:"s"},{word:"Nase",letter:"S",gap:"Na__e",answer:"s"},{word:"Blume",letter:"M",gap:"Blu__e",answer:"m"},{word:"Tafel",letter:"F",gap:"Ta__el",answer:"f"},{word:"Regen",letter:"G",gap:"Re__en",answer:"g"},{word:"Korb",letter:"R",gap:"Ko__b",answer:"r"},{word:"Mund",letter:"N",gap:"Mu__d",answer:"n"},{word:"Bruder",letter:"D",gap:"Bru__er",answer:"d"},{word:"Schule",letter:"L",gap:"Schu__e",answer:"l"},{word:"Garten",letter:"T",gap:"Gar__en",answer:"t"},{word:"Wolke",letter:"L",gap:"Wo__ke",answer:"l"}
+    ];
+    const vowelLengthList = [
+      {word:"Ball",length:"short"},{word:"Mutter",length:"short"},{word:"Sonne",length:"short"},{word:"Kissen",length:"short"},{word:"Teller",length:"short"},{word:"Sommer",length:"short"},{word:"Wasser",length:"short"},{word:"Zimmer",length:"short"},{word:"Kopf",length:"short"},{word:"kurz",length:"short"},
+      {word:"Nase",length:"long"},{word:"Hase",length:"long"},{word:"Schule",length:"long"},{word:"Blume",length:"long"},{word:"Hose",length:"long"},{word:"Vogel",length:"long"},{word:"Ofen",length:"long"},{word:"Oma",length:"long"},{word:"Brot",length:"long"},{word:"Mond",length:"long"},{word:"Fuß",length:"long"},{word:"Tag",length:"long"}
+    ];
+    const syllableList = [
+      {word:"Schule",parts:["Schu","le"]},{word:"Lehrer",parts:["Leh","rer"]},{word:"Wasser",parts:["Was","ser"]},{word:"Fenster",parts:["Fens","ter"]},{word:"Blume",parts:["Blu","me"]},{word:"Garten",parts:["Gar","ten"]},{word:"Sommer",parts:["Som","mer"]},{word:"Tafel",parts:["Ta","fel"]},{word:"Pause",parts:["Pau","se"]},{word:"Sonne",parts:["Son","ne"]},{word:"Regen",parts:["Re","gen"]},{word:"Mutter",parts:["Mut","ter"]},{word:"Puppe",parts:["Pup","pe"]},{word:"Minute",parts:["Mi","nu","te"]},{word:"Sekunde",parts:["Se","kun","de"]},{word:"Monat",parts:["Mo","nat"]},{word:"Beispiel",parts:["Bei","spiel"]},{word:"Fernseher",parts:["Fern","se","her"]},{word:"Mittag",parts:["Mit","tag"]},{word:"Sonntag",parts:["Sonn","tag"]},{word:"Dienstag",parts:["Diens","tag"]},{word:"Mittwoch",parts:["Mitt","woch"]},{word:"Donnerstag",parts:["Don","ners","tag"]},{word:"Freitag",parts:["Frei","tag"]},{word:"Samstag",parts:["Sams","tag"]},{word:"Erdbeere",parts:["Erd","bee","re"]},{word:"Nachmittag",parts:["Nach","mit","tag"]},{word:"Frühstück",parts:["Früh","stück"]},{word:"Schmetterling",parts:["Schmet","ter","ling"]},{word:"Schokolade",parts:["Scho","ko","la","de"]},{word:"Elefant",parts:["E","le","fant"]},{word:"Krankenhaus",parts:["Kran","ken","haus"]},{word:"Regenbogen",parts:["Re","gen","bo","gen"]},{word:"Feuerwehr",parts:["Feu","er","wehr"]},{word:"Geburtstag",parts:["Ge","burts","tag"]}
+    ];
+
     const sentencesList = [
         "Ich helfe meiner Mama beim Kochen.",
         "Mein Papa liest mir eine Gute-Nacht-Geschichte vor.",
@@ -751,7 +821,36 @@
     function rand(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
+    function shuffleCopy(items) {
+        const copy = [...items];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+    function takeWithoutRepeats(pool, count, usedSet, keyFn = item => String(item)) {
+        if (!pool.length || count <= 0) return [];
+        const uniquePool = [];
+        const localKeys = new Set();
+        for (const item of pool) {
+            const key = keyFn(item);
+            if (!localKeys.has(key)) { localKeys.add(key); uniquePool.push(item); }
+        }
+        let available = shuffleCopy(uniquePool.filter(item => !usedSet.has(keyFn(item))));
+        const result = [];
+        while (result.length < count) {
+            if (available.length === 0) {
+                usedSet.clear();
+                available = shuffleCopy(uniquePool);
+                if (available.length === 0) break;
+            }
+            const item = available.pop();
+            usedSet.add(keyFn(item));
+            result.push(item);
+        }
+        return result;
+    }
     function generateSquareTask(maxBase) {
         let base = rand(2, maxBase);
         return { display: `${base} × ${base} = ` };
@@ -765,25 +864,20 @@
         return { display: `√${square} = ` };
     }
 
-    function generateTimeTasks(count, difficulty) {
-        let tasks = [];
+    function generateTimeTasks(count, difficulty, usedSet = new Set()) {
         let minutesList = [];
-        if (difficulty === 'hours') {
-            minutesList = [0];
-        } else if (difficulty === 'quarters') {
-            minutesList = [0, 15, 30, 45];
-        } else {
-            for (let m = 0; m < 60; m += 5) minutesList.push(m);
+        if (difficulty === 'hours') minutesList = [0];
+        else if (difficulty === 'quarters') minutesList = [0, 15, 30, 45];
+        else for (let m = 0; m < 60; m += 5) minutesList.push(m);
+        const pool = [];
+        for (let hour = 1; hour <= 12; hour++) {
+            for (const minute of minutesList) {
+                pool.push({ type: 'read', hour, minute, displayHour: hour, minuteStr: String(minute).padStart(2, '0') });
+                pool.push({ type: 'draw', hour, minute, displayHour: hour, minuteStr: String(minute).padStart(2, '0') });
+            }
         }
-        for (let i = 0; i < count; i++) {
-            let hour = rand(1, 12);
-            let minute = minutesList[Math.floor(Math.random() * minutesList.length)];
-            let taskType = Math.random() < 0.5 ? 'read' : 'draw';
-            tasks.push({ type: taskType, hour: hour, minute: minute, displayHour: hour, minuteStr: minute === 0 ? '00' : minute.toString().padStart(2, '0') });
-        }
-        return tasks;
+        return takeWithoutRepeats(pool, count, usedSet, t => `${t.type}:${t.hour}:${t.minute}`);
     }
-
     function drawClockSVG(hour, minute, withHands = true) {
         const hourAngle = (hour % 12) * 30 + minute * 0.5;
         const minuteAngle = minute * 6;
@@ -973,286 +1067,213 @@
 		return html;
 	}
 
-    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, operandMax) {
-	   // Sicherstellen, dass operandMax einen gültigen Wert hat
-
-		if (operandMax === undefined || isNaN(operandMax) || operandMax < 1) {
-			operandMax = 100;
-		}
-		let tasks = [];
-		const opsList = [];
-		if (operations.add) opsList.push('+');
-		if (operations.sub) opsList.push('-');
-		if (operations.mul) opsList.push('*');
-		if (operations.div) opsList.push('/');
-		if (operations.square) opsList.push('□');
-		if (operations.sqrt) opsList.push('√');
-		
-		if (opsList.length === 0) opsList.push('+');
-		
-		for (let i = 0; i < count; i++) {
-			let op = opsList[Math.floor(Math.random() * opsList.length)];
-			let taskText = "";
-			let valid = false;
-			let attempts = 0;
-			
-			while (!valid && attempts < 40) {
-				if (op === '+') {
-					let a = rand(0, maxNumber);  //a = 50
-					let maxPossibleB = maxNumber - a; // maxpossibleb 100-50 = 50
-					// Falls maxPossibleB negativ ist (kann eigentlich nicht passieren), auf 0 setzen
-					if (maxPossibleB < 0) maxPossibleB = 0;
-					let maxB = Math.min(maxPossibleB, operandMax);
-					let b = rand(0, maxB);
-					taskText = `${a} + ${b} =`;
-					//taskText = `${operandMax}`;					
-					//taskText = getMathOperandMax();
-					valid = true;
-				} 
-				else if (op === '-') {
-					let a = rand(0, maxNumber);
-					let maxPossibleB = a;
-					let maxB = Math.min(maxPossibleB, operandMax);
-					let b = rand(0, maxB);
-					taskText = `${a} - ${b} =`;
-					valid = true;
-				} 
-				else if (op === '*') {
-					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
-					
-					if (onlyTable && selectedRows && selectedRows.length > 0) {
-						// Nur ausgewählte 1×1-Reihen
-						let row = selectedRows[Math.floor(Math.random() * selectedRows.length)];
-						let b = rand(0, 10);
-						if (row * b <= maxNumber) {
-							taskText = `${row} × ${b} =`;
-							valid = true;
-						}
-					}
-					if (!valid) {
-						if (onlyTable) {
-							// Nur 1×1-Reihen (1-10)
-							let a = rand(1, 10);
-							let b = rand(1, 10);
-							if (a * b <= maxNumber) {
-								taskText = `${a} × ${b} =`;
-								valid = true;
-							}
-						} else {
-							// Auch größere Zahlen erlauben
-							let a = rand(1, Math.min(20, maxNumber));
-							let b = rand(1, Math.floor(maxNumber / a));
-							if (a * b <= maxNumber && a * b > 0) {
-								taskText = `${a} × ${b} =`;
-								valid = true;
-							}
-						}
-					}
-				} 
-				else if (op === '/') {
-					let remainderMode = document.getElementById('divisionWithRemainder')?.checked || false;
-					let decimalMode = document.getElementById('divisionWithDecimal')?.checked || false;
-					let onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
-					
-					let validDivision = false;
-					let attempts2 = 0;
-					
-					if (remainderMode) {
-						// Division MIT Rest
-						while (!validDivision && attempts2 < 40) {
-							let divisor, quotient, remainder, dividend;
-							
-							if (onlyTable && selectedRows && selectedRows.length > 0) {
-								// Nur aus den ausgewählten 1×1-Reihen
-								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
-								if (divisor === 0) divisor = 1;
-								quotient = rand(1, 10);
-								remainder = rand(1, divisor - 1);
-								dividend = divisor * quotient + remainder;
-							} else if (onlyTable) {
-								// Nur 1×1-Reihen (1-10)
-								divisor = rand(2, 10);
-								quotient = rand(1, 10);
-								remainder = rand(1, divisor - 1);
-								dividend = divisor * quotient + remainder;
-							} else {
-								// Auch größere Zahlen
-								divisor = rand(2, Math.min(20, maxNumber));
-								quotient = rand(1, Math.floor(maxNumber / divisor));
-								remainder = rand(1, divisor - 1);
-								dividend = divisor * quotient + remainder;
-							}
-							
-							if (dividend <= maxNumber && remainder > 0) {
-								taskText = `${dividend} : ${divisor} =`;
-								validDivision = true;
-							}
-							attempts2++;
-						}
-						if (!validDivision) taskText = `9 : 4 =`;
-						valid = true;
-					} 
-					else if (decimalMode) {
-						// Division MIT Nachkommastellen
-						while (!validDivision && attempts2 < 40) {
-							let divisor, dividend;
-							
-							if (onlyTable && selectedRows && selectedRows.length > 0) {
-								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
-								if (divisor === 0) divisor = 1;
-								dividend = rand(1, maxNumber);
-								if (dividend % divisor !== 0 && dividend / divisor <= 20) {
-									validDivision = true;
-								}
-							} else if (onlyTable) {
-								divisor = rand(2, 10);
-								dividend = rand(1, maxNumber);
-								if (dividend % divisor !== 0 && dividend / divisor <= 20) {
-									validDivision = true;
-								}
-							} else {
-								divisor = rand(2, Math.min(20, maxNumber));
-								dividend = rand(1, maxNumber);
-								if (dividend % divisor !== 0) {
-									validDivision = true;
-								}
-							}
-							
-							if (validDivision) {
-								taskText = `${dividend} : ${divisor} =`;
-								validDivision = true;
-							}
-							attempts2++;
-						}
-						if (!validDivision) taskText = `9 : 4 =`;
-						valid = true;
-					}
-					else {
-						// Glatte Division
-						while (!validDivision && attempts2 < 30) {
-							let divisor, quotient, dividend;
-							
-							if (onlyTable && selectedRows && selectedRows.length > 0) {
-								// Nur aus den ausgewählten Reihen
-								divisor = selectedRows[Math.floor(Math.random() * selectedRows.length)];
-								if (divisor === 0) divisor = 1;
-								quotient = rand(1, 10);
-								dividend = divisor * quotient;
-							} else if (onlyTable) {
-								divisor = rand(1, 10);
-								quotient = rand(1, 10);
-								dividend = divisor * quotient;
-							} else {
-								divisor = rand(1, Math.min(12, maxNumber));
-								quotient = rand(1, Math.floor(maxNumber / divisor));
-								dividend = divisor * quotient;
-							}
-							
-							if (dividend <= maxNumber) {
-								taskText = `${dividend} : ${divisor} =`;
-								validDivision = true;
-							}
-							attempts2++;
-						}
-						if (!validDivision) taskText = `4 : 2 =`;
-						valid = true;
-					}
-				}
-				else if (op === '□') {
-					let sq = generateSquareTask(squareMaxBase);
-					taskText = sq.display;
-					valid = true;
-				}
-				else if (op === '√') {
-					let sqrtT = generateSqrtTask(maxNumber);
-					taskText = sqrtT.display;
-					valid = true;
-				}
-				attempts++;
-			}
-			if (!valid) taskText = `1 + 1 =`;
-			tasks.push({ text: taskText });
-		}
-		return tasks;
-	}
-    
-    // Deutsch-Aufgaben - Eigene Wörter zuerst (keine Duplikate), dann Auffüllen mit Listen-Wörtern
-	function generateGermanTasks(count, types, difficulty) {
-		let tasks = [];
-		const useCustom = document.getElementById('useCustomWords')?.checked || false;
-		const customInput = document.getElementById('customWordsInput')?.value || '';
-		let customWords = [];
-		
-		if (useCustom && customInput.trim()) {
-			customWords = parseCustomWords(customInput);
-		}
-		
-		// Nur Sätze
-		if (types.sentences) {
-			let sentencePool = [...sentencesList];
-			// Sätze mischen
-			for (let i = sentencePool.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[sentencePool[i], sentencePool[j]] = [sentencePool[j], sentencePool[i]];
-			}
-			for (let i = 0; i < Math.min(6, sentencePool.length); i++) {
-				tasks.push({ prompt: `📖 ${sentencePool[i]}`, lineCount: 3 });
-			}
-			return tasks;
-		}
-		
-		// Basis-Wortliste aus der Schwierigkeitsstufe
-		let baseWordPool = [...(wordLists[difficulty] || wordLists.medium)];
-		
-		// Mischen der Basis-Wortliste
-		for (let i = baseWordPool.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[baseWordPool[i], baseWordPool[j]] = [baseWordPool[j], baseWordPool[i]];
-		}
-		
-		// Eigene Wörter zuerst (wenn vorhanden), danach Basis-Wörter
-		let finalWordPool = [];
-		
-		// 1. Eigene Wörter hinzufügen (ohne Duplikate)
-		if (useCustom && customWords.length > 0) {
-			// Eigene Wörter ebenfalls mischen
-			for (let i = customWords.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[customWords[i], customWords[j]] = [customWords[j], customWords[i]];
-			}
-			finalWordPool.push(...customWords);
-		}
-		
-		// 2. Basis-Wörter hinzufügen (nur die, die nicht schon in den eigenen Wörtern vorkommen)
-		for (let word of baseWordPool) {
-			if (!finalWordPool.includes(word)) {
-				finalWordPool.push(word);
-			}
-		}
-		
-		// Maximale Aufgaben: 14, aber nicht mehr als verfügbare Wörter
-		let taskCount = Math.min(14, finalWordPool.length);
-		
-		// Aufgaben erstellen (jedes Wort genau einmal)
-		for (let i = 0; i < taskCount; i++) {
-			tasks.push({ prompt: `📝 ${finalWordPool[i]}`, lineCount: 1 });
-		}
-		
-		return tasks;
-	}
-    
-    function calculateOptimalTaskCount(types, difficulty) {
-        const MAX_HEIGHT = 950;
-        let linesPerTask = types.sentences ? 3 : 1;
-        let estimatedHeightPerTask = 40 + (linesPerTask * 56) + 15;
-        let maxTasks = Math.floor(MAX_HEIGHT / estimatedHeightPerTask);
-        if (types.sentences) {
-            return Math.min(6, Math.max(3, maxTasks));
-        } else {
-            return 14;
+    function buildFiniteMathPool(operation, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber) {
+        const pool = [];
+        if (operation === '*') {
+            const onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
+            if (onlyTable) {
+                const rows = (selectedRows && selectedRows.length ? selectedRows : [1,2,3,4,5,6,7,8,9,10]);
+                for (const row of rows) {
+                    for (let factor = 0; factor <= 10; factor++) {
+                        if (factor * row <= maxNumber) pool.push(`${factor} × ${row} =`);
+                    }
+                }
+            } else {
+                // Ohne 1×1-Begrenzung: größere Faktoren zulassen, solange das Ergebnis im Zahlenraum bleibt.
+                for (let a = 1; a <= Math.min(maxNumber, 50); a++) {
+                    const maxB = Math.floor(maxNumber / a);
+                    for (let b = 1; b <= maxB; b++) {
+                        if (a > 10 || b > 10) pool.push(`${a} × ${b} =`);
+                    }
+                }
+            }
+        } else if (operation === '□') {
+            for (let base = 2; base <= squareMaxBase; base++) pool.push(`${base} × ${base} =`);
+        } else if (operation === '√') {
+            const maxRoot = Math.max(2, Math.floor(Math.sqrt(Math.max(4, sqrtMaxNumber || 100))));
+            for (let root = 2; root <= maxRoot; root++) pool.push(`√${root * root} =`);
+        } else if (operation === '/') {
+            const remainderMode = document.getElementById('divisionWithRemainder')?.checked || false;
+            const decimalMode = document.getElementById('divisionWithDecimal')?.checked || false;
+            const onlyTable = document.getElementById('divisionOnlyTable')?.checked !== false;
+            const divisors = onlyTable
+                ? (selectedRows && selectedRows.length ? selectedRows.filter(v => v > 0) : [1,2,3,4,5,6,7,8,9,10])
+                : Array.from({length: Math.min(20, maxNumber)}, (_, i) => i + 1).filter(v => v > 0);
+            if (remainderMode) {
+                for (const divisor of divisors.filter(v => v >= 2)) {
+                    const maxQ = onlyTable ? 10 : Math.max(1, Math.floor(maxNumber / divisor));
+                    for (let quotient = 1; quotient <= maxQ; quotient++) {
+                        for (let remainder = 1; remainder < divisor; remainder++) {
+                            const dividend = divisor * quotient + remainder;
+                            if (dividend <= maxNumber) pool.push({text:`${dividend} : ${divisor} =`, remainder, key:`${dividend}:${divisor}:R${remainder}`});
+                        }
+                    }
+                }
+            } else if (decimalMode) {
+                for (const divisor of divisors.filter(v => v >= 2)) {
+                    for (let dividend = 1; dividend <= maxNumber; dividend++) {
+                        if (dividend % divisor !== 0 && (!onlyTable || dividend / divisor <= 20)) pool.push(`${dividend} : ${divisor} =`);
+                    }
+                }
+            } else {
+                for (const divisor of divisors) {
+                    const maxQ = onlyTable ? 10 : Math.max(1, Math.floor(maxNumber / divisor));
+                    for (let quotient = 1; quotient <= maxQ; quotient++) {
+                        const dividend = divisor * quotient;
+                        if (dividend <= maxNumber) pool.push(`${dividend} : ${divisor} =`);
+                    }
+                }
+            }
         }
+        return pool;
     }
+    function countTensCrossingsAdd(a, b) {
+        return b <= 0 ? 0 : Math.floor((a + b) / 10) - Math.floor(a / 10);
+    }
+    function countTensCrossingsSub(a, b) {
+        return b <= 0 ? 0 : Math.floor(a / 10) - Math.floor((a - b) / 10);
+    }
+    function isAllowedTensCrossing(op, a, b) {
+        const mode = document.getElementById('tensCrossingSelect')?.value || 'any';
+        if (mode === 'any') return true;
+        const limit = parseInt(mode, 10);
+        const crossings = op === '+' ? countTensCrossingsAdd(a, b) : countTensCrossingsSub(a, b);
+        return crossings <= limit;
+    }
+    function generateUniqueRandomArithmetic(op, maxNumber, operandMax, usedSet) {
+        const maxAttempts = 250;
+        let lastCandidate = null;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            let text;
+            if (op === '+') {
+                const a = rand(0, maxNumber);
+                const maxB = Math.min(Math.max(0, maxNumber - a), operandMax);
+                const b = rand(0, maxB);
+                text = `${a} + ${b} =`;
+            } else {
+                const a = rand(0, maxNumber);
+                const maxB = Math.min(a, operandMax);
+                const b = rand(0, maxB);
+                text = `${a} - ${b} =`;
+            }
+            lastCandidate = text;
+            const match = text.match(/^(\d+)\s*([+-])\s*(\d+)/);
+            const allowed = match ? isAllowedTensCrossing(match[2], Number(match[1]), Number(match[3])) : true;
+            if (allowed && !usedSet.has(text)) {
+                usedSet.add(text);
+                return text;
+            }
+        }
+        // Der Zufallsraum ist faktisch erschoepft oder sehr klein. Dann darf wiederholt werden.
+        const crossingMode = document.getElementById('tensCrossingSelect')?.value || 'any';
+        if (crossingMode !== 'any') {
+            for (let a = 0; a <= maxNumber; a++) {
+                const maxB = op === '+' ? Math.min(maxNumber - a, operandMax) : Math.min(a, operandMax);
+                for (let b = 0; b <= maxB; b++) {
+                    if (!isAllowedTensCrossing(op, a, b)) continue;
+                    const candidate = `${a} ${op} ${b} =`;
+                    if (!usedSet.has(candidate)) { usedSet.add(candidate); return candidate; }
+                }
+            }
+        }
+        if (lastCandidate) return lastCandidate;
+        return op === '+' ? '1 + 1 =' : '1 - 1 =';
+    }
+    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber, operandMax, state) {
+        operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 100;
+        const opsList = [];
+        if (operations.add) opsList.push('+');
+        if (operations.sub) opsList.push('-');
+        if (operations.mul) opsList.push('*');
+        if (operations.div) opsList.push('/');
+        if (operations.square) opsList.push('□');
+        if (operations.sqrt) opsList.push('√');
+        if (!opsList.length) opsList.push('+');
 
+        const finitePools = new Map();
+        for (const op of opsList) {
+            if (['*','/','□','√'].includes(op)) finitePools.set(op, buildFiniteMathPool(op, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber));
+        }
+        const tasks = [];
+        for (let i = 0; i < count; i++) {
+            let op = opsList[Math.floor(Math.random() * opsList.length)];
+            let text;
+            let taskMeta = null;
+            if (finitePools.has(op)) {
+                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
+                const picked = takeWithoutRepeats(finitePools.get(op), 1, used, item => typeof item === 'string' ? item : (item.key || item.text));
+                const pickedTask = picked[0] || '1 + 1 =';
+                if (typeof pickedTask === 'string') text = pickedTask;
+                else { text = pickedTask.text; taskMeta = {remainder:pickedTask.remainder}; }
+            } else {
+                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
+                text = generateUniqueRandomArithmetic(op, maxNumber, operandMax, used);
+            }
+            tasks.push({text, ...(taskMeta || {})});
+        }
+        return tasks;
+    }
+    // Deutsch-Aufgaben: innerhalb einer Generierung ohne Wiederholung, bis der Pool leer ist.
+    function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function chunks(items,n){const a=Array.from({length:n},()=>[]);items.forEach((x,i)=>a[i%n].push(x));return a;}
+    function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.wordTypes,x=>x.word+':'+x.type],consonants:[consonantList,state.consonants,x=>x.word],vowelLength:[vowelLengthList,state.vowelLength,x=>x.word],syllables:[syllableList,state.syllables,x=>x.word]};const m=map[type];return takeWithoutRepeats(m[0],count,m[1],m[2]);}
+    function renderWordTypes(items){return `<div class="de-special"><div class="de-instruction">Bestimme die Wortart.</div><div class="de-table-grid-2">${chunks(items,2).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Nomen</th><th>Verb</th><th>Adjektiv</th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
+    function renderConsonants(items){return `<div class="de-special"><div class="de-instruction">Ergänze den oder die fehlenden Konsonanten und schreibe das Wort richtig auf.</div><div class="consonant-grid">${items.map(x=>`<div class="consonant-card"><span class="hint-letter">${esc(x.letter)}:</span><span class="de-word">${esc(x.gap)}</span><span class="de-write-line"></span></div>`).join('')}</div></div>`;}
+    function renderVowels(items){return `<div class="de-special"><div class="de-instruction">Bestimme den Selbstlaut.</div><div class="de-table-grid-3">${chunks(items,3).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Kurz</th><th>Lang</th></tr></thead><tbody>${c.map(x=>`<tr><td>${esc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
+    function renderSyllableSection(title,items,kind){return `<section class="syllable-section"><div class="syllable-title">${title}</div><div class="syllable-rows">${items.map(x=>{if(kind==='count')return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="syllable-count"></span> Silben</div>`;if(kind==='arcs')return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="syllable-work"></span></div>`;return `<div class="syllable-row"><span class="de-word">${esc(x.word)}</span><span class="de-write-line"></span></div>`;}).join('')}</div></section>`;}
+    function renderSyllables(items){const a=items.slice(0,6),b=items.slice(6,12),c=items.slice(12,18);return `<div class="de-special">${renderSyllableSection('1. Trenne die Wörter in Silben.',a,'split')}${renderSyllableSection('2. Zeichne Silbenbögen.',b,'arcs')}${renderSyllableSection('3. Zähle die Silben.',c,'count')}</div>`;}
+
+    function generateGermanTasks(count, types, difficulty, state) {
+        if (types.letters) {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'.split('');
+            return takeWithoutRepeats(letters, count, state.letters, l => l).map(letter => ({ prompt: `✍️ ${letter} ${letter.toLowerCase()}`, lineCount: 1 }));
+        }
+        if (types.sentences) {
+            return takeWithoutRepeats(sentencesList, count, state.sentences, s => s).map(sentence => ({ prompt: `📖 ${sentence}`, lineCount: 3 }));
+        }
+        const useCustom = document.getElementById('useCustomWords')?.checked || false;
+        const customInput = document.getElementById('customWordsInput')?.value || '';
+        const customWords = useCustom ? parseCustomWords(customInput) : [];
+        const baseWords = wordLists[difficulty] || wordLists.medium;
+        const pool = [];
+        const seen = new Set();
+        for (const word of [...customWords, ...baseWords]) {
+            const key = word.toLocaleLowerCase('de-DE');
+            if (!seen.has(key)) { seen.add(key); pool.push(word); }
+        }
+        return takeWithoutRepeats(pool, count, state.words, w => w.toLocaleLowerCase('de-DE')).map(word => ({ prompt: `📝 ${word}`, lineCount: 1 }));
+    }
+    function getTaskCountMaximum() {
+        if (modeSelect.value === 'math') {
+            const ops = getMathOperations();
+            if (ops.time) return 12;
+            if (ops.pyramid) {
+                const difficulty = document.getElementById('pyramidDifficulty')?.value || 'easy';
+                return difficulty === 'easy' ? 12 : difficulty === 'medium' ? 6 : 4;
+            }
+            return 40;
+        }
+        const t=getDeutschTypes(); if(t.sentences)return 6; if(t.wordTypes)return 20; if(t.consonants)return 18; if(t.vowelLength)return 21; if(t.syllables)return 18; return 14;
+    }
+    function resetTaskCountToMaximum() {
+        const max = getTaskCountMaximum();
+        const input = document.getElementById('taskCount');
+        const label = document.getElementById('taskCountMax');
+        if (input) { input.max = String(max); input.value = String(max); }
+        if (label) label.textContent = `max. ${max}`;
+        return max;
+    }
+    function getRequestedTaskCount() {
+        const max = getTaskCountMaximum();
+        const input = document.getElementById('taskCount');
+        let value = parseInt(input?.value, 10);
+        if (!Number.isFinite(value)) value = max;
+        value = Math.max(1, Math.min(max, value));
+        if (input) { input.max = String(max); input.value = String(value); }
+        const label = document.getElementById('taskCountMax');
+        if (label) label.textContent = `max. ${max}`;
+        return value;
+    }
     const modeSelect = document.getElementById('modeSelect');
     const mathControlsDiv = document.getElementById('mathControls');
     const deutschControlsDiv = document.getElementById('deutschControls');
@@ -1292,7 +1313,7 @@
         } else {
             mathControlsDiv.classList.add('hidden');
             deutschControlsDiv.classList.remove('hidden');
-            document.querySelectorAll('#mathRangeGroup, #multiplicationRowGroup, #squareSettings, #timeSettings, #pyramidSettings').forEach(el => {
+            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings').forEach(el => {
                 if (el) el.classList.add('hidden');
             });
         }
@@ -1316,24 +1337,14 @@
 	}
     
     function getDeutschTypes() {
-        const sentencesActive = document.getElementById('sentencesCheck')?.checked || false;
-        if (sentencesActive) {
-            return { copyWords: false, letters: false, sentences: true };
-        } else {
-            return {
-                copyWords: document.getElementById('wordsCheck')?.checked || false,
-                letters: document.getElementById('lettersCheck')?.checked || false,
-                sentences: false
-            };
-        }
+        return {copyWords:document.getElementById('wordsCheck')?.checked||false,letters:document.getElementById('lettersCheck')?.checked||false,sentences:document.getElementById('sentencesCheck')?.checked||false,wordTypes:document.getElementById('wordTypesCheck')?.checked||false,consonants:document.getElementById('consonantsCheck')?.checked||false,vowelLength:document.getElementById('vowelLengthCheck')?.checked||false,syllables:document.getElementById('syllablesCheck')?.checked||false};
     }
-    
     function updateCustomWordsVisibility() {
         const isDeutschMode = modeSelect.value === 'deutsch';
         const types = getDeutschTypes();
         const customGroup = document.getElementById('customWordsGroup');
         if (customGroup) {
-            if (isDeutschMode && !types.sentences) {
+            if (isDeutschMode && types.copyWords) {
                 customGroup.classList.remove('hidden');
             } else {
                 customGroup.classList.add('hidden');
@@ -1341,7 +1352,7 @@
         }
     }
     
-    function createWorksheet(pageIndex, totalPages) {
+    function createWorksheet(pageIndex, totalPages, generationState) {
         const mode = modeSelect.value;
         const worksheetDiv = document.createElement('div');
         worksheetDiv.className = 'worksheet';
@@ -1361,12 +1372,13 @@
             let ops = getMathOperations();
             let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
             let squareBase = parseInt(document.getElementById('maxSquareBase').value) || 10;
+            let sqrtMaxNumber = parseInt(document.getElementById('maxSqrtNumber')?.value, 10) || 100;
             
             if (ops.time) {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
-                let timeTasks = generateTimeTasks(12, timeDifficulty);
+                let timeTasks = generateTimeTasks(getRequestedTaskCount(), timeDifficulty, generationState.time);
                 timeTasks.forEach(task => {
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item time-task';
@@ -1382,25 +1394,32 @@
 				tasksGrid.className = 'tasks-grid pyramid-grid';
 				
 				let pyramidDifficulty = document.getElementById('pyramidDifficulty').value;
+                tasksGrid.classList.add(`pyramid-grid-${pyramidDifficulty}`);
 				let maxNum = parseInt(document.getElementById('numberRange').value) || 100;
 				let levels, missingCount, tasksPerPage;
 				
 				if (pyramidDifficulty === 'easy') {
 					levels = 3;
 					missingCount = 3;
-					tasksPerPage = 4;
+					tasksPerPage = 12;
 				} else if (pyramidDifficulty === 'medium') {
 					levels = 4;
 					missingCount = 5;
-					tasksPerPage = 3;
+					tasksPerPage = 6;
 				} else {
 					levels = 5;
 					missingCount = 7;
-					tasksPerPage = 2;
+					tasksPerPage = 4;
 				}
 				
-				for (let p = 0; p < tasksPerPage; p++) {
-					let pyramid = generatePyramid(levels, maxNum, missingCount);
+				for (let p = 0; p < Math.min(tasksPerPage, getRequestedTaskCount()); p++) {
+                    let pyramid;
+                    let attempts = 0;
+                    do {
+                        pyramid = generatePyramid(levels, maxNum, missingCount);
+                        attempts++;
+                    } while (generationState.pyramids.has(JSON.stringify(pyramid.solution)) && attempts < 100);
+                    generationState.pyramids.add(JSON.stringify(pyramid.solution));
 					const taskDiv = document.createElement('div');
 					taskDiv.className = 'task-item pyramid-task';
 					taskDiv.innerHTML = `
@@ -1415,29 +1434,25 @@
 			} else {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
-                let tasks = generateMathTasks(40, ops, maxNum, selectedRows, squareBase, getMathOperandMax());
+                let tasks = generateMathTasks(getRequestedTaskCount(), ops, maxNum, selectedRows, squareBase, sqrtMaxNumber, getMathOperandMax(), generationState.math);
                 tasks.forEach(task => {
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item math-task';
                     const hasLargeNumbers = /\d{3,}/.test(task.text);
-                    taskDiv.innerHTML = `<div class="math-equation ${hasLargeNumbers ? 'small-numbers' : ''}"><span>${task.text}</span><div class="result-box"></div></div>`;
+                    const expression = task.text.replace(/\s*=\s*$/, '');
+                    if (Number.isInteger(task.remainder)) {
+                        taskDiv.innerHTML = `<div class="math-equation math-equation-remainder ${hasLargeNumbers ? 'small-numbers' : ''}"><span class="math-expression">${expression}</span><span class="math-equals">=</span><div class="result-box"></div><span class="remainder-label">R</span><div class="result-box"></div></div>`;
+                    } else {
+                        taskDiv.innerHTML = `<div class="math-equation ${hasLargeNumbers ? 'small-numbers' : ''}"><span class="math-expression">${expression}</span><span class="math-equals">=</span><div class="result-box"></div></div>`;
+                    }
                     tasksGrid.appendChild(taskDiv);
                 });
             }
         } else {
-            tasksGrid = document.createElement('div');
-            tasksGrid.className = 'tasks-grid deutsch-grid';
-            let types = getDeutschTypes();
-            let difficulty = document.getElementById('difficultySelect').value;
-            let taskCount = calculateOptimalTaskCount(types, difficulty);
-            let deutschTasks = generateGermanTasks(taskCount, types, difficulty);
-            deutschTasks.forEach(t => {
-                const taskDiv = document.createElement('div');
-                taskDiv.className = 'task-item deutsch-task';
-                const lineHeightPx = t.lineCount * 56;
-                taskDiv.innerHTML = `<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>`;
-                tasksGrid.appendChild(taskDiv);
-            });
+            const types=getDeutschTypes(); const difficulty=document.getElementById('difficultySelect').value;
+            const special=types.wordTypes?'wordTypes':types.consonants?'consonants':types.vowelLength?'vowelLength':types.syllables?'syllables':null;
+            if(special){tasksGrid=document.createElement('div');tasksGrid.className='deutsch-special-container';const items=specialPick(special,getRequestedTaskCount(),generationState.deutsch);tasksGrid.innerHTML=special==='wordTypes'?renderWordTypes(items):special==='consonants'?renderConsonants(items):special==='vowelLength'?renderVowels(items):renderSyllables(items);}
+            else {tasksGrid=document.createElement('div');tasksGrid.className='tasks-grid deutsch-grid';let deutschTasks=generateGermanTasks(getRequestedTaskCount(),types,difficulty,generationState.deutsch);deutschTasks.forEach(t=>{const taskDiv=document.createElement('div');taskDiv.className='task-item deutsch-task';const lineHeightPx=t.lineCount*56;taskDiv.innerHTML=`<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height: ${lineHeightPx}px; height: ${lineHeightPx}px;"></div>`;tasksGrid.appendChild(taskDiv);});}
         }
         
         const pointsField = document.createElement('div');
@@ -1454,8 +1469,14 @@
         let pageCount = parseInt(pageCountInput.value) || 1;
         pageCount = Math.min(10, Math.max(1, pageCount));
         multiPageContainer.innerHTML = '';
+        const generationState = {
+            math: { byOperation: {} },
+            deutsch: { words:new Set(), letters:new Set(), sentences:new Set(), wordTypes:new Set(), consonants:new Set(), vowelLength:new Set(), syllables:new Set() },
+            time: new Set(),
+            pyramids: new Set()
+        };
         for (let i = 0; i < pageCount; i++) {
-            multiPageContainer.appendChild(createWorksheet(i, pageCount));
+            multiPageContainer.appendChild(createWorksheet(i, pageCount, generationState));
         }
     }
     
@@ -1500,26 +1521,7 @@
     }
     
     function setupDeutschExclusive() {
-        const wordsCheck = document.getElementById('wordsCheck');
-        const lettersCheck = document.getElementById('lettersCheck');
-        const sentencesCheck = document.getElementById('sentencesCheck');
-        if (sentencesCheck) {
-            sentencesCheck.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    if (wordsCheck) wordsCheck.checked = false;
-                    if (lettersCheck) lettersCheck.checked = false;
-                }
-                updateCustomWordsVisibility();
-            });
-        }
-        const disableSentences = () => {
-            if (sentencesCheck && sentencesCheck.checked) {
-                sentencesCheck.checked = false;
-            }
-            updateCustomWordsVisibility();
-        };
-        if (wordsCheck) wordsCheck.addEventListener('change', disableSentences);
-        if (lettersCheck) lettersCheck.addEventListener('change', disableSentences);
+        const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck']; const checks=ids.map(id=>document.getElementById(id)).filter(Boolean); checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));
     }
     
 	function updateVisibilityBasedOnSelection() {
@@ -1544,6 +1546,8 @@
 		const multRow = document.getElementById('multiplicationRowGroup');
 		if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
 		
+		const sqrtSet = document.getElementById('sqrtSettings');
+        if (sqrtSet) ops.sqrt ? sqrtSet.classList.remove('hidden') : sqrtSet.classList.add('hidden');
 		const squareSet = document.getElementById('squareSettings');
 		if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
 		
@@ -1560,16 +1564,26 @@
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
 		}
 		
-		const onlyTableOptions = document.getElementById('divisionOptions');
-		if (onlyTableOptions) {
-			// Anzeigen, wenn Multiplikation ODER Division aktiv ist (und keine anderen Sonderaufgaben)
-			const showOnlyTableOptions = (mode === 'math') && (ops.mul || ops.div) && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
-			showOnlyTableOptions ? onlyTableOptions.classList.remove('hidden') : onlyTableOptions.classList.add('hidden');
-		}
+        const tensCrossingGroup = document.getElementById('tensCrossingGroup');
+        if (tensCrossingGroup) {
+            const showTensCrossing = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            showTensCrossing ? tensCrossingGroup.classList.remove('hidden') : tensCrossingGroup.classList.add('hidden');
+        }
+
+        const tableOnlyOptions = document.getElementById('tableOnlyOptions');
+        if (tableOnlyOptions) {
+            const showTableOnlyOptions = (mode === 'math') && (ops.mul || ops.div) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            showTableOnlyOptions ? tableOnlyOptions.classList.remove('hidden') : tableOnlyOptions.classList.add('hidden');
+        }
+        const divisionOptions = document.getElementById('divisionOptions');
+        if (divisionOptions) {
+            const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt;
+            showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
+        }
 	}    
     function printWorksheets() { window.print(); }
     
-    modeSelect.addEventListener('change', () => { toggleModeUI(); generateMultiPage(); });
+    modeSelect.addEventListener('change', () => { toggleModeUI(); resetTaskCountToMaximum(); generateMultiPage(); });
     generateBtn.addEventListener('click', generateMultiPage);
     printBtn.addEventListener('click', printWorksheets);
     
@@ -1577,7 +1591,16 @@
     toggleModeUI();
     setupSpecialOpsExclusive();
     setupDeutschExclusive();
+    document.querySelectorAll('#deutschTypesBasic input, #deutschTypesSpecial input').forEach(el => {
+        el.addEventListener('change', resetTaskCountToMaximum);
+    });
+    document.querySelectorAll('#mathOpsBasic input, #mathOpsSpecial input').forEach(el => {
+        el.addEventListener('change', resetTaskCountToMaximum);
+    });
+    document.getElementById('pyramidDifficulty')?.addEventListener('change', resetTaskCountToMaximum);
+    document.getElementById('taskCount')?.addEventListener('change', getRequestedTaskCount);
     updateVisibilityBasedOnSelection();
+    resetTaskCountToMaximum();
     generateMultiPage();
 </script>
 </body>
