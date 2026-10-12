@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
+<!-- Header.txt -->
+<!-- Header.txt -->
+<!-- Header.txt -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Grundschul-Arbeitsblatt-Generator - Bauzi84</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Grundschul-Arbeitsblatt-Generator - Bauzi84</title>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
@@ -567,9 +576,85 @@
                 font-size: 0.85rem;
             }
         }
+		
+		.school-tabs{
+			display:flex;
+			gap:8px;
+			margin-bottom:12px;
+		}
+
+		.school-tabs button{
+			background:#e2e8f0;
+			color:#1e293b;
+		}
+
+		.school-tabs button.active{
+			background:#3b82f6;
+			color:#fff;
+		}
+		.solution-math-grid{
+			display:grid;
+			grid-template-columns:repeat(4,1fr);
+			gap:4px 12px;
+			margin-bottom:20px;
+		}
+
+		.solution-math-item{
+			font-family:monospace;
+			font-size:0.9rem;
+		}
+		.solution-sheet{
+			display:block;
+			width:100%;
+			clear:both;
+			page-break-before:always;
+			break-before:page;
+			margin-top:40px;
+		}
+		.solution-sheet .worksheet-header{
+			margin-top:20px;
+		}
+		.solution-vowel{
+			color:#dc2626;
+			font-weight:bold;
+			text-decoration:underline;
+		}
+		.syllable-solution-table th,
+		.syllable-solution-table td{
+			width:25%;
+			text-align:center;
+		}
+
+		.syllable-solution-table th:first-child,
+		.syllable-solution-table td:first-child{
+			width:25%;
+		}
+
+		.syllable-solution-table th:nth-child(2),
+		.syllable-solution-table td:nth-child(2){
+			width:25%;
+		}
+
+		.syllable-solution-table th:nth-child(3),
+		.syllable-solution-table td:nth-child(3){
+			width:25%;
+		}
+
+		.syllable-solution-table th:nth-child(4),
+		.syllable-solution-table td:nth-child(4){
+			width:25%;
+		}
     </style>
+
+
+    </style>
+
+
 </head>
 <body>
+<!-- generator-container.txt -->
+<!-- generator-container.txt -->
+<!-- generator-container.txt -->
 <div class="generator-container">
     <div class="control-group no-print">
 		<label>📄 Seitenanzahl:</label>
@@ -579,158 +664,177 @@
     <div class="button-group no-print">
         <button id="generateBtn">✨ Generieren</button>
         <button id="printBtn" class="print-btn">🖨️ Drucken (A4 Hochformat)</button>
+		<label class="checkbox-label">
+			<input type="checkbox" id="includeSolutions">
+			Lösungsblatt erzeugen
+		</label>
     </div>
     <br>
-    
-    <div class="controls no-print">
-        <div class="control-group">
-            <label>Fach:</label>
-            <select id="modeSelect">
-                <option value="math">Mathe</option>
-                <option value="deutsch">Deutsch</option>
-            </select>
-        </div>
-		
+	
+	<div class="school-tabs">
+		<button id="grundschuleTab" type="button">
+			Grundschule
+		</button>
+		<button id="weiterfuehrendeTab" type="button">
+			Weiterführende Schule
+		</button>
+	</div>
+    <div id="grundschulePanel">
+		<div class="controls no-print">
+			<div class="control-group">
+				<label>Fach:</label>
+				<select id="modeSelect">
+					<option value="math">Mathe</option>
+					<option value="deutsch">Deutsch</option>
+				</select>
+			</div>
+			
 
-		
-        <div id="mathControls" class="control-group">
-            <label>Rechenarten:</label>
-            <div class="checkbox-group" id="mathOpsBasic">
-                <label><input type="checkbox" value="add"> +</label>
-                <label><input type="checkbox" value="sub"> −</label>
-                <label><input type="checkbox" value="mul" checked> ×</label>
-                <label><input type="checkbox" value="div"> :</label>
-            </div>
-            <div id="tableOnlyOptions" class="control-group hidden">
-                <label>✖️/➗ 1×1-Einstellungen:</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="divisionOnlyTable" checked> Nur 1×1-Reihen (2-10)</label>
-                </div>
-                <small>Begrenzt Multiplikation und Division auf das kleine Einmaleins</small>
-            </div>
-            <div id="divisionOptions" class="control-group hidden">
-                <label>➗ Divisionseinstellungen:</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
-                    <label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
-                </div>
-                <small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
-            </div>
-            <div class="checkbox-group" id="mathOpsSpecial">
-                <label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
-                <label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
-                <label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
-                <label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
-                <label><input type="checkbox" value="numberline" id="numberlineCheck"> ↔️ Zahlenstrahl</label>
-            </div>
-        </div>
-        
-        <div id="mathRangeGroup" class="control-group hidden">
-            <label>Zahlenraum:</label>
-            <input type="number" id="numberRange" value="1000" min="10" max="5000" step="10" style="width: 80px;">
-        </div>
-		
-		<div id="maxOperandGroup" class="control-group hidden">
-			<label>🔢 Max. Operand für +/-:</label>
-			<input type="number" id="maxOperand" value="500" min="1" max="5000" step="10" style="width: 80px;">
-			<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
+			
+			<div id="mathControls" class="control-group">
+				<label>Rechenarten:</label>
+				<div class="checkbox-group" id="mathOpsBasic">
+					<label><input type="checkbox" value="add"> +</label>
+					<label><input type="checkbox" value="sub"> −</label>
+					<label><input type="checkbox" value="mul" checked> ×</label>
+					<label><input type="checkbox" value="div"> :</label>
+				</div>
+				<div id="tableOnlyOptions" class="control-group hidden">
+					<label>✖️/➗ 1×1-Einstellungen:</label>
+					<div class="checkbox-group">
+						<label><input type="checkbox" id="divisionOnlyTable" checked> Nur 1×1-Reihen (2-10)</label>
+					</div>
+					<small>Begrenzt Multiplikation und Division auf das kleine Einmaleins</small>
+				</div>
+				<div id="divisionOptions" class="control-group hidden">
+					<label>➗ Divisionseinstellungen:</label>
+					<div class="checkbox-group">
+						<label><input type="checkbox" id="divisionWithRemainder"> Mit Rest (z.B. 9 : 4 = 2 R 1)</label>
+						<label><input type="checkbox" id="divisionWithDecimal"> Mit Nachkommastellen (z.B. 9 : 4 = 2,25)</label>
+					</div>
+					<small>Bei keiner Auswahl werden nur glatte Divisionen verwendet</small>
+				</div>
+				<div class="checkbox-group" id="mathOpsSpecial">
+					<label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
+					<label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
+					<label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
+					<label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
+					<label><input type="checkbox" value="numberline" id="numberlineCheck"> ↔️ Zahlenstrahl</label>
+				</div>
+			</div>
+			
+			<div id="mathRangeGroup" class="control-group hidden">
+				<label>Zahlenraum:</label>
+				<input type="number" id="numberRange" value="1000" min="10" max="5000" step="10" style="width: 80px;">
+			</div>
+			
+			<div id="maxOperandGroup" class="control-group hidden">
+				<label>🔢 Max. Operand für +/-:</label>
+				<input type="number" id="maxOperand" value="500" min="1" max="5000" step="10" style="width: 80px;">
+				<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
+			</div>
+
+			<div id="sqrtSettings" class="control-group hidden">
+				<label>Wurzeln bis:</label>
+				<input type="number" id="maxSqrtNumber" value="100" min="4" max="10000" step="1" style="width: 80px;">
+			</div>
+			<div id="tensCrossingGroup" class="control-group hidden">
+				<label>Zehnerübergänge:</label>
+				<select id="tensCrossingSelect">
+					<option value="0">Keine</option>
+					<option value="1">Bis zu 1</option>
+					<option value="2">Bis zu 2</option>
+					<option value="any" selected>Beliebig</option>
+				</select>
+			</div>
+			<div id="squareSettings" class="control-group hidden">
+				<label>Quadratzahlen maximum:</label>
+				<input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
+			</div>
+
+			<div id="multiplicationRowGroup" class="control-group hidden">
+				<label>1×1-Reihen:</label>
+				<div class="row-selector" id="rowSelector"></div>
+			</div>
+
+			<div id="timeSettings" class="control-group hidden">
+				<label>Uhrzeit-Schwierigkeit:</label>
+				<select id="timeDifficulty">
+					<option value="hours" selected>Nur volle Stunden</option>
+					<option value="quarters">Viertelstunden</option>
+					<option value="fiveMinutes">5-Minuten-Schritte</option>
+				</select>
+				<small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
+			</div>
+
+			<div id="pyramidSettings" class="control-group hidden">
+				<label>Mal-Pyramiden-Schwierigkeit:</label>
+				<select id="pyramidDifficulty">
+					<option value="easy" selected>Leicht (3 Etagen)</option>
+					<option value="medium">Mittel (4 Etagen)</option>
+					<option value="hard">Schwer (5 Etagen)</option>
+				</select>
+			</div>
+
+			<div id="numberlineSettings" class="control-group hidden">
+				<label>↔️ Zahlenstrahl-Aufgaben:</label>
+				<select id="numberlineMode">
+					<option value="mixed" selected>Gemischt</option>
+					<option value="read">Zahlen ablesen</option>
+					<option value="connect">Zahlen verbinden</option>
+					<option value="sections">Zahlenstrahl-Ausschnitte</option>
+				</select>
+				<small>Verwendet den oben eingestellten Zahlenraum. Volle Zahlenstrahlen in 10er-Schritten, Ausschnitte in 1er-Schritten.</small>
+			</div>
+			<div id="deutschControls" class="control-group hidden">
+				<label>✍️ Übungstyp:</label>
+				<div class="checkbox-group" id="deutschTypesBasic">
+					<label><input type="checkbox" value="copyWords" id="wordsCheck" checked> Wörter</label>
+					<label><input type="checkbox" value="letters" id="lettersCheck"> Buchstaben</label>
+				</div>
+				<div class="checkbox-group" id="deutschTypesSpecial">
+					<label><input type="checkbox" value="sentences" id="sentencesCheck"> 📖 Sätze</label>
+					<label><input type="checkbox" value="wordTypes" id="wordTypesCheck"> Wortarten</label>
+					<label><input type="checkbox" value="consonants" id="consonantsCheck"> Konsonanten</label>
+					<label><input type="checkbox" value="vowelLength" id="vowelLengthCheck"> Selbstlaute kurz/lang</label>
+					<label><input type="checkbox" value="syllables" id="syllablesCheck"> Silben</label>
+				</div>
+				<div id="customWordsGroup">
+					<label>📝 Eigene Wörter (optional):</label>
+					<textarea id="customWordsInput" rows="2" placeholder="z.B.: Haus, Maus, aus, Strauß, Traum" style="width: 200px; font-size: 0.8rem;"></textarea>
+					<small>Wörter durch Komma oder Leerzeichen getrennt</small>
+					<label class="checkbox-label"><input type="checkbox" id="useCustomWords"> Eigene Wörter verwenden</label>
+				</div>          
+			</div>
 		</div>
 
-        <div id="sqrtSettings" class="control-group hidden">
-            <label>Wurzeln bis:</label>
-            <input type="number" id="maxSqrtNumber" value="100" min="4" max="10000" step="1" style="width: 80px;">
-        </div>
-        <div id="tensCrossingGroup" class="control-group hidden">
-            <label>Zehnerübergänge:</label>
-            <select id="tensCrossingSelect">
-                <option value="0">Keine</option>
-                <option value="1">Bis zu 1</option>
-                <option value="2">Bis zu 2</option>
-                <option value="any" selected>Beliebig</option>
-            </select>
-        </div>
-        <div id="squareSettings" class="control-group hidden">
-            <label>Quadratzahlen maximum:</label>
-            <input type="number" id="maxSquareBase" value="10" min="2" max="20" step="1" style="width: 70px;">
-        </div>
+		<div id="taskCountGroup" class="control-group no-print">
+			<label>Aufgaben pro Seite:</label>
+			<div><input type="number" id="taskCount" value="40" min="1" step="1" style="width:70px"><span id="taskCountMax" style="margin-left:8px">max. 40</span></div>
+		</div>
+		<div id="multiPageContainer" class="multi-page-container"></div>
+	</div>
 
-        <div id="multiplicationRowGroup" class="control-group hidden">
-            <label>1×1-Reihen:</label>
-            <div class="row-selector" id="rowSelector"></div>
-        </div>
 
-        <div id="timeSettings" class="control-group hidden">
-            <label>Uhrzeit-Schwierigkeit:</label>
-            <select id="timeDifficulty">
-                <option value="hours" selected>Nur volle Stunden</option>
-                <option value="quarters">Viertelstunden</option>
-                <option value="fiveMinutes">5-Minuten-Schritte</option>
-            </select>
-            <small>Gemischte Aufgaben: Ablesen & Zeichnen</small>
-        </div>
-
-        <div id="pyramidSettings" class="control-group hidden">
-            <label>🏔️ Mal-Pyramiden-Schwierigkeit:</label>
-            <select id="pyramidDifficulty">
-                <option value="easy" selected>Leicht (3 Etagen)</option>
-                <option value="medium">Mittel (4 Etagen)</option>
-                <option value="hard">Schwer (5 Etagen)</option>
-            </select>
-        </div>
-
-        <div id="numberlineSettings" class="control-group hidden">
-            <label>↔️ Zahlenstrahl-Aufgaben:</label>
-            <select id="numberlineMode">
-                <option value="mixed" selected>Gemischt</option>
-                <option value="read">Zahlen ablesen</option>
-                <option value="connect">Zahlen verbinden</option>
-                <option value="sections">Zahlenstrahl-Ausschnitte</option>
-            </select>
-            <small>Verwendet den oben eingestellten Zahlenraum. Volle Zahlenstrahlen in 10er-Schritten, Ausschnitte in 1er-Schritten.</small>
-        </div>
-        <div id="deutschControls" class="control-group hidden">
-            <label>✍️ Übungstyp:</label>
-            <div class="checkbox-group" id="deutschTypesBasic">
-                <label><input type="checkbox" value="copyWords" id="wordsCheck" checked> Wörter</label>
-                <label><input type="checkbox" value="letters" id="lettersCheck"> Buchstaben</label>
-            </div>
-            <div class="checkbox-group" id="deutschTypesSpecial">
-                <label><input type="checkbox" value="sentences" id="sentencesCheck"> 📖 Sätze</label>
-                <label><input type="checkbox" value="wordTypes" id="wordTypesCheck"> Wortarten</label>
-                <label><input type="checkbox" value="consonants" id="consonantsCheck"> Konsonanten</label>
-                <label><input type="checkbox" value="vowelLength" id="vowelLengthCheck"> Selbstlaute kurz/lang</label>
-                <label><input type="checkbox" value="syllables" id="syllablesCheck"> Silben</label>
-            </div>
-            <label>📖 Schwierigkeit:</label>
-            <select id="difficultySelect">
-                <option value="easy">Einfach (1./2. Klasse)</option>
-                <option value="medium" selected>Mittel (2./3. Klasse)</option>
-                <option value="hard">Schwer (3./4. Klasse)</option>
-            </select>
-            <div id="customWordsGroup">
-                <label>📝 Eigene Wörter (optional):</label>
-                <textarea id="customWordsInput" rows="2" placeholder="z.B.: Haus, Maus, aus, Strauß, Traum" style="width: 200px; font-size: 0.8rem;"></textarea>
-                <small>Wörter durch Komma oder Leerzeichen getrennt</small>
-                <label class="checkbox-label"><input type="checkbox" id="useCustomWords"> Eigene Wörter verwenden</label>
-            </div>          
-        </div>
-    </div>
-
-    <div id="taskCountGroup" class="control-group no-print">
-        <label>Aufgaben pro Seite:</label>
-        <div><input type="number" id="taskCount" value="40" min="1" step="1" style="width:70px"><span id="taskCountMax" style="margin-left:8px">max. 40</span></div>
-    </div>
-    <div id="multiPageContainer" class="multi-page-container"></div>
-</div>
-
+	<div id="weiterfuehrendePanel" class="hidden">
+		<div class="controls no-print">
+			<div class="control-group">
+				<label>Weiterführende Schule</label>
+				<div>
+					Bereich im Aufbau
+				</div>
+			</div>
+		</div>
+	</div>
 <script>
-    // Geplant: Zehnerübergänge, Standard "Beliebig".
-    const wordLists = {
-        easy: ["Hund", "Katze", "Maus", "Ball", "Auto", "Haus", "Tisch", "Baum", "Fisch", "Kind", 
-		"Apfel", "Tür", "Buch", "der", "die", "das", "und", "ist", "ich", "du", "wir", "gehen", "sehen", 
-		"gut", "rot", "blau", "alt", "neu", "klein"],
-		
-        medium: ["Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
+
+//=============================================
+//==============Daten.txt======================
+//=============================================
+     const wordLists = {
+        grundschule: ["Hund", "Katze", "Maus", "Ball", "Auto", "Haus", "Tisch", "Baum", "Fisch", "Kind", 
+		"Apfel", "Tür", "Buch", "der", "die", "das","ist", "ich", "du", "wir", "gehen", "sehen", 
+		"gut", "rot", "blau", "alt", "neu", "klein", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
 		"Brief", "Winter", "Frühling", "Abenteuer", "Pferd", "Blume", "Garten", "Sommer", 
 		"Lernen", "Tafel", "Heft", "Pause", "springen", "tanzen", "malen", 
 		"arbeiten", "schnell", "langsam", "fröhlich", "traurig", "leise", "Sonne", "Regen", 
@@ -738,25 +842,160 @@
 		"Hand", "lassen", "bauen", "läuft", "laufen", "brauchen", 
 		"Rauch", "Wald", "Auge", "kaufen", "Verkäufer", "loslassen", "schläft", "Tag", "Vater", 
 		"erklären", "fallen", "gefallen", "hat", "kochen", "bekommen", "Brot", "tot", 
-		"Kopf", "groß", 
-		"Bruder", "jung", "müssen", "Zug", "Kuh", "Mutter",
+		"Kopf", "groß", "Bruder", "jung", "müssen", "Zug", "Kuh", "Mutter",
 		"Korb", "Vogel", "Hose", "Nashorn", "Wolke", "Knopf", "Rock",
 		"Fuß","kurz","Puppe","Geburt","Minute","Stunde","grüßen","Mund",
-		"Sekunde","wütend","Abend","Freund","Mond","Tod","Advent","Monat","Jahr", "sind", "rund",
-		"Hund", "Pferd", "wütend", "Kind", "sind", "und", "rund", "Beispiel","Fernseher","Mittag",
-		"Sonntag","Dienstag","Feuerwehr","Mittwoch","Montag","Donnerstag","Freitag","Samstag","Morgen","Abend",
+		"Sekunde","Abend","Freund","Mond","Tod","Advent","Monat","Jahr",
+		"wütend", "sind", "und", "rund", "Beispiel","Fernseher","Mittag",
+		"Sonntag","Dienstag","Mittwoch","Montag","Donnerstag","Freitag","Samstag","Morgen",
 		"gelb","lieb","gibt","ob","Dieb","Weihnachten","Ergebnis","Laub","Flugzeug","Erdbeere","Nachmittag",
 		"Frühstück","verletzten","verspricht","Geschichte","verbieten","vor","Vorschlag","verstecken","gesund","verdoppeln",
-		"verlieren","voraus","vorsichtig","gewinnen","vergessen","vermissen","versuchen"
-		],
-        hard: ["Schmetterling", "Fußball", "Taschenrechner", "Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", "Abenteuer", "Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
+		"verlieren","voraus","vorsichtig","gewinnen","vergessen","vermissen","versuchen", "Schmetterling", "Fußball", "Taschenrechner", 
+		"Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", 
+		"Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
+		weiterfuehrendeSchule: [],
 		custom: []
 	};
 	
-    const wordTypeList=[...['Hund','Katze','Haus','Baum','Schule','Lehrer','Wasser','Fenster','Blume','Garten','Sommer','Sonne','Mutter','Bruder','Wolke','Freund','Tafel','Pferd'].map(word=>({word,type:'noun'})),...['spielen','springen','tanzen','malen','arbeiten','tragen','wachsen','bauen','laufen','kaufen','kochen','gewinnen','vergessen','versuchen','rennen','sammeln','fallen','erklären'].map(word=>({word,type:'verb'})),...['gut','rot','blau','alt','neu','klein','schnell','langsam','fröhlich','traurig','leise','gefährlich','groß','jung','kurz','wütend','gesund','vorsichtig','mutig','freundlich'].map(word=>({word,type:'adjective'}))];
-    const consonantList=[['Wasser','S','Wa__er','ss'],['Sommer','M','So__er','mm'],['Mutter','T','Mu__er','tt'],['Puppe','P','Pu__e','pp'],['Klasse','S','Kla__e','ss'],['Sonne','N','So__e','nn'],['Zimmer','M','Zi__er','mm'],['Kissen','S','Ki__en','ss'],['Messer','S','Me__er','ss'],['Teller','L','Te__er','ll'],['Vogel','G','Vo__el','g'],['Hase','S','Ha__e','s'],['Nase','S','Na__e','s'],['Blume','M','Blu__e','m'],['Tafel','F','Ta__el','f'],['Regen','G','Re__en','g'],['Korb','R','Ko__b','r'],['Mund','N','Mu__d','n'],['Bruder','D','Bru__er','d'],['Schule','L','Schu__e','l'],['Garten','T','Gar__en','t'],['Wolke','L','Wo__ke','l']].map(([word,letter,gap,answer])=>({word,letter,gap,answer}));
-    const vowelLengthList=[...['Ball','Mutter','Sonne','Kissen','Teller','Sommer','Wasser','Zimmer','Kopf','kurz'].map(word=>({word,length:'short'})),...['Nase','Hase','Schule','Blume','Hose','Vogel','Ofen','Oma','Brot','Mond','Fuß','Tag'].map(word=>({word,length:'long'}))];
-    const syllableList=[['Schule',['Schu','le']],['Lehrer',['Leh','rer']],['Wasser',['Was','ser']],['Fenster',['Fens','ter']],['Blume',['Blu','me']],['Garten',['Gar','ten']],['Sommer',['Som','mer']],['Tafel',['Ta','fel']],['Pause',['Pau','se']],['Sonne',['Son','ne']],['Regen',['Re','gen']],['Mutter',['Mut','ter']],['Puppe',['Pup','pe']],['Minute',['Mi','nu','te']],['Sekunde',['Se','kun','de']],['Monat',['Mo','nat']],['Beispiel',['Bei','spiel']],['Fernseher',['Fern','se','her']],['Mittag',['Mit','tag']],['Sonntag',['Sonn','tag']],['Dienstag',['Diens','tag']],['Mittwoch',['Mitt','woch']],['Donnerstag',['Don','ners','tag']],['Freitag',['Frei','tag']],['Samstag',['Sams','tag']],['Erdbeere',['Erd','bee','re']],['Nachmittag',['Nach','mit','tag']],['Frühstück',['Früh','stück']],['Schmetterling',['Schmet','ter','ling']],['Schokolade',['Scho','ko','la','de']],['Elefant',['E','le','fant']],['Krankenhaus',['Kran','ken','haus']],['Regenbogen',['Re','gen','bo','gen']],['Feuerwehr',['Feu','er','wehr']],['Geburtstag',['Ge','burts','tag']]].map(([word,parts])=>({word,parts}));
+    const wordTypeList = [
+		...[
+			'Hund','Katze','Haus','Baum','Schule','Lehrer','Wasser','Fenster',
+			'Blume','Garten','Sommer','Sonne','Mutter','Bruder','Wolke',
+			'Freund','Tafel','Pferd','Apfel','Auto','Ball','Fisch','Kind',
+			'Buch','Straße','Heft','Pause','Regen','Wald','Auge','Tag',
+			'Vater','Brot','Kopf','Zug','Kuh','Korb','Vogel','Hose',
+			'Nashorn','Knopf','Rock','Puppe','Geburt','Minute','Stunde',
+			'Mund','Abend','Mond','Monat','Jahr','Feuerwehr','Flugzeug',
+			'Erdbeere','Nachmittag','Frühstück','Geschichte','Vorschlag',
+			'Schmetterling','Fußball','Taschenrechner','Schokolade',
+			'Bibliothek','Wörterbuch','Grundschule','Eichhörnchen',
+			'Elefant','Krankenhaus','Regenbogen','Spielplatz','Geburtstag'
+		].map(word => ({word,type:'noun'})),
+		...[
+			'spielen','springen','tanzen','malen','arbeiten','tragen',
+			'wachsen','bauen','laufen','kaufen','kochen','gewinnen',
+			'vergessen','versuchen','rennen','sammeln','fallen',
+			'erklären','sehen','gehen','lernen','schreiben','lesen',
+			'singen','lachen','weinen','helfen','schlafen','fahren',
+			'schwimmen','klettern','werfen','fangen','zeichnen',
+			'basteln','backen','trinken','essen','suchen','finden',
+			'rufen','hören','zeigen','üben','rechnen','denken',
+			'erzählen','besuchen','pflanzen','feiern'
+		].map(word => ({word,type:'verb'})),
+		...[
+			'gut','rot','blau','alt','neu','klein','schnell',
+			'langsam','fröhlich','traurig','leise','gefährlich',
+			'groß','jung','kurz','wütend','gesund','vorsichtig',
+			'mutig','freundlich','laut','stark','schwach','lustig',
+			'bunt','schön','warm','kalt','hell','dunkel','fleißig',
+			'sauber','schmutzig','ruhig','spannend','tapfer',
+			'glücklich','müde','satt','hungrig'
+		].map(word => ({word,type:'adjective'}))
+	];
+	
+	
+	const consonantList=[['Wasser','S','Wa__er','ss'],['Sommer','M','So__er','mm'],['Mutter','T','Mu__er','tt'],['Puppe','P','Pu__e','pp'],['Klasse','S','Kla__e','ss'],['Sonne','N','So__e','nn'],['Zimmer','M','Zi__er','mm'],['Kissen','S','Ki__en','ss'],['Messer','S','Me__er','ss'],['Teller','L','Te__er','ll'],['Vogel','G','Vo__el','g'],['Hase','S','Ha__e','s'],['Nase','S','Na__e','s'],['Blume','M','Blu__e','m'],['Tafel','F','Ta__el','f'],['Regen','G','Re__en','g'],['Korb','R','Ko__b','r'],['Mund','N','Mu__d','n'],['Bruder','D','Bru__er','d'],['Schule','L','Schu__e','l'],['Garten','T','Gar__en','t'],['Wolke','L','Wo__ke','l'],
+		['Bett','T','Be__','tt'],['Mitte','T','Mi__e','tt'],['Lippe','P','Li__e','pp'],['Tonne','N','To__e','nn'],['Kanne','N','Ka__e','nn'],['Matte','T','Ma__e','tt'],['Lampe','M','La__pe','m'],['Gabel','B','Ga__el','b'],['Insel','S','In__el','s'],['Ampel','P','Am__el','p'],['Koffer','F','Ko__er','ff'],['Nadel','D','Na__el','d'],['Mantel','T','Man__el','t'],['Besen','S','Be__en','s'],['Paket','K','Pa__et','k']
+	].map(([word,letter,gap,answer])=>({word,letter,gap,answer}));
+    
+	const vowelLengthList=[...['Ball','Mutter','Sonne','Kissen','Teller','Sommer','Wasser','Zimmer','Kopf','kurz','Frosch','Bett','Nuss','Stern','Lampe','Tonne','Gabel','Pinsel','bunt','rennen','springen','Kran','Topf','Nest','Hemd'].map(word=>({word,length:'short'}))
+		,...['Nase','Hase','Schule','Blume','Hose','Vogel','Ofen','Oma','Brot','Mond','Fuß','Tag','See','Boot','Rose','Biene','Lied','Käse','Mehl','Brief','Schaf','Uhr','Radio','Zoo','Dose','Krone','Wiese'].map(word=>({word,length:'long'}))];
+    
+	const syllableList=[
+		['Schule',['Schu','le']],
+		['Lehrer',['Leh','rer']],
+		['Wasser',['Was','ser']],
+		['Fenster',['Fens','ter']],
+		['Blume',['Blu','me']],
+		['Garten',['Gar','ten']],
+		['Sommer',['Som','mer']],
+		['Tafel',['Ta','fel']],
+		['Pause',['Pau','se']],
+		['Sonne',['Son','ne']],
+		['Regen',['Re','gen']],
+		['Mutter',['Mut','ter']],
+		['Puppe',['Pup','pe']],
+		['Minute',['Mi','nu','te']],
+		['Sekunde',['Se','kun','de']],
+		['Monat',['Mo','nat']],
+		['Beispiel',['Bei','spiel']],
+		['Fernseher',['Fern','se','her']],
+		['Mittag',['Mit','tag']],
+		['Sonntag',['Sonn','tag']],
+		['Dienstag',['Diens','tag']],
+		['Mittwoch',['Mitt','woch']],
+		['Donnerstag',['Don','ners','tag']],
+		['Freitag',['Frei','tag']],
+		['Samstag',['Sams','tag']],
+		['Erdbeere',['Erd','bee','re']],
+		['Nachmittag',['Nach','mit','tag']],
+		['Frühstück',['Früh','stück']],
+		['Schmetterling',['Schmet','ter','ling']],
+		['Schokolade',['Scho','ko','la','de']],
+		['Elefant',['E','le','fant']],
+		['Krankenhaus',['Kran','ken','haus']],
+		['Regenbogen',['Re','gen','bo','gen']],
+		['Feuerwehr',['Feu','er','wehr']],
+		['Geburtstag',['Ge','burts','tag']],
+		['Banane',['Ba','na','ne']],
+		['Tomate',['To','ma','te']],
+		['Kartoffel',['Kar','tof','fel']],
+		['Gurke',['Gur','ke']],
+		['Melone',['Me','lo','ne']],
+		['Paprika',['Pa','pri','ka']],
+		['Rakete',['Ra','ke','te']],
+		['Laterne',['La','ter','ne']],
+		['Piraten',['Pi','ra','ten']],
+		['Känguru',['Kän','gu','ru']],
+		['Pinguin',['Pin','guin']],
+		['Krokodil',['Kro','ko','dil']],
+		['Dinosaurier',['Di','no','sau','ri','er']],
+		['Turnhalle',['Turn','hal','le']],
+		['Schultasche',['Schul','ta','sche']],
+		['Mathematik',['Ma','the','ma','tik']],
+		['Bäckerei',['Bä','cke','rei']],
+		['Polizei',['Po','li','zei']],
+		['Abfalltonne',['Ab','fall','ton','ne']],
+		['Sonnenblume',['Son','nen','blu','me']],
+		['Feuerzeug',['Feu','er','zeug']],
+		['Schneemann',['Schnee','mann']],
+		['Abenteuerlich',['Ab','en','teu','er','lich']],
+		['Wasserflasche',['Was','ser','fla','sche']],
+		['Taschenlampe',['Ta','schen','lam','pe']],
+		['Kindergarten',['Kin','der','gar','ten']],
+		['Bauernhof',['Bau','ern','hof']],
+		['Regenjacke',['Re','gen','ja','cke']],
+		['Schulhof',['Schul','hof']],
+		['Hausaufgabe',['Haus','auf','ga','be']],
+		['Bleistift',['Blei','stift']],
+		['Füller',['Fül','ler']],
+		['Radiergummi',['Ra','dier','gum','mi']],
+		['Limonade',['Li','mo','na','de']],
+		['Mikrofon',['Mi','kro','fon']],
+		['Telefon',['Te','le','fon']],
+		['Fernsehen',['Fern','se','hen']],
+		['Zahnbürste',['Zahn','bürs','te']],
+		['Kuscheltier',['Ku','schel','tier']],
+		['Lieblingsbuch',['Lieb','lings','buch']],
+		['Spielplatz',['Spiel','platz']],
+		['Geburtstagskuchen',['Ge','burts','tags','ku','chen']],
+		['Eisbecher',['Eis','be','cher']],
+		['Turnschuhe',['Turn','schu','he']],
+		['Schwimmbad',['Schwimm','bad']],
+		['Märchenbuch',['Mär','chen','buch']],
+		['Zauberkiste',['Zau','ber','kis','te']],
+		['Sternenhimmel',['Ster','nen','him','mel']],
+		['Klettergerüst',['Klet','ter','ge','rüst']],
+		['Apfelsaft',['Ap','fel','saft']],
+		['Orangensaft',['O','ran','gen','saft']],
+		['Liegestuhl',['Lie','ge','stuhl']],
+		['Bilderrahmen',['Bil','der','rah','men']],
+		['Malkasten',['Mal','kas','ten']],
+		['Knetmasse',['Knet','mas','se']],
+		['Seifenblase',['Sei','fen','bla','se']],
+		['Wintermantel',['Win','ter','man','tel']],
+		['Sommerferien',['Som','mer','fe','ri','en']],
+	].map(([word,parts])=>({word,parts}));
 
     const sentencesList = [
         "Ich helfe meiner Mama beim Kochen.",
@@ -796,55 +1035,533 @@
         "Wir spielen Fußball auf dem Sportplatz.",
         "Radfahren macht mir großen Spaß.",
         "Das Essen schmeckt sehr gut.",
-        "Mama kocht meine Lieblingsnudeln mit Tomatensoße."
+        "Mama kocht meine Lieblingsnudeln mit Tomatensoße.",
+		"Ich male einen bunten Regenbogen.",
+		"Der Hase hoppelt über die Wiese.",
+		"Meine Schwester spielt mit dem Ball.",
+		"Der Vogel sitzt auf dem Baum.",
+		"Wir sammeln Kastanien im Herbst.",
+		"Heute scheint die Sonne.",
+		"Ich helfe beim Tischdecken.",
+		"Der Hund schläft in seinem Korb.",
+		"Wir fahren mit dem Fahrrad.",
+		"Im Garten wächst eine Blume.",
+		"Der Bauer arbeitet auf dem Feld.",
+		"Die Ente schwimmt auf dem Teich.",
+		"Ich trinke ein Glas Wasser.",
+		"Der Zug fährt in den Bahnhof.",
+		"Wir lesen gemeinsam ein Buch.",
+		"Das Kind baut einen Turm.",
+		"Der Frosch springt ins Wasser.",
+		"Im Winter fällt Schnee.",
+		"Der Apfel schmeckt süß.",
+		"Wir laufen durch den Wald.",
+		"Die Maus versteckt sich unter dem Tisch.",
+		"Der Bäcker verkauft frische Brötchen.",
+		"Ich schreibe meinen Namen auf das Blatt.",
+		"Das Pferd läuft über die Wiese.",
+		"Wir besuchen den Zoo.",
+		"Der Elefant ist sehr groß.",
+		"Mein Freund hilft mir bei den Hausaufgaben.",
+		"Das Auto steht vor dem Haus.",
+		"Wir spielen Verstecken im Garten.",
+		"Der Mond leuchtet am Himmel.",
+		"Im Frühling zwitschern die Vögel.",
+		"Der Schmetterling landet auf einer Blume.",
+		"Wir essen zusammen Abendbrot.",
+		"Die Lehrerin erklärt die Aufgabe.",
+		"Ich packe meinen Schulranzen.",
+		"Der Hamster läuft im Rad.",
+		"Die Kinder lachen zusammen.",
+		"Wir basteln ein Geschenk.",
+		"Im Sommer essen wir Eis.",
+		"Die Kerze brennt auf dem Tisch.",
+		"Der Junge klettert auf einen Baum.",
+		"Das Mädchen füttert die Enten.",
+		"Wir bauen eine Sandburg.",
+		"Der Fisch schwimmt im Aquarium.",
+		"Am Wochenende besuchen wir Oma.",
+		"Die Glocke läutet zur Pause.",
+		"Wir zählen die Sterne am Himmel.",
+		"Der Hund bringt den Ball zurück.",
+		"Die Kinder lesen eine Geschichte.",
+		"Heute machen wir einen Ausflug."
     ];
+	
+const vowelPairList = [
+    { shortWord: "offen", longWord: "Ofen" },
+    { shortWord: "still", longWord: "Stil" },
+    { shortWord: "Ratte", longWord: "Rate" },
+    { shortWord: "Mitte", longWord: "Miete" },
+    { shortWord: "Hölle", longWord: "Höhle" },
+    { shortWord: "denn", longWord: "dehnen" },
+    { shortWord: "Tonne", longWord: "Tone" },
+    { shortWord: "Wanne", longWord: "wähnen" },
+    { shortWord: "Bett", longWord: "Beet" },
+    { shortWord: "Kamm", longWord: "kam" },
+    { shortWord: "Fell", longWord: "fehlen" },
+    { shortWord: "Muss", longWord: "Muß" },
+    { shortWord: "Ball", longWord: "Wal" },
+    { shortWord: "Lamm", longWord: "lahm" },
+    { shortWord: "Riss", longWord: "ries" },
+    { shortWord: "bitten", longWord: "bieten" },
+    { shortWord: "Hütte", longWord: "Hüte" },
+    { shortWord: "Masse", longWord: "Maße" },
+    { shortWord: "Pollen", longWord: "Polen" },
+    { shortWord: "Kanne", longWord: "Kahn" },
+    { shortWord: "Matte", longWord: "Mate" },
+    { shortWord: "Bande", longWord: "Bahne" },
+    { shortWord: "Rolle", longWord: "hohle" },
+    { shortWord: "rennen", longWord: "Reh" },
+    { shortWord: "Messer", longWord: "Meer" },
+    { shortWord: "hassen", longWord: "Hase" },
+    { shortWord: "Teller", longWord: "Tee" },
+    { shortWord: "Kissen", longWord: "Kiese" },
+    { shortWord: "Sonne", longWord: "Zone" }
+	];
+	
+//=============================================
+//==============uebergreifende_funktionen.txt==
+//=============================================
 
-    function parseCustomWords(input) {
-        if (!input.trim()) return [];
-        let words = input.split(/[,\s;]+/);
-        words = words.filter(w => w.trim().length > 0).map(w => w.trim());
-        words = [...new Set(words)];
-        return words;
+	const modeSelect = document.getElementById('modeSelect');
+	const mathControlsDiv = document.getElementById('mathControls');
+	const deutschControlsDiv = document.getElementById('deutschControls');
+	const generateBtn = document.getElementById('generateBtn');
+	const printBtn = document.getElementById('printBtn');
+	const multiPageContainer = document.getElementById('multiPageContainer');
+	const pageCountInput = document.getElementById('pageCount');
+	const rowSelectorDiv = document.getElementById('rowSelector');
+    let schoolType = 'grundschule';
+	let selectedRows = [0,1,2,3,4,5,6,7,8,9,10];
+	modeSelect.addEventListener('change', () => { toggleModeUI(); resetTaskCountToMaximum(); generateMultiPage(); });
+	generateBtn.addEventListener('click', generateMultiPage);
+	printBtn.addEventListener('click', printWorksheets);
+	buildRowSelector();
+	toggleModeUI();
+	setupSpecialOpsExclusive();
+	setupDeutschExclusive();
+	document.getElementById('pyramidDifficulty')?.addEventListener('change', resetTaskCountToMaximum);
+	document.getElementById('numberlineMode')?.addEventListener('change', () => { resetTaskCountToMaximum(); generateMultiPage(); });
+	document.getElementById('numberRange')?.addEventListener('change',()=>{syncMaxOperandToRange();generateMultiPage();});
+	document.getElementById('taskCount')?.addEventListener('change', getRequestedTaskCount);
+	document.getElementById('grundschuleTab')
+    ?.addEventListener(
+        'click',
+        () => switchSchoolType('grundschule')
+    );
+	document.getElementById('weiterfuehrendeTab')
+    ?.addEventListener(
+        'click',
+        () => switchSchoolType('weiterfuehrende')
+    );
+
+	switchSchoolType('grundschule');
+		
+		updateVisibilityBasedOnSelection();
+		resetTaskCountToMaximum();
+		generateMultiPage();
+		
+		document.querySelectorAll('#deutschTypesBasic input, #deutschTypesSpecial input').forEach(el => {
+			el.addEventListener('change', resetTaskCountToMaximum);
+		});
+		document.querySelectorAll('#mathOpsBasic input, #mathOpsSpecial input').forEach(el => {
+			el.addEventListener('change', resetTaskCountToMaximum);
+		});
+
+	//zwischen Schulformen wechseln
+	function switchSchoolType(type) {
+		schoolType = type;
+		document.getElementById('grundschulePanel')
+			?.classList.toggle(
+				'hidden',
+				type !== 'grundschule'
+			);
+		document.getElementById('weiterfuehrendePanel')
+			?.classList.toggle(
+				'hidden',
+				type !== 'weiterfuehrende'
+			);
+		document.getElementById('grundschuleTab')
+			?.classList.toggle(
+				'active',
+				type === 'grundschule'
+			);
+		document.getElementById('weiterfuehrendeTab')
+			?.classList.toggle(
+				'active',
+				type === 'weiterfuehrende'
+			);
+	}
+
+
+//Zerlegt Benutzereingaben in einzelne Wörter und entfernt Duplikate.
+	function parseCustomWords(input) {
+		if (!input.trim()) return [];
+		let words = input.split(/[,\s;]+/);
+		words = words.filter(w => w.trim().length > 0).map(w => w.trim());
+		words = [...new Set(words)];
+		return words;
+	}
+
+//Liefert eine Zufallszahl zwischen Min und Max.
+	function rand(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+//Mischt ein Array zufällig, ohne das Original zu verändern.
+	function shuffleCopy(items) {
+		const copy = [...items];
+		for (let i = copy.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[copy[i], copy[j]] = [copy[j], copy[i]];
+		}
+		return copy;
+	}
+
+//Entnimmt Elemente ohne Wiederholung aus einem Pool.
+	function takeWithoutRepeats(pool, count, usedSet, keyFn = item => String(item)) {
+		if (!pool.length || count <= 0) return [];
+		const uniquePool = [];
+		const localKeys = new Set();
+		for (const item of pool) {
+			const key = keyFn(item);
+			if (!localKeys.has(key)) { localKeys.add(key); uniquePool.push(item); }
+		}
+		let available = shuffleCopy(uniquePool.filter(item => !usedSet.has(keyFn(item))));
+		const result = [];
+		while (result.length < count) {
+			if (available.length === 0) {
+				usedSet.clear();
+				available = shuffleCopy(uniquePool);
+				if (available.length === 0) break;
+			}
+			const item = available.pop();
+			usedSet.add(keyFn(item));
+			result.push(item);
+		}
+		return result;
+	}
+
+//Ermittelt abhängig vom aktuellen Modus die maximal erlaubte Aufgabenanzahl.
+	function getTaskCountMaximum() {
+		if (modeSelect.value === 'math') {
+			const ops = getMathOperations();
+			if (ops.numberline) return 36;
+			if (ops.time) return 12;
+			if (ops.pyramid) {
+				const difficulty =
+					document.getElementById('pyramidDifficulty')?.value || 'easy';
+				return difficulty === 'easy'
+					? 12
+					: difficulty === 'medium'
+						? 6
+						: 4;
+			}
+			return 40;
+		}
+		const t = getDeutschTypes();
+		if (t.sentences) return 6;
+		if (t.wordTypes) return 20;
+		if (t.consonants) return 18;
+		// Selbstlaute:
+		// 15 + 12 + 15 Wörter
+		if (t.vowelLength) return 42;
+		if (t.syllables) return 30;
+		return 14;
+	}
+
+//Setzt die Aufgabenanzahl auf den aktuellen Maximalwert zurück.
+    function resetTaskCountToMaximum() {
+        const max = getTaskCountMaximum();
+        const input = document.getElementById('taskCount');
+        const label = document.getElementById('taskCountMax');
+        if (input) { input.max = String(max); input.value = String(max); }
+        if (label) label.textContent = `max. ${max}`;
+        return max;
     }
 
-    function rand(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+//Liefert die tatsächlich gewünschte Aufgabenanzahl.
+    function getRequestedTaskCount() {
+        const max = getTaskCountMaximum();
+        const input = document.getElementById('taskCount');
+        let value = parseInt(input?.value, 10);
+        if (!Number.isFinite(value)) value = max;
+        value = Math.max(1, Math.min(max, value));
+        if (input) { input.max = String(max); input.value = String(value); }
+        const label = document.getElementById('taskCountMax');
+        if (label) label.textContent = `max. ${max}`;
+        return value;
     }
-    function shuffleCopy(items) {
-        const copy = [...items];
-        for (let i = copy.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [copy[i], copy[j]] = [copy[j], copy[i]];
+
+//Baut die Auswahl der Einmaleins-Reihen auf.
+    function buildRowSelector() {
+        rowSelectorDiv.innerHTML = '';
+        for (let i = 0; i <= 10; i++) {
+            const span = document.createElement('span');
+            span.textContent = i;
+            if (selectedRows.includes(i)) span.classList.add('selected');
+            span.addEventListener('click', () => {
+                if (selectedRows.includes(i)) {
+                    selectedRows = selectedRows.filter(v => v !== i);
+                } else {
+                    selectedRows.push(i);
+                    selectedRows.sort((a,b)=>a-b);
+                }
+                buildRowSelector();
+            });
+            rowSelectorDiv.appendChild(span);
         }
-        return copy;
     }
-    function takeWithoutRepeats(pool, count, usedSet, keyFn = item => String(item)) {
-        if (!pool.length || count <= 0) return [];
-        const uniquePool = [];
-        const localKeys = new Set();
-        for (const item of pool) {
-            const key = keyFn(item);
-            if (!localKeys.has(key)) { localKeys.add(key); uniquePool.push(item); }
-        }
-        let available = shuffleCopy(uniquePool.filter(item => !usedSet.has(keyFn(item))));
-        const result = [];
-        while (result.length < count) {
-            if (available.length === 0) {
-                usedSet.clear();
-                available = shuffleCopy(uniquePool);
-                if (available.length === 0) break;
+
+
+//Erzeugt mehrere Arbeitsblätter und verwaltet den gemeinsamen Aufgabenstatus.
+	function generateMultiPage() {
+		let pageCount =
+			parseInt(pageCountInput.value) || 1;
+
+		multiPageContainer.innerHTML = '';
+
+		const sharedState = {
+			math: { byOperation: {} },
+			deutsch: {
+				words: new Set(),
+				letters: new Set(),
+				sentences: new Set(),
+				wordTypes: new Set(),
+				consonants: new Set(),
+				vowelLength: new Set(),
+				syllables: new Set()
+			},
+			time: new Set(),
+			pyramids: new Set(),
+			numberline: new Set()
+		};
+
+		for (let i = 0; i < pageCount; i++) {
+
+			const pageState = {
+				...sharedState,
+				solutions: [],
+				timeSolutions: [],
+				pyramidSolutions: [],
+				wordTypesSolutions: [],
+				consonantsSolutions: [],
+				vowelSolutions: [],
+				syllableSolutions: []
+			};
+
+			multiPageContainer.appendChild(
+				createWorksheet(
+					i,
+					pageCount,
+					pageState
+				)
+			);
+
+			const hasSolutions =
+				(pageState.solutions?.length || 0) > 0 ||
+				(pageState.wordTypesSolutions?.length || 0) > 0 ||
+				(pageState.consonantsSolutions?.length || 0) > 0 ||
+				(pageState.vowelSolutions?.length || 0) > 0 ||
+				(pageState.syllableSolutions?.length || 0) > 0 ||
+				(pageState.timeSolutions?.length || 0) > 0 ||
+				(pageState.pyramidSolutions?.length || 0) > 0;
+
+			const generateSolutions =
+			document.getElementById('includeSolutions')?.checked || false;
+
+			if (generateSolutions && hasSolutions) {
+				multiPageContainer.appendChild(
+					createSolutionSheet(pageState)
+				);
+			}
+		}
+	}
+
+
+//Sorgt dafür, dass nur ein Mathe-Spezialmodul gleichzeitig aktiv ist.
+    function setupSpecialOpsExclusive() {
+        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline'];
+        const basicOps = ['add', 'sub', 'mul', 'div'];
+        specialOps.forEach(opId => {
+            const checkbox = document.getElementById(`${opId}Check`);
+            if (checkbox) {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        basicOps.forEach(basicId => {
+                            const basicCheck = document.querySelector(`#mathOpsBasic input[value="${basicId}"]`);
+                            if (basicCheck && basicCheck.checked) basicCheck.checked = false;
+                        });
+                        specialOps.forEach(otherId => {
+                            if (otherId !== opId) {
+                                const otherCheck = document.getElementById(`${otherId}Check`);
+                                if (otherCheck && otherCheck.checked) otherCheck.checked = false;
+                            }
+                        });
+                    }
+                    updateVisibilityBasedOnSelection();
+                });
             }
-            const item = available.pop();
-            usedSet.add(keyFn(item));
-            result.push(item);
-        }
-        return result;
+        });
+        basicOps.forEach(opId => {
+            const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    const anyBasicChecked = basicOps.some(id => document.querySelector(`#mathOpsBasic input[value="${id}"]`)?.checked);
+                    if (anyBasicChecked) {
+                        specialOps.forEach(specialId => {
+                            const specialCheck = document.getElementById(`${specialId}Check`);
+                            if (specialCheck && specialCheck.checked) specialCheck.checked = false;
+                        });
+                    }
+                    updateVisibilityBasedOnSelection();
+                });
+            }
+        });
     }
-    function generateSquareTask(maxBase) {
+
+//Schaltet zwischen Mathe- und Deutsch-Oberfläche um.
+    function toggleModeUI() {
+        const mode = modeSelect.value;
+        if (mode === 'math') {
+            mathControlsDiv.classList.remove('hidden');
+            deutschControlsDiv.classList.add('hidden');
+            updateVisibilityBasedOnSelection();
+        } else {
+            mathControlsDiv.classList.add('hidden');
+            deutschControlsDiv.classList.remove('hidden');
+            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings, #numberlineSettings').forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+        }
+        updateCustomWordsVisibility();
+    }
+
+//Zeigt und versteckt Optionen passend zur Auswahl.
+	function updateVisibilityBasedOnSelection() {
+		const mode = modeSelect.value;
+
+		if (mode !== 'math') {
+			return;
+		}
+
+		let ops;
+		try {
+			ops = getMathOperations();
+		} catch(e) {
+			return;
+		}
+		
+		const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
+		const mathRange = document.getElementById('mathRangeGroup');
+		
+		// Zahlenraum anzeigen, wenn Grundrechenarten ODER Pyramiden aktiv sind (nur im Mathe-Modus)
+		if (mathRange) {
+			if (mode === 'math' && (anyBasicActive || ops.pyramid || ops.numberline)) {
+				mathRange.classList.remove('hidden');
+			} else {
+				mathRange.classList.add('hidden');
+			}
+		}
+		
+		const multRow = document.getElementById('multiplicationRowGroup');
+		if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
+		
+		const sqrtSet = document.getElementById('sqrtSettings');
+        if (sqrtSet) ops.sqrt ? sqrtSet.classList.remove('hidden') : sqrtSet.classList.add('hidden');
+		const squareSet = document.getElementById('squareSettings');
+		if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
+		
+		const timeSet = document.getElementById('timeSettings');
+		if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
+		
+		const pyramidSet = document.getElementById('pyramidSettings');
+		if (pyramidSet) ops.pyramid ? pyramidSet.classList.remove('hidden') : pyramidSet.classList.add('hidden');
+        const numberlineSet = document.getElementById('numberlineSettings');
+        if (numberlineSet) ops.numberline ? numberlineSet.classList.remove('hidden') : numberlineSet.classList.add('hidden');
+		
+		const maxOperandGroup = document.getElementById('maxOperandGroup');
+		if (maxOperandGroup) {
+			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
+			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid && !ops.numberline;
+			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
+		}
+		
+        const tensCrossingGroup = document.getElementById('tensCrossingGroup');
+        if (tensCrossingGroup) {
+            const showTensCrossing = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
+            showTensCrossing ? tensCrossingGroup.classList.remove('hidden') : tensCrossingGroup.classList.add('hidden');
+        }
+
+        const tableOnlyOptions = document.getElementById('tableOnlyOptions');
+        if (tableOnlyOptions) {
+            const showTableOnlyOptions = (mode === 'math') && (ops.mul || ops.div) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
+            showTableOnlyOptions ? tableOnlyOptions.classList.remove('hidden') : tableOnlyOptions.classList.add('hidden');
+        }
+        const divisionOptions = document.getElementById('divisionOptions');
+        if (divisionOptions) {
+            const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
+            showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
+        }
+	}
+
+//Startet den Druckvorgang.
+    function printWorksheets() { window.print(); }
+
+//Synchronisiert Maximaloperand mit dem Zahlenraum.
+    function syncMaxOperandToRange(){const range=parseInt(document.getElementById('numberRange')?.value,10)||1000;const input=document.getElementById('maxOperand');if(input){input.max=String(range);input.value=String(Math.max(1,Math.floor(range*0.5)));}}
+
+
+//=============================================
+//==============Mathe_Grundschule.txt==========
+//=============================================
+// ===== MATHEMATIK-Grundschule =====
+// ===== GENERATOR =====
+//Hauptgenerator für Matheaufgaben aller aktivierten Rechenarten.
+    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber, operandMax, state) {
+        operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 500;
+        const opsList = [];
+        if (operations.add) opsList.push('+');
+        if (operations.sub) opsList.push('-');
+        if (operations.mul) opsList.push('*');
+        if (operations.div) opsList.push('/');
+        if (operations.square) opsList.push('□');
+        if (operations.sqrt) opsList.push('√');
+        if (!opsList.length) opsList.push('+');
+
+        const finitePools = new Map();
+        for (const op of opsList) {
+            if (['*','/','□','√'].includes(op)) finitePools.set(op, buildFiniteMathPool(op, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber));
+        }
+        const tasks = [];
+        for (let i = 0; i < count; i++) {
+            let op = opsList[Math.floor(Math.random() * opsList.length)];
+            let text;
+            let taskMeta = null;
+            if (finitePools.has(op)) {
+                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
+                const picked = takeWithoutRepeats(finitePools.get(op), 1, used, item => typeof item === 'string' ? item : (item.key || item.text));
+                const pickedTask = picked[0] || '1 + 1 =';
+                if (typeof pickedTask === 'string') text = pickedTask;
+                else { text = pickedTask.text; taskMeta = {remainder:pickedTask.remainder}; }
+            } else {
+                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
+                text = generateUniqueRandomArithmetic(op, maxNumber, operandMax, used);
+            }
+            tasks.push({text, ...(taskMeta || {})});
+        }
+        return tasks;
+    }
+
+// ===== QUADRATZAHLEN UND WURZELN =====
+//Erzeugt eine zufällige Quadratzahl-Aufgabe (z. B. 7 × 7).
+	function generateSquareTask(maxBase) {
         let base = rand(2, maxBase);
         return { display: `${base} × ${base} = ` };
     }
-
+	
+//Erzeugt Aufgaben zum Ziehen von Quadratwurzeln.
     function generateSqrtTask(maxNumber) {
         let maxRoot = Math.floor(Math.sqrt(maxNumber));
         if (maxRoot < 2) maxRoot = 10;
@@ -852,8 +1569,10 @@
         let square = root * root;
         return { display: `√${square} = ` };
     }
-
-    function generateTimeTasks(count, difficulty, usedSet = new Set()) {
+	
+// ===== UHRZEITEN =====
+//Erstellt Uhrzeit-Aufgaben zum Ablesen oder Zeichnen.
+	    function generateTimeTasks(count, difficulty, usedSet = new Set()) {
         let minutesList = [];
         if (difficulty === 'hours') minutesList = [0];
         else if (difficulty === 'quarters') minutesList = [0, 15, 30, 45];
@@ -867,6 +1586,8 @@
         }
         return takeWithoutRepeats(pool, count, usedSet, t => `${t.type}:${t.hour}:${t.minute}`);
     }
+
+//Zeichnet eine Uhr mit Zeigern als SVG.
     function drawClockSVG(hour, minute, withHands = true) {
         const hourAngle = (hour % 12) * 30 + minute * 0.5;
         const minuteAngle = minute * 6;
@@ -897,6 +1618,7 @@
                 </svg>`;
     }
 
+//Zeichnet eine leere Uhr ohne Zeiger.
     function drawBlankClockSVG() {
         let numbersSVG = '';
         for (let i = 1; i <= 12; i++) {
@@ -912,7 +1634,74 @@
     }
 
 
-	// ========== MALPYRAMIDEN ==========
+	function renderTimeSolution(tasks) {
+
+		let html =
+			'<div class="tasks-grid math-grid">';
+
+		tasks.forEach(task => {
+
+			if (task.type === 'read') {
+
+				html +=
+					'<div class="task-item time-task">' +
+						'<div class="clock-canvas">' +
+							drawClockSVG(
+								task.hour,
+								task.minute,
+								true
+							) +
+						'</div>' +
+
+						'<div class="time-question">' +
+							'Wie spät ist es?' +
+						'</div>' +
+
+						'<div class="time-answer">' +
+							'<strong>' +
+								task.displayHour +
+								':' +
+								task.minuteStr +
+							'</strong>' +
+						'</div>' +
+					'</div>';
+
+			} else {
+
+				html +=
+					'<div class="task-item time-task">' +
+
+						'<div class="time-question">' +
+							'Zeichne die Zeiger für:' +
+						'</div>' +
+
+						'<div class="time-question">' +
+							'<strong>' +
+								task.displayHour +
+								':' +
+								task.minuteStr +
+							'</strong>' +
+						'</div>' +
+
+						'<div class="clock-canvas">' +
+							drawClockSVG(
+								task.hour,
+								task.minute,
+								true
+							) +
+						'</div>' +
+
+					'</div>';
+			}
+		});
+
+		html += '</div>';
+
+		return html;
+	}
+
+// ===== MALPYRAMIDEN =====
+//Erzeugt die Daten einer Malpyramide inklusive ausgeblendeter Felder.
 	function generatePyramid(levels, maxNumber, missingCount) {
 
 		// Kleine Basiszahlen verwenden,
@@ -1035,7 +1824,7 @@
 		};
 	}
 
-    
+//Rendert die Malpyramide als HTML-Ausgabe.    
     function drawPyramid(pyramidData) {
 		const levels = pyramidData.length;
 		let html = '<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">';
@@ -1055,7 +1844,36 @@
 		html += '</div>';
 		return html;
 	}
+	
+	function renderPyramidSolution(items) {
 
+		const difficulty =
+			document.getElementById(
+				'pyramidDifficulty'
+			)?.value || 'easy';
+
+		let html =
+			'<div class="tasks-grid pyramid-grid pyramid-grid-' +
+			difficulty +
+			'">';
+
+		items.forEach(solution => {
+
+			html +=
+				'<div class="task-item pyramid-task">' +
+					'<div style="text-align:center;">' +
+						drawPyramid(solution) +
+					'</div>' +
+				'</div>';
+		});
+
+		html += '</div>';
+
+		return html;
+	}
+
+// ===== GRUNDRECHENARTEN =====
+//Erstellt den verfügbaren Aufgabenpool für Multiplikation, Division, Quadratzahlen und Wurzeln.
     function buildFiniteMathPool(operation, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber) {
         const pool = [];
         if (operation === '*') {
@@ -1116,12 +1934,21 @@
         }
         return pool;
     }
+
+
+//Berechnet die Anzahl der Zehnerübergänge bei einer Addition.
     function countTensCrossingsAdd(a, b) {
         return b <= 0 ? 0 : Math.floor((a + b) / 10) - Math.floor(a / 10);
     }
+
+
+
+//Berechnet die Anzahl der Zehnerübergänge bei einer Subtraktion.
     function countTensCrossingsSub(a, b) {
         return b <= 0 ? 0 : Math.floor(a / 10) - Math.floor((a - b) / 10);
     }
+	
+//Prüft, ob eine Aufgabe den eingestellten Zehnerübergangsregeln entspricht.
     function isAllowedTensCrossing(op, a, b) {
         const mode = document.getElementById('tensCrossingSelect')?.value || 'any';
         if (mode === 'any') return true;
@@ -1129,6 +1956,8 @@
         const crossings = op === '+' ? countTensCrossingsAdd(a, b) : countTensCrossingsSub(a, b);
         return crossings <= limit;
     }
+	
+//Erzeugt eindeutige Plus- oder Minusaufgaben innerhalb des Zahlenraums.
     function generateUniqueRandomArithmetic(op, maxNumber, operandMax, usedSet) {
         const maxAttempts = 250;
         let lastCandidate = null;
@@ -1168,77 +1997,22 @@
         if (lastCandidate) return lastCandidate;
         return op === '+' ? '1 + 1 =' : '1 - 1 =';
     }
-    function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber, operandMax, state) {
-        operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 500;
-        const opsList = [];
-        if (operations.add) opsList.push('+');
-        if (operations.sub) opsList.push('-');
-        if (operations.mul) opsList.push('*');
-        if (operations.div) opsList.push('/');
-        if (operations.square) opsList.push('□');
-        if (operations.sqrt) opsList.push('√');
-        if (!opsList.length) opsList.push('+');
-
-        const finitePools = new Map();
-        for (const op of opsList) {
-            if (['*','/','□','√'].includes(op)) finitePools.set(op, buildFiniteMathPool(op, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber));
-        }
-        const tasks = [];
-        for (let i = 0; i < count; i++) {
-            let op = opsList[Math.floor(Math.random() * opsList.length)];
-            let text;
-            let taskMeta = null;
-            if (finitePools.has(op)) {
-                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
-                const picked = takeWithoutRepeats(finitePools.get(op), 1, used, item => typeof item === 'string' ? item : (item.key || item.text));
-                const pickedTask = picked[0] || '1 + 1 =';
-                if (typeof pickedTask === 'string') text = pickedTask;
-                else { text = pickedTask.text; taskMeta = {remainder:pickedTask.remainder}; }
-            } else {
-                const used = state.byOperation[op] || (state.byOperation[op] = new Set());
-                text = generateUniqueRandomArithmetic(op, maxNumber, operandMax, used);
-            }
-            tasks.push({text, ...(taskMeta || {})});
-        }
-        return tasks;
-    }
-    // Deutsch-Aufgaben: innerhalb einer Generierung ohne Wiederholung, bis der Pool leer ist.
-    function deEsc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    function deChunks(items,n){const a=Array.from({length:n},()=>[]);items.forEach((x,i)=>a[i%n].push(x));return a;}
-    function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.wordTypes,x=>x.word+':'+x.type],consonants:[consonantList,state.consonants,x=>x.word],vowelLength:[vowelLengthList,state.vowelLength,x=>x.word],syllables:[syllableList,state.syllables,x=>x.word]};const m=map[type];return takeWithoutRepeats(m[0],count,m[1],m[2]);}
-    function renderWordTypes(items){return `<div class="de-special"><div class="de-instruction">Bestimme die Wortart.</div><div class="de-table-grid-2">${deChunks(items,2).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Nomen</th><th>Verb</th><th>Adjektiv</th></tr></thead><tbody>${c.map(x=>`<tr><td>${deEsc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
-    function renderConsonants(items){return `<div class="de-special"><div class="de-instruction">Ergänze den oder die fehlenden Konsonanten und schreibe das Wort richtig auf.</div><div class="consonant-grid">${items.map(x=>`<div class="consonant-card"><span class="hint-letter">${x.letter}:</span><span class="de-word">${x.gap}</span><span class="de-write-line"></span></div>`).join('')}</div></div>`;}
-    function renderVowels(items){return `<div class="de-special"><div class="de-instruction">Bestimme den Selbstlaut.</div><div class="de-table-grid-3">${deChunks(items,3).map(c=>`<table class="de-table"><thead><tr><th>Wort</th><th>Kurz</th><th>Lang</th></tr></thead><tbody>${c.map(x=>`<tr><td>${deEsc(x.word)}</td><td><span class="de-check"></span></td><td><span class="de-check"></span></td></tr>`).join('')}</tbody></table>`).join('')}</div></div>`;}
-    function renderSyllableSection(title,items,kind){return `<section class="syllable-section"><div class="syllable-title">${title}</div><div class="syllable-rows">${items.map(x=>kind==='count'?`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="syllable-count"></span> Silben</div>`:kind==='arcs'?`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="syllable-work"></span></div>`:`<div class="syllable-row"><span class="de-word">${x.word}</span><span class="de-write-line"></span></div>`).join('')}</div></section>`;}
-    function renderSyllables(items){return `<div class="de-special">${renderSyllableSection('1. Trenne die Wörter in Silben.',items.slice(0,6),'split')}${renderSyllableSection('2. Zeichne Silbenbögen.',items.slice(6,12),'arcs')}${renderSyllableSection('3. Zähle die Silben.',items.slice(12,18),'count')}</div>`;}
-
-    function generateGermanTasks(count, types, difficulty, state) {
-        if (types.letters) {
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'.split('');
-            return takeWithoutRepeats(letters, count, state.letters, l => l).map(letter => ({ prompt: `✍️ ${letter} ${letter.toLowerCase()}`, lineCount: 1 }));
-        }
-        if (types.sentences) {
-            return takeWithoutRepeats(sentencesList, count, state.sentences, s => s).map(sentence => ({ prompt: `📖 ${sentence}`, lineCount: 3 }));
-        }
-        const useCustom = document.getElementById('useCustomWords')?.checked || false;
-        const customInput = document.getElementById('customWordsInput')?.value || '';
-        const customWords = useCustom ? parseCustomWords(customInput) : [];
-        const baseWords = wordLists[difficulty] || wordLists.medium;
-        const pool = [];
-        const seen = new Set();
-        for (const word of [...customWords, ...baseWords]) {
-            const key = word.toLocaleLowerCase('de-DE');
-            if (!seen.has(key)) { seen.add(key); pool.push(word); }
-        }
-        return takeWithoutRepeats(pool, count, state.words, w => w.toLocaleLowerCase('de-DE')).map(word => ({ prompt: `📝 ${word}`, lineCount: 1 }));
-    }
-    // ========== ZAHLENSTRAHL ==========
+	
+//Liefert den aktuell eingestellten Maximalwert für Operanden bei Plus/Minus.
+	function getMathOperandMax() {
+		return parseInt(document.getElementById('maxOperand')?.value) || 500;
+	}
+	
+// ===== ZAHLENSTRAHL =====
+//Baut die Datenbasis eines Zahlenstrahls inkl. Zielzahlen auf.
     function makeNumberlineRange(start, end, step, targetCount, usedSet, keyPrefix) {
         const candidates = [];
         for (let n = start + step; n < end; n += step) candidates.push(n);
         const targets = takeWithoutRepeats(candidates, Math.min(targetCount, candidates.length), usedSet, n => `${keyPrefix}:${start}:${end}:${n}`);
         return { start, end, step, targets: [...targets].sort((a,b) => a-b) };
     }
+
+//Zeichnet einen Zahlenstrahl als SVG.
     function numberlineSvg(task) {
         const {start,end,step,targets,type} = task;
         const W=760, x0=36, x1=724, y=44;
@@ -1277,12 +2051,15 @@
         }
         return out+'</svg>';
     }
+//Ermittelt sinnvolle Zahlenstrahlbereiche für den aktuellen Zahlenraum.
     function alignedFullRanges(maxValue) {
         const max=Math.max(100,Math.floor(maxValue/10)*10);
         let split=Math.floor((max/2)/10)*10;
         split=Math.max(10,Math.min(max-10,split));
         return [[0,split],[split,max]];
     }
+	
+//Erzeugt einen Zahlenstrahl-Ausschnitt.
     function randomSection(maxValue, usedSet, index) {
         const upper=Math.max(100,Math.min(maxValue,5000));
         const width=40;
@@ -1292,6 +2069,8 @@
         const base=makeNumberlineRange(start,start+width,1,6,usedSet,`section${index}`);
         return {...base,type:'sections'};
     }
+	
+//Erstellt Zahlenstrahl-Aufgaben passend zum gewählten Modus.
     function generateNumberlineTasks(mode,maxValue,usedSet,requestedCount) {
         const max=Math.max(100,Math.min(5000,Number(maxValue)||1000));
         const ranges=alignedFullRanges(max);
@@ -1309,112 +2088,595 @@
         else tasks=[full('read',0,counts[0]),full('read',1,counts[1]),full('connect',0,counts[2]),full('connect',1,counts[3]),section(0,counts[4]),section(1,counts[5])];
         return tasks.filter(t=>t.targets.length);
     }
-    function renderNumberlineTasks(tasks) {
-        const titles={read:'1. Lies die markierten Zahlen ab.',connect:'2. Verbinde die Zahlen mit der richtigen Stelle.',sections:'3. Bestimme die markierten Zahlen im Ausschnitt.'};
-        const seen={}; let html='<div class="numberline-sheet">';
-        for(const task of tasks){
-            const first=!seen[task.type]; seen[task.type]=true;
-            html+=`<div class="numberline-block">${first?`<div class="numberline-title">${titles[task.type]}</div>`:''}${numberlineSvg(task)}</div>`;
+	
+//Wandelt Zahlenstrahl-Daten in HTML um.
+	function renderNumberlineTasks(tasks) {
+
+		const titles = {
+			read: '1. Lies die markierten Zahlen ab.',
+			connect: '2. Verbinde die Zahlen mit der richtigen Stelle.',
+			sections: '3. Bestimme die markierten Zahlen im Ausschnitt.'
+		};
+
+		const seen = {};
+		let html =
+			'<div class="numberline-sheet">';
+
+		for (const task of tasks) {
+
+			const first =
+				!seen[task.type];
+
+			seen[task.type] = true;
+
+			let titleHtml = '';
+
+			if (first) {
+				titleHtml =
+					'<div class="numberline-title">' +
+					titles[task.type] +
+					'</div>';
+			}
+
+			html +=
+				'<div class="numberline-block">' +
+				titleHtml +
+				numberlineSvg(task) +
+				'</div>';
+		}
+
+		return html + '</div>';
+	}
+
+	//Liest die ausgewählten Mathe-Aufgabentypen aus der Oberfläche aus.
+	function getMathOperations() {
+
+		return {
+			add:
+				document.querySelector(
+					'#mathOpsBasic input[value="add"]'
+				)?.checked || false,
+
+			sub:
+				document.querySelector(
+					'#mathOpsBasic input[value="sub"]'
+				)?.checked || false,
+
+			mul:
+				document.querySelector(
+					'#mathOpsBasic input[value="mul"]'
+				)?.checked || false,
+
+			div:
+				document.querySelector(
+					'#mathOpsBasic input[value="div"]'
+				)?.checked || false,
+
+			square:
+				document.getElementById(
+					'squareCheck'
+				)?.checked || false,
+
+			sqrt:
+				document.getElementById(
+					'sqrtCheck'
+				)?.checked || false,
+
+			time:
+				document.getElementById(
+					'timeCheck'
+				)?.checked || false,
+
+			pyramid:
+				document.getElementById(
+					'pyramidCheck'
+				)?.checked || false,
+
+			numberline:
+				document.getElementById(
+					'numberlineCheck'
+				)?.checked || false
+		};
+	}
+
+
+
+
+
+
+
+
+//=============================================
+//==============Deutsch_Grundschule.txt========
+//=============================================
+// ===== DEUTSCH-Grundschule =====
+// ===== GENERATOR =====
+//Hauptgenerator für alle klassischen Deutschaufgaben (Wörter, Buchstaben, Sätze).
+    function generateGermanTasks(count, types, state) {
+        if (types.letters) {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'.split('');
+            return takeWithoutRepeats(letters, count, state.letters, l => l).map(letter => ({ prompt: `✍️ ${letter} ${letter.toLowerCase()}`, lineCount: 1 }));
         }
-        return html+'</div>';
+        if (types.sentences) {
+            return takeWithoutRepeats(sentencesList, count, state.sentences, s => s).map(sentence => ({ prompt: `📖 ${sentence}`, lineCount: 3 }));
+        }
+        const useCustom = document.getElementById('useCustomWords')?.checked || false;
+        const customInput = document.getElementById('customWordsInput')?.value || '';
+        const customWords = useCustom ? parseCustomWords(customInput) : [];
+        const baseWords = wordLists.grundschule;
+        const pool = [];
+        const seen = new Set();
+        for (const word of [...customWords, ...baseWords]) {
+            const key = word.toLocaleLowerCase('de-DE');
+            if (!seen.has(key)) { seen.add(key); pool.push(word); }
+        }
+        return takeWithoutRepeats(pool, count, state.words, w => w.toLocaleLowerCase('de-DE')).map(word => ({ prompt: `📝 ${word}`, lineCount: 1 }));
     }
 
-    function getTaskCountMaximum() {
-        if (modeSelect.value === 'math') {
-            const ops = getMathOperations();
-            if (ops.numberline) return 36;
-            if (ops.time) return 12;
-            if (ops.pyramid) {
-                const difficulty = document.getElementById('pyramidDifficulty')?.value || 'easy';
-                return difficulty === 'easy' ? 12 : difficulty === 'medium' ? 6 : 4;
-            }
-            return 40;
-        }
-        const t=getDeutschTypes(); if(t.sentences)return 6; if(t.wordTypes)return 20; if(t.consonants)return 18; if(t.vowelLength)return 21; if(t.syllables)return 18; return 14;
-    }
-    function resetTaskCountToMaximum() {
-        const max = getTaskCountMaximum();
-        const input = document.getElementById('taskCount');
-        const label = document.getElementById('taskCountMax');
-        if (input) { input.max = String(max); input.value = String(max); }
-        if (label) label.textContent = `max. ${max}`;
-        return max;
-    }
-    function getRequestedTaskCount() {
-        const max = getTaskCountMaximum();
-        const input = document.getElementById('taskCount');
-        let value = parseInt(input?.value, 10);
-        if (!Number.isFinite(value)) value = max;
-        value = Math.max(1, Math.min(max, value));
-        if (input) { input.max = String(max); input.value = String(value); }
-        const label = document.getElementById('taskCountMax');
-        if (label) label.textContent = `max. ${max}`;
-        return value;
-    }
-    const modeSelect = document.getElementById('modeSelect');
-    const mathControlsDiv = document.getElementById('mathControls');
-    const deutschControlsDiv = document.getElementById('deutschControls');
-    const generateBtn = document.getElementById('generateBtn');
-    const printBtn = document.getElementById('printBtn');
-    const multiPageContainer = document.getElementById('multiPageContainer');
-    const pageCountInput = document.getElementById('pageCount');
-    const rowSelectorDiv = document.getElementById('rowSelector');
-    
-    let selectedRows = [0,1,2,3,4,5,6,7,8,9,10];
-    
-    function buildRowSelector() {
-        rowSelectorDiv.innerHTML = '';
-        for (let i = 0; i <= 10; i++) {
-            const span = document.createElement('span');
-            span.textContent = i;
-            if (selectedRows.includes(i)) span.classList.add('selected');
-            span.addEventListener('click', () => {
-                if (selectedRows.includes(i)) {
-                    selectedRows = selectedRows.filter(v => v !== i);
-                } else {
-                    selectedRows.push(i);
-                    selectedRows.sort((a,b)=>a-b);
-                }
-                buildRowSelector();
-            });
-            rowSelectorDiv.appendChild(span);
-        }
-    }
-    
-    function toggleModeUI() {
-        const mode = modeSelect.value;
-        if (mode === 'math') {
-            mathControlsDiv.classList.remove('hidden');
-            deutschControlsDiv.classList.add('hidden');
-            updateVisibilityBasedOnSelection();
-        } else {
-            mathControlsDiv.classList.add('hidden');
-            deutschControlsDiv.classList.remove('hidden');
-            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings, #numberlineSettings').forEach(el => {
-                if (el) el.classList.add('hidden');
-            });
-        }
-        updateCustomWordsVisibility();
-    }
-    
-    function getMathOperations() {
-        return {
-            add: document.querySelector('#mathOpsBasic input[value="add"]')?.checked || false,
-            sub: document.querySelector('#mathOpsBasic input[value="sub"]')?.checked || false,
-            mul: document.querySelector('#mathOpsBasic input[value="mul"]')?.checked || false,
-            div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
-            square: document.getElementById('squareCheck')?.checked || false,
-            sqrt: document.getElementById('sqrtCheck')?.checked || false,
-            time: document.getElementById('timeCheck')?.checked || false,
-            pyramid: document.getElementById('pyramidCheck')?.checked || false,
-            numberline: document.getElementById('numberlineCheck')?.checked || false
-        };
-    }
-	function getMathOperandMax() {
-		return parseInt(document.getElementById('maxOperand')?.value) || 500;
+// ===== HILFSFUNKTIONEN =====
+//Maskiert Sonderzeichen für eine sichere HTML-Ausgabe.
+    function deEsc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+//Teilt Listen gleichmäßig auf mehrere Tabellen oder Spalten auf.
+    function deChunks(items,n){const a=Array.from({length:n},()=>[]);items.forEach((x,i)=>a[i%n].push(x));return a;}
+	
+//Wählt eindeutige Aufgaben aus den Spezialmodulen (Wortarten, Konsonanten, Selbstlaute, Silben) aus.
+function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.wordTypes,x=>x.word+':'+x.type],consonants:[consonantList,state.consonants,x=>x.word],vowelLength:[vowelLengthList,state.vowelLength,x=>x.word],syllables:[syllableList,state.syllables,x=>x.word]};const m=map[type];return takeWithoutRepeats(m[0],count,m[1],m[2]);}
+
+// ===== WORTARTEN =====
+//Erstellt die Tabellenaufgabe zur Bestimmung von Nomen, Verben und Adjektiven.
+	function renderWordTypes(items) {
+		const tables = deChunks(items, 2).map(chunk => {
+			const rows = chunk.map(item => {
+				return '<tr>' +
+					'<td>' + deEsc(item.word) + '</td>' +
+					'<td><span class="de-check"></span></td>' +
+					'<td><span class="de-check"></span></td>' +
+					'<td><span class="de-check"></span></td>' +
+				'</tr>';
+			}).join('');
+
+			return '<table class="de-table">' +
+				'<thead>' +
+					'<tr>' +
+						'<th>Wort</th>' +
+						'<th>Nomen</th>' +
+						'<th>Verb</th>' +
+						'<th>Adjektiv</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody>' + rows + '</tbody>' +
+			'</table>';
+		}).join('');
+
+		return '<div class="de-special">' +
+			'<div class="de-instruction">Bestimme die Wortart.</div>' +
+			'<div class="de-table-grid-2">' +
+				tables +
+			'</div>' +
+		'</div>';
 	}
-    
+	
+	function renderWordTypesSolution(items) {
+		const tables = deChunks(items, 2).map(chunk => {
+			const rows = chunk.map(item => {
+				return `
+					<tr>
+						<td>${deEsc(item.word)}</td>
+						<td>${item.type === 'noun' ? '✓' : ''}</td>
+						<td>${item.type === 'verb' ? '✓' : ''}</td>
+						<td>${item.type === 'adjective' ? '✓' : ''}</td>
+					</tr>
+				`;
+			}).join('');
+			return `
+				<table class="de-table">
+					<thead>
+						<tr>
+							<th>Wort</th>
+							<th>Nomen</th>
+							<th>Verb</th>
+							<th>Adjektiv</th>
+						</tr>
+					</thead>
+					<tbody>
+						${rows}
+					</tbody>
+				</table>
+			`;
+
+		}).join('');
+		return `
+			<div class="de-special">
+				<div class="de-instruction">
+					Lösungen Wortarten
+				</div>
+				<div class="de-table-grid-2">
+					${tables}
+				</div>
+			</div>
+		`;
+	}
+
+// ===== KONSONANTEN =====
+//Rendert die Konsonanten-Aufgaben mit fehlenden Buchstaben und Schreibzeile.
+	function renderConsonants(items) {
+		const cards = items.map(item => {
+			return '<div class="consonant-card">' +
+				'<span class="hint-letter">' + item.letter + ':</span>' +
+				'<span class="de-word">' + item.gap + '</span>' +
+				'<span class="de-write-line"></span>' +
+			'</div>';
+		}).join('');
+
+		return '<div class="de-special">' +
+			'<div class="de-instruction">' +
+				'Ergänze den oder die fehlenden Konsonanten und schreibe das Wort richtig auf.' +
+			'</div>' +
+			'<div class="consonant-grid">' +
+				cards +
+			'</div>' +
+		'</div>';
+	}
+	
+	function renderConsonantsSolution(items) {
+		const cards = items.map(item => `
+			<div class="consonant-card">
+				<span class="de-word">
+					${item.word}
+				</span>
+				<strong style="margin-left:10px;">
+					(${item.answer})
+				</strong>
+			</div>
+		`).join('');
+		return `
+			<div class="de-special">
+				<div class="de-instruction">
+					Lösungen Konsonanten
+				</div>
+
+				<div class="consonant-grid">
+					${cards}
+				</div>
+			</div>
+		`;
+	}
+
+// ===== SELBSTLAUTE =====
+//Erstellt das komplette Selbstlaut-Arbeitsblatt mit Kurz/Lang, Wörtern sortieren und Selbstlaute einkreisen.
+	function renderVowels(items) {
+		const block1 = items.slice(0, 15);
+		const block2 = items.slice(15, 27);
+		const block3 = items.slice(27, 42);
+
+		const tables = deChunks(block1, 3).map(chunk => {
+			const rows = chunk.map(item => {
+				return '<tr>' +
+					'<td>' + deEsc(item.word) + '</td>' +
+					'<td><span class="de-check"></span></td>' +
+					'<td><span class="de-check"></span></td>' +
+				'</tr>';
+			}).join('');
+
+			return '<table class="de-table">' +
+				'<thead>' +
+					'<tr>' +
+						'<th>Wort</th>' +
+						'<th>Kurz</th>' +
+						'<th>Lang</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody>' +
+					rows +
+				'</tbody>' +
+			'</table>';
+		}).join('');
+
+		const sortingWords = block2.map(item => item.word).join(' • ');
+
+		const circlingCards = block3.map(item => {
+			return '<div class="consonant-card">' +
+				'<span class="de-word">' + deEsc(item.word) + '</span>' +
+			'</div>';
+		}).join('');
+
+		return '<div class="de-special">' +
+			'<div class="de-instruction">1. Bestimme, ob der Selbstlaut kurz oder lang gesprochen wird.</div>' +
+			'<div class="de-table-grid-3">' +
+				tables +
+			'</div>' +
+
+			'<div class="de-instruction" style="margin-top:18px;">2. Ordne die Wörter richtig zu.</div>' +
+			'<div style="margin-bottom:10px;font-weight:600;">' +
+				sortingWords +
+			'</div>' +
+
+			'<table class="de-table">' +
+				'<thead>' +
+					'<tr>' +
+						'<th>Kurzer Selbstlaut</th>' +
+						'<th>Langer Selbstlaut</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody>' +
+					'<tr>' +
+						'<td style="height:140px;"></td>' +
+						'<td style="height:140px;"></td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>' +
+
+			'<div class="de-instruction" style="margin-top:18px;">3. Kreise in den Wörtern die Selbstlaute ein.</div>' +
+			'<div class="consonant-grid">' +
+				circlingCards +
+			'</div>' +
+		'</div>';
+	}
+	
+	function renderVowelSolution(items) {
+
+		const block1 = items.slice(0, 15);
+		const block2 = items.slice(15, 27);
+
+		// =========================
+		// Aufgabe 1 (3 Tabellen)
+		// =========================
+
+		const tables = deChunks(block1, 3).map(chunk => {
+
+			const rows = chunk.map(item => `
+				<tr>
+					<td>${deEsc(item.word)}</td>
+					<td>${item.length === 'short' ? '✓' : ''}</td>
+					<td>${item.length === 'long' ? '✓' : ''}</td>
+				</tr>
+			`).join('');
+
+			return `
+				<table class="de-table">
+					<thead>
+						<tr>
+							<th>Wort</th>
+							<th>Kurz</th>
+							<th>Lang</th>
+						</tr>
+					</thead>
+					<tbody>
+						${rows}
+					</tbody>
+				</table>
+			`;
+		}).join('');
+
+		// =========================
+		// Aufgabe 2 (Zuordnung)
+		// =========================
+
+		const shortWords = block2
+			.filter(x => x.length === "short")
+			.map(x => x.word)
+			.join("<br>");
+
+		const longWords = block2
+			.filter(x => x.length === "long")
+			.map(x => x.word)
+			.join("<br>");
+
+		return `
+			<div class="de-special">
+
+				<div class="de-instruction">
+					Lösungen Selbstlaute
+				</div>
+
+				<div class="de-instruction">
+					1. Bestimme, ob der Selbstlaut kurz oder lang gesprochen wird.
+				</div>
+
+				<div class="de-table-grid-3">
+					${tables}
+				</div>
+
+				<div class="de-instruction" style="margin-top:18px;">
+					2. Ordne die Wörter richtig zu.
+				</div>
+
+				<table class="de-table">
+					<thead>
+						<tr>
+							<th>Kurzer Selbstlaut</th>
+							<th>Langer Selbstlaut</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${shortWords}</td>
+							<td>${longWords}</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+		`;
+	}
+	
+	function markVowels(word){
+		return word.replace(
+			/([aeiouäöüAEIOUÄÖÜ])/g,
+			'<span class="solution-vowel">$1</span>'
+		);
+	}
+	
+	function renderVowelSorting(items){
+		return `
+		<div class="de-special">
+			<div class="de-instruction">
+				2. Ordne die Wörter richtig zu.
+			</div>
+			<div style="margin-bottom:10px;font-weight:600;">
+				${items.map(x => x.word).join(" • ")}
+			</div>
+			<table class="de-table">
+				<thead>
+					<tr>
+						<th>Kurzer Selbstlaut</th>
+						<th>Langer Selbstlaut</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="height:120px;"></td>
+						<td style="height:120px;"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>`;
+	}	
+	
+//Erstellt die Aufgabe zum Einkreisen der Selbstlaute.
+	function renderVowelCircling(items) {
+		const cards = items.map(item => {
+			return '<div class="consonant-card">' +
+				'<span class="de-word">' + deEsc(item.word) + '</span>' +
+			'</div>';
+		}).join('');
+
+		return '<div class="de-special">' +
+			'<div class="de-instruction">' +
+				'3. Kreise in den Wörtern die Selbstlaute ein.' +
+			'</div>' +
+			'<div class="consonant-grid">' +
+				cards +
+			'</div>' +
+		'</div>';
+	}
+	
+//Vergleicht Wörterpaare mit kurzem und langem Selbstlaut.	
+	function renderVowelPairs(items) {
+		const rows = items.map(pair => {
+			return '<tr>' +
+				'<td>' + pair.shortWord + ' / ' + pair.longWord + '</td>' +
+				'<td><span class="de-check"></span></td>' +
+				'<td><span class="de-check"></span></td>' +
+			'</tr>';
+		}).join('');
+
+		return '<div class="de-special">' +
+			'<div class="de-instruction">' +
+				'4. Vergleiche die Wortpaare.' +
+			'</div>' +
+			'<table class="de-table">' +
+				'<thead>' +
+					'<tr>' +
+						'<th>Wortpaar</th>' +
+						'<th>Kurz</th>' +
+						'<th>Lang</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody>' +
+					rows +
+				'</tbody>' +
+			'</table>' +
+		'</div>';
+	}
+
+// ===== SILBEN =====
+//Erzeugt einen einzelnen Silben-Aufgabenblock (Trennen, Bögen oder Zählen).
+	function renderSyllables(items){
+		return '<div class="de-special">' +
+			renderSyllableSection('1. Trenne die Wörter in Silben.', items.slice(0,10), 'split') +
+			renderSyllableSection('2. Zeichne Silbenbögen.', items.slice(10,20), 'arcs') +
+			renderSyllableSection('3. Zähle die Silben.', items.slice(20,30), 'count') +
+		'</div>';
+	}
+
+	function renderSyllableSolution(items) {
+
+		const pairs = [];
+
+		for (let i = 0; i < items.length; i += 2) {
+			pairs.push([
+				items[i],
+				items[i + 1] || null
+			]);
+		}
+
+		const rows = pairs.map(([left, right]) => `
+			<tr>
+				<td>${left.word}</td>
+				<td>${left.parts.join('-')}</td>
+
+				<td>${right ? right.word : ''}</td>
+				<td>${right ? right.parts.join('-') : ''}</td>
+			</tr>
+		`).join('');
+
+		return `
+			<div class="de-special">
+
+				<div class="de-instruction">
+					Lösungen Silben
+				</div>
+
+				<table class="de-table syllable-solution-table">
+					<thead>
+						<tr>
+							<th>Wort</th>
+							<th>Lösung</th>
+							<th>Wort</th>
+							<th>Lösung</th>
+						</tr>
+					</thead>
+					<tbody>
+						${rows}
+					</tbody>
+				</table>
+
+			</div>
+		`;
+	}	
+
+
+
+//Erzeugt einen einzelnen Silben-Aufgabenblock für Trennen, Silbenbögen oder Silbenzahl.
+	function renderSyllableSection(title, items, kind) {
+		const rows = items.map(item => {
+
+			if (kind === 'count') {
+				return '<div class="syllable-row">' +
+					'<span class="de-word">' + item.word + '</span>' +
+					'<span class="syllable-count"></span> Silben' +
+				'</div>';
+			}
+
+			if (kind === 'arcs') {
+				return '<div class="syllable-row">' +
+					'<span class="de-word">' + item.word + '</span>' +
+					'<span class="syllable-work"></span>' +
+				'</div>';
+			}
+
+			return '<div class="syllable-row">' +
+				'<span class="de-word">' + item.word + '</span>' +
+				'<span class="de-write-line"></span>' +
+			'</div>';
+
+		}).join('');
+
+		return '<section class="syllable-section">' +
+			'<div class="syllable-title">' + title + '</div>' +
+			'<div class="syllable-rows">' +
+				rows +
+			'</div>' +
+		'</section>';
+	}
+
+// ===== EINSTELLUNGEN =====
+//Liest die gewählten Deutschmodule aus der Oberfläche aus.
     function getDeutschTypes(){return {copyWords:document.getElementById('wordsCheck')?.checked||false,letters:document.getElementById('lettersCheck')?.checked||false,sentences:document.getElementById('sentencesCheck')?.checked||false,wordTypes:document.getElementById('wordTypesCheck')?.checked||false,consonants:document.getElementById('consonantsCheck')?.checked||false,vowelLength:document.getElementById('vowelLengthCheck')?.checked||false,syllables:document.getElementById('syllablesCheck')?.checked||false};}
+	
+//Blendet den Bereich für eigene Wörter ein oder aus.
     function updateCustomWordsVisibility() {
         const isDeutschMode = modeSelect.value === 'deutsch';
         const types = getDeutschTypes();
@@ -1427,7 +2689,14 @@
             }
         }
     }
-    
+
+//Sorgt dafür, dass immer nur ein Deutsch-Spezialmodul gleichzeitig aktiv ist.
+    function setupDeutschExclusive(){const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck'];const checks=ids.map(id=>document.getElementById(id)).filter(Boolean);checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));}
+
+
+//=============================================
+//==============createWorksheet.txt============
+//=============================================
     function createWorksheet(pageIndex, totalPages, generationState) {
         const mode = modeSelect.value;
         const worksheetDiv = document.createElement('div');
@@ -1454,13 +2723,29 @@
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'numberline-container';
                 const nlMode = document.getElementById('numberlineMode')?.value || 'mixed';
-                tasksGrid.innerHTML = renderNumberlineTasks(generateNumberlineTasks(nlMode,maxNum,generationState.numberline,getRequestedTaskCount()));
+                const numberlineTasks =
+					generateNumberlineTasks(
+						nlMode,
+						maxNum,
+						generationState.numberline,
+						getRequestedTaskCount()
+					);
+
+				generationState.numberlineSolutions =
+					[...numberlineTasks];
+
+				tasksGrid.innerHTML =
+					renderNumberlineTasks(
+						numberlineTasks
+					);
+				``(generateNumberlineTasks(nlMode,maxNum,generationState.numberline,getRequestedTaskCount()));
             } else if (ops.time) {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
                 let timeTasks = generateTimeTasks(getRequestedTaskCount(), timeDifficulty, generationState.time);
-                timeTasks.forEach(task => {
+                generationState.timeSolutions = [...timeTasks];
+				timeTasks.forEach(task => {
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item time-task';
                     if (task.type === 'read') {
@@ -1501,6 +2786,13 @@
                         attempts++;
                     } while (generationState.pyramids.has(JSON.stringify(pyramid.solution)) && attempts < 100);
                     generationState.pyramids.add(JSON.stringify(pyramid.solution));
+					if (!generationState.pyramidSolutions) {
+						generationState.pyramidSolutions = [];
+					}
+
+					generationState.pyramidSolutions.push(
+						pyramid.solution
+					);
 					const taskDiv = document.createElement('div');
 					taskDiv.className = 'task-item pyramid-task';
 					taskDiv.innerHTML = `
@@ -1517,6 +2809,42 @@
                 tasksGrid.className = 'tasks-grid math-grid';
                 let tasks = generateMathTasks(getRequestedTaskCount(), ops, maxNum, selectedRows, squareBase, sqrtMaxNumber, getMathOperandMax(), generationState.math);
                 tasks.forEach(task => {
+					const expr = task.text.replace(/\s*=\s*$/, '').trim();
+					try {
+						let solutionText = "";
+						if (expr.includes("+")) {
+							const [a,b] = expr.split("+").map(x => parseFloat(x.trim()));
+							solutionText = `${expr} = ${a+b}`;
+						}
+						else if (expr.includes("-")) {
+							const [a,b] = expr.split("-").map(x => parseFloat(x.trim()));
+							solutionText = `${expr} = ${a-b}`;
+						}
+						else if (expr.includes("×")) {
+							const [a,b] = expr.split("×").map(x => parseFloat(x.trim()));
+							solutionText = `${expr} = ${a*b}`;
+						}
+						else if (expr.includes(":")) {
+							const [a,b] = expr.split(":").map(x => parseFloat(x.trim()));
+							if(Number.isInteger(task.remainder)){
+								const q = Math.floor(a/b);
+								solutionText = `${expr} = ${q} R ${task.remainder}`;
+							}else{
+								solutionText = `${expr} = ${a/b}`;
+							}
+						}
+						else if(expr.startsWith("√")){
+							const val = parseFloat(expr.replace("√",""));
+							solutionText = `${expr} = ${Math.sqrt(val)}`;
+						}
+						if(solutionText){
+							generationState.solutions.push({
+								type: "Mathe",
+								text: solutionText
+							});
+						}
+					}
+					catch(e){}
                     const taskDiv = document.createElement('div');
                     taskDiv.className = 'task-item math-task';
                     const hasLargeNumbers = /\d{3,}/.test(task.text);
@@ -1530,11 +2858,67 @@
                 });
             }
         } else {
-            const types=getDeutschTypes(),difficulty=document.getElementById('difficultySelect').value;
-            const special=types.wordTypes?'wordTypes':types.consonants?'consonants':types.vowelLength?'vowelLength':types.syllables?'syllables':null;
-            if(special){tasksGrid=document.createElement('div');tasksGrid.className='deutsch-special-container';const items=specialPick(special,getRequestedTaskCount(),generationState.deutsch);tasksGrid.innerHTML=special==='wordTypes'?renderWordTypes(items):special==='consonants'?renderConsonants(items):special==='vowelLength'?renderVowels(items):renderSyllables(items);}
-            else{tasksGrid=document.createElement('div');tasksGrid.className='tasks-grid deutsch-grid';let deutschTasks=generateGermanTasks(getRequestedTaskCount(),types,difficulty,generationState.deutsch);deutschTasks.forEach(t=>{const taskDiv=document.createElement('div');taskDiv.className='task-item deutsch-task';const lineHeightPx=t.lineCount*56;taskDiv.innerHTML=`<div class="deutsch-prompt">${t.prompt}</div><div class="gs-lineatur" style="min-height:${lineHeightPx}px;height:${lineHeightPx}px;"></div>`;tasksGrid.appendChild(taskDiv);});}
-        }
+			const types = getDeutschTypes();
+			const special =
+				types.wordTypes ? 'wordTypes' :
+				types.consonants ? 'consonants' :
+				types.vowelLength ? 'vowelLength' :
+				types.syllables ? 'syllables' :
+				null;
+			if (special) {
+				tasksGrid = document.createElement('div');
+				tasksGrid.className = 'deutsch-special-container';
+				const items = specialPick(
+					special,
+					getRequestedTaskCount(),
+					generationState.deutsch
+				);
+				// ===================================
+				// Lösungen sammeln
+				// ===================================
+				if (special === "wordTypes") {
+					generationState.wordTypesSolutions.push(...items);
+					tasksGrid.innerHTML = renderWordTypes(items);
+				}
+				else if (special === "consonants") {
+					generationState.consonantsSolutions.push(...items);
+					tasksGrid.innerHTML = renderConsonants(items);
+				}
+				else if (special === "vowelLength") {
+					generationState.vowelSolutions.push(...items);
+					tasksGrid.innerHTML = renderVowels(items);
+				}
+				else if (special === "syllables") {
+					generationState.syllableSolutions.push(...items);
+					tasksGrid.innerHTML = renderSyllables(items);
+				}
+			}
+			else {
+				tasksGrid = document.createElement('div');
+				tasksGrid.className = 'tasks-grid deutsch-grid';
+				const deutschTasks = generateGermanTasks(
+					getRequestedTaskCount(),
+					types,
+					generationState.deutsch
+				);
+				deutschTasks.forEach(t => {
+					const taskDiv = document.createElement('div');
+					taskDiv.className = 'task-item deutsch-task';
+					const lineHeightPx = t.lineCount * 56;
+					taskDiv.innerHTML = `
+						<div class="deutsch-prompt">${t.prompt}</div>
+						<div
+							class="gs-lineatur"
+							style="
+								min-height:${lineHeightPx}px;
+								height:${lineHeightPx}px;
+							">
+						</div>
+					`;
+					tasksGrid.appendChild(taskDiv);
+				});
+			}
+		}
         
         const pointsField = document.createElement('div');
         pointsField.className = 'points-field';
@@ -1545,149 +2929,89 @@
         worksheetDiv.appendChild(pointsField);
         return worksheetDiv;
     }
-    
-    function generateMultiPage() {
-        let pageCount = parseInt(pageCountInput.value) || 1;
-        pageCount = Math.min(10, Math.max(1, pageCount));
-        multiPageContainer.innerHTML = '';
-        const generationState = {
-            math: { byOperation: {} },
-            deutsch: {words:new Set(),letters:new Set(),sentences:new Set(),wordTypes:new Set(),consonants:new Set(),vowelLength:new Set(),syllables:new Set()},
-            time: new Set(),
-            pyramids: new Set(),
-            numberline: new Set()
-        };
-        for (let i = 0; i < pageCount; i++) {
-            multiPageContainer.appendChild(createWorksheet(i, pageCount, generationState));
-        }
-    }
-    
-    function setupSpecialOpsExclusive() {
-        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline'];
-        const basicOps = ['add', 'sub', 'mul', 'div'];
-        specialOps.forEach(opId => {
-            const checkbox = document.getElementById(`${opId}Check`);
-            if (checkbox) {
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        basicOps.forEach(basicId => {
-                            const basicCheck = document.querySelector(`#mathOpsBasic input[value="${basicId}"]`);
-                            if (basicCheck && basicCheck.checked) basicCheck.checked = false;
-                        });
-                        specialOps.forEach(otherId => {
-                            if (otherId !== opId) {
-                                const otherCheck = document.getElementById(`${otherId}Check`);
-                                if (otherCheck && otherCheck.checked) otherCheck.checked = false;
-                            }
-                        });
-                    }
-                    updateVisibilityBasedOnSelection();
-                });
-            }
-        });
-        basicOps.forEach(opId => {
-            const checkbox = document.querySelector(`#mathOpsBasic input[value="${opId}"]`);
-            if (checkbox) {
-                checkbox.addEventListener('change', () => {
-                    const anyBasicChecked = basicOps.some(id => document.querySelector(`#mathOpsBasic input[value="${id}"]`)?.checked);
-                    if (anyBasicChecked) {
-                        specialOps.forEach(specialId => {
-                            const specialCheck = document.getElementById(`${specialId}Check`);
-                            if (specialCheck && specialCheck.checked) specialCheck.checked = false;
-                        });
-                    }
-                    updateVisibilityBasedOnSelection();
-                });
-            }
-        });
-    }
-    
-    function setupDeutschExclusive(){const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck'];const checks=ids.map(id=>document.getElementById(id)).filter(Boolean);checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));}
-    
-	function updateVisibilityBasedOnSelection() {
-		let ops;
-		try {
-			ops = getMathOperations();
-		} catch(e) { return; }
-		
+	
+	
+//Lösungsseite erzeugen
+	function createSolutionSheet(generationState) {
 		const mode = modeSelect.value;
-		const anyBasicActive = ops.add || ops.sub || ops.mul || ops.div;
-		const mathRange = document.getElementById('mathRangeGroup');
-		
-		// Zahlenraum anzeigen, wenn Grundrechenarten ODER Pyramiden aktiv sind (nur im Mathe-Modus)
-		if (mathRange) {
-			if (mode === 'math' && (anyBasicActive || ops.pyramid || ops.numberline)) {
-				mathRange.classList.remove('hidden');
-			} else {
-				mathRange.classList.add('hidden');
+		let solutionHtml = "";
+		if (mode === "math") {
+			const ops = getMathOperations();
+			if (ops.add||ops.sub||ops.mul||ops.div||ops.square||ops.sqrt) {
+				const mathHtml = generationState.solutions
+					.filter(x => x.type === "Mathe")
+					.map(x =>
+						`<div class="solution-math-item">${x.text}</div>`
+					)
+					.join("");
+
+				solutionHtml = `
+					<div class="solution-math-grid">
+						${mathHtml}
+					</div>
+				`;
+			}
+			else if (ops.time) {
+				solutionHtml =
+					renderTimeSolution(
+						generationState.timeSolutions || []
+					);
+			}
+			else if (ops.pyramid) {
+				solutionHtml =
+					renderPyramidSolution(
+						generationState.pyramidSolutions || []
+					);
+			}
+			else if (ops.numberline) {
+
+			}
+		} else {
+
+			const types = getDeutschTypes();
+			const special = 
+			    types.wordTypes ? 'wordTypes' :
+				types.consonants ? 'consonants' :
+				types.vowelLength ? 'vowelLength' :
+				types.syllables ? 'syllables' :
+				null;
+			if (special === "wordTypes") {
+				solutionHtml =
+					renderWordTypesSolution(
+						generationState.wordTypesSolutions || []
+					);
+			}
+			else if (special === "consonants") {
+				solutionHtml =
+					renderConsonantsSolution(
+						generationState.consonantsSolutions || []
+					);
+			}
+			else if (special === "vowelLength") {
+				solutionHtml =
+					renderVowelSolution(
+						generationState.vowelSolutions || []
+					);
+			}
+			else if (special === "syllables") {
+				solutionHtml =
+					renderSyllableSolution(
+						generationState.syllableSolutions || []
+					);
 			}
 		}
+		const page = document.createElement("div");
+		page.className = "worksheet solution-sheet";
+		page.innerHTML = `
+			<div class="worksheet-header">
+				<h1>✅ Lösungen</h1>
+			</div>
+			${solutionHtml}
+		`;
+		return page;
 		
-		const multRow = document.getElementById('multiplicationRowGroup');
-		if (multRow) (ops.mul || ops.div) && anyBasicActive ? multRow.classList.remove('hidden') : multRow.classList.add('hidden');
-		
-		const sqrtSet = document.getElementById('sqrtSettings');
-        if (sqrtSet) ops.sqrt ? sqrtSet.classList.remove('hidden') : sqrtSet.classList.add('hidden');
-		const squareSet = document.getElementById('squareSettings');
-		if (squareSet) ops.square ? squareSet.classList.remove('hidden') : squareSet.classList.add('hidden');
-		
-		const timeSet = document.getElementById('timeSettings');
-		if (timeSet) ops.time ? timeSet.classList.remove('hidden') : timeSet.classList.add('hidden');
-		
-		const pyramidSet = document.getElementById('pyramidSettings');
-		if (pyramidSet) ops.pyramid ? pyramidSet.classList.remove('hidden') : pyramidSet.classList.add('hidden');
-        const numberlineSet = document.getElementById('numberlineSettings');
-        if (numberlineSet) ops.numberline ? numberlineSet.classList.remove('hidden') : numberlineSet.classList.add('hidden');
-		
-		const maxOperandGroup = document.getElementById('maxOperandGroup');
-		if (maxOperandGroup) {
-			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
-			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid && !ops.numberline;
-			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
-		}
-		
-        const tensCrossingGroup = document.getElementById('tensCrossingGroup');
-        if (tensCrossingGroup) {
-            const showTensCrossing = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
-            showTensCrossing ? tensCrossingGroup.classList.remove('hidden') : tensCrossingGroup.classList.add('hidden');
-        }
+	}
 
-        const tableOnlyOptions = document.getElementById('tableOnlyOptions');
-        if (tableOnlyOptions) {
-            const showTableOnlyOptions = (mode === 'math') && (ops.mul || ops.div) && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
-            showTableOnlyOptions ? tableOnlyOptions.classList.remove('hidden') : tableOnlyOptions.classList.add('hidden');
-        }
-        const divisionOptions = document.getElementById('divisionOptions');
-        if (divisionOptions) {
-            const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
-            showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
-        }
-	}    
-    function printWorksheets() { window.print(); }
-    
-    modeSelect.addEventListener('change', () => { toggleModeUI(); resetTaskCountToMaximum(); generateMultiPage(); });
-    generateBtn.addEventListener('click', generateMultiPage);
-    printBtn.addEventListener('click', printWorksheets);
-    
-    buildRowSelector();
-    toggleModeUI();
-    setupSpecialOpsExclusive();
-    setupDeutschExclusive();
-    document.querySelectorAll('#deutschTypesBasic input, #deutschTypesSpecial input').forEach(el => {
-        el.addEventListener('change', resetTaskCountToMaximum);
-    });
-    document.querySelectorAll('#mathOpsBasic input, #mathOpsSpecial input').forEach(el => {
-        el.addEventListener('change', resetTaskCountToMaximum);
-    });
-    document.getElementById('pyramidDifficulty')?.addEventListener('change', resetTaskCountToMaximum);
-    document.getElementById('numberlineMode')?.addEventListener('change', () => { resetTaskCountToMaximum(); generateMultiPage(); });
-    function syncMaxOperandToRange(){const range=parseInt(document.getElementById('numberRange')?.value,10)||1000;const input=document.getElementById('maxOperand');if(input){input.max=String(range);input.value=String(Math.max(1,Math.floor(range*0.5)));}}
-    document.getElementById('numberRange')?.addEventListener('change',()=>{syncMaxOperandToRange();generateMultiPage();});
-
-    document.getElementById('taskCount')?.addEventListener('change', getRequestedTaskCount);
-    updateVisibilityBasedOnSelection();
-    resetTaskCountToMaximum();
-    generateMultiPage();
 </script>
 </body>
 </html>
