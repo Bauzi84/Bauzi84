@@ -5,17 +5,8 @@
 <!-- Header.txt -->
 <!-- Header.txt -->
 <!-- Header.txt -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Grundschul-Arbeitsblatt-Generator - Bauzi84</title>
-    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <style>
-     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Grundschul-Arbeitsblatt-Generator - Bauzi84</title>
-    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <style>
-        * {
+	<Style>
+         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -345,7 +336,16 @@
         .de-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.86rem}.de-table th,.de-table td{border:1px solid #64748b;padding:5px 4px;height:31px;text-align:center}.de-table th{background:#e0f2fe;font-weight:700}.de-table th:first-child,.de-table td:first-child{text-align:left;width:42%}
         .de-check{display:inline-block;width:15px;height:15px;border:1.5px solid #334155;border-radius:3px}.consonant-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 16px}.consonant-card,.syllable-row{border:1px solid #bae6fd;background:#f8fcff;border-radius:9px;padding:7px 9px;break-inside:avoid}
         .hint-letter{display:inline-block;min-width:24px;font-weight:800;color:#0c4a6e}.de-word{font-family:'Patrick Hand','Comic Neue',cursive;font-size:1.12rem}.de-write-line{display:inline-block;min-width:105px;height:20px;margin-left:7px;border-bottom:1.5px solid #334155;vertical-align:bottom}
-        .syllable-section{margin:8px 0 14px;break-inside:avoid}.syllable-title{background:#e0f2fe;border-radius:8px;padding:5px 8px;margin-bottom:7px;font-weight:700}.syllable-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px}.syllable-work{display:block;height:21px;border-bottom:1.5px solid #64748b;margin-top:4px}.syllable-count{display:inline-block;width:28px;height:25px;border:1.5px solid #334155;border-radius:5px;margin-left:8px;vertical-align:middle}
+		.syllable-write-line{
+			min-width:200px;
+		}
+
+		.syllable-arc-word{
+			font-size:1.4rem;
+			font-weight:600;
+		} 
+
+		 .syllable-section{margin:8px 0 14px;break-inside:avoid}.syllable-title{background:#e0f2fe;border-radius:8px;padding:5px 8px;margin-bottom:7px;font-weight:700}.syllable-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px}.syllable-work{display:block;height:21px;border-bottom:1.5px solid #64748b;margin-top:4px}.syllable-count{display:inline-block;width:28px;height:25px;border:1.5px solid #334155;border-radius:5px;margin-left:8px;vertical-align:middle}
         @media print{.de-table-grid-2{gap:9px}.de-table-grid-3{gap:7px}.de-table{font-size:.74rem}.de-table th,.de-table td{height:25px;padding:3px}.consonant-grid,.syllable-rows{gap:5px 9px}.consonant-card,.syllable-row{padding:5px 7px}.de-word{font-size:.96rem}.syllable-section{margin:5px 0 9px}}
         .points-field {
             margin-top: 25px;
@@ -644,8 +644,42 @@
 		.syllable-solution-table td:nth-child(4){
 			width:25%;
 		}
-    </style>
+		
+		.word-problem-container{
+			display:grid;
+			grid-template-columns:1fr 1fr;
+			gap:12px;
+		}
 
+		.word-problem-task{
+			break-inside:avoid;
+			page-break-inside:avoid;
+		}
+		.word-problem-answer{
+			min-height:120px;
+			border:1px solid #94a3b8;
+			border-radius:8px;
+
+			background-image:
+				linear-gradient(#dbeafe 1px, transparent 1px),
+				linear-gradient(90deg, #dbeafe 1px, transparent 1px);
+
+			background-size:20px 20px;
+			background-color:white;
+		}
+		.word-problem-solutions{
+			display:flex;
+			flex-direction:column;
+			gap:12px;
+		}
+
+		.word-problem-solution{
+			padding:10px;
+			border:1px solid #cbd5e1;
+			border-radius:8px;
+			background:#f8fafc;
+			line-height:1.5;
+		}
 
     </style>
 
@@ -686,6 +720,7 @@
 				<select id="modeSelect">
 					<option value="math">Mathe</option>
 					<option value="deutsch">Deutsch</option>
+					<option value="english">Englisch</option>
 				</select>
 			</div>
 			
@@ -720,6 +755,8 @@
 					<label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
 					<label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
 					<label><input type="checkbox" value="numberline" id="numberlineCheck"> ↔️ Zahlenstrahl</label>
+					<label><input type="checkbox" value="wordproblems" id="wordProblemsCheck">📖 Sachaufgaben</label>
+					
 				</div>
 			</div>
 			
@@ -786,6 +823,34 @@
 				</select>
 				<small>Verwendet den oben eingestellten Zahlenraum. Volle Zahlenstrahlen in 10er-Schritten, Ausschnitte in 1er-Schritten.</small>
 			</div>
+			<div id="wordProblemSettings"
+				 class="control-group hidden">
+
+				<label>Sachaufgaben:</label>
+
+				<select id="wordProblemDifficulty">
+					<option value="1">
+						1 - Addition & Subtraktion
+					</option>
+
+					<option value="2">
+						2 - Multiplikation & Division
+					</option>
+
+					<option value="3">
+						3 - Gemischte Rechenarten
+					</option>
+
+					<option value="4">
+						4 - Mit Störinformationen
+					</option>
+
+					<option value="5">
+						5 - Mehrschrittige Aufgaben
+					</option>
+				</select>
+
+			</div>
 			<div id="deutschControls" class="control-group hidden">
 				<label>✍️ Übungstyp:</label>
 				<div class="checkbox-group" id="deutschTypesBasic">
@@ -805,6 +870,28 @@
 					<small>Wörter durch Komma oder Leerzeichen getrennt</small>
 					<label class="checkbox-label"><input type="checkbox" id="useCustomWords"> Eigene Wörter verwenden</label>
 				</div>          
+			</div>
+			<div id="englishControls"
+				class="control-group hidden">
+				<label>🇬🇧 Übungstyp:</label>
+				<div class="checkbox-group">
+					<label>
+						<input type="checkbox"
+							   id="deToEnCheck"
+							   checked>
+						Deutsch → Englisch
+					</label>
+					<label>
+						<input type="checkbox"
+							   id="enToDeCheck">
+						Englisch → Deutsch
+					</label>
+					<label>
+						<input type="checkbox"
+							   id="englishSentencesCheck">
+						Satzübersetzung
+					</label>
+				</div>
 			</div>
 		</div>
 
@@ -831,7 +918,7 @@
 //=============================================
 //==============Daten.txt======================
 //=============================================
-     const wordLists = {
+    const wordLists = {
         grundschule: ["Hund", "Katze", "Maus", "Ball", "Auto", "Haus", "Tisch", "Baum", "Fisch", "Kind", 
 		"Apfel", "Tür", "Buch", "der", "die", "das","ist", "ich", "du", "wir", "gehen", "sehen", 
 		"gut", "rot", "blau", "alt", "neu", "klein", "Schule", "Lehrer", "spielen", "Wasser", "Straße", "Fenster", 
@@ -852,7 +939,11 @@
 		"Frühstück","verletzten","verspricht","Geschichte","verbieten","vor","Vorschlag","verstecken","gesund","verdoppeln",
 		"verlieren","voraus","vorsichtig","gewinnen","vergessen","vermissen","versuchen", "Schmetterling", "Fußball", "Taschenrechner", 
 		"Schokolade", "Bibliothek", "Entschuldigung", "Geschwindigkeit", "Wörterbuch", "Fahrradfahrer", "Grundschule", "Eichhörnchen", 
-		"Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag"],
+		"Elefant", "Krankenhaus", "Regenbogen", "Feuerwehr", "Spielplatz", "Geburtstag",
+		"Wallfahrt","Kirche","Kapelle","Pilger","Pilgerweg","Gebet","Gottesdienst","Heilige",
+		"Kerze","Kreuz","geschehen","Ungeheuer","versprechen","davor","Vorname","kriegen","passieren"
+		
+		],
 		weiterfuehrendeSchule: [],
 		custom: []
 	};
@@ -869,7 +960,9 @@
 			'Erdbeere','Nachmittag','Frühstück','Geschichte','Vorschlag',
 			'Schmetterling','Fußball','Taschenrechner','Schokolade',
 			'Bibliothek','Wörterbuch','Grundschule','Eichhörnchen',
-			'Elefant','Krankenhaus','Regenbogen','Spielplatz','Geburtstag'
+			'Elefant','Krankenhaus','Regenbogen','Spielplatz','Geburtstag',
+			'Wallfahrt','Kirche','Kapelle','Pilgerweg','Gebet','Gottesdienst',
+			'Heilige','Kerze','Kreuz','Vorname','Ungeheuer'
 		].map(word => ({word,type:'noun'})),
 		...[
 			'spielen','springen','tanzen','malen','arbeiten','tragen',
@@ -880,7 +973,7 @@
 			'schwimmen','klettern','werfen','fangen','zeichnen',
 			'basteln','backen','trinken','essen','suchen','finden',
 			'rufen','hören','zeigen','üben','rechnen','denken',
-			'erzählen','besuchen','pflanzen','feiern'
+			'erzählen','besuchen','pflanzen','feiern','geschehen','versprechen','kriegen','passieren'
 		].map(word => ({word,type:'verb'})),
 		...[
 			'gut','rot','blau','alt','neu','klein','schnell',
@@ -995,6 +1088,23 @@
 		['Seifenblase',['Sei','fen','bla','se']],
 		['Wintermantel',['Win','ter','man','tel']],
 		['Sommerferien',['Som','mer','fe','ri','en']],
+		['Wallfahrt',['Wall','fahrt']],
+		['Kirche',['Kir','che']],
+		['Kapelle',['Ka','pel','le']],
+		['Pilger',['Pil','ger']],
+		['Pilgerweg',['Pil','ger','weg']],
+		['Gebet',['Ge','bet']],
+		['Gottesdienst',['Got','tes','dienst']],
+		['Heilige',['Hei','li','ge']],
+		['Kerze',['Ker','ze']],
+		['Kreuz',['Kreuz']],
+		['geschehen',['ge','sche','hen']],
+		['Ungeheuer',['Un','ge','heu','er']],
+		['versprechen',['ver','spre','chen']],
+		['davor',['da','vor']],
+		['Vorname',['Vor','na','me']],
+		['kriegen',['krie','gen']],
+		['passieren',['pas','sie','ren']]
 	].map(([word,parts])=>({word,parts}));
 
     const sentencesList = [
@@ -1119,7 +1229,251 @@ const vowelPairList = [
     { shortWord: "Kissen", longWord: "Kiese" },
     { shortWord: "Sonne", longWord: "Zone" }
 	];
-	
+
+const englishVocabulary = [
+    { de:"Hund", en:"dog" },
+    { de:"Katze", en:"cat" },
+    { de:"Maus", en:"mouse" },
+    { de:"Ball", en:"ball" },
+    { de:"Auto", en:"car" },
+    { de:"Haus", en:"house" },
+    { de:"Tisch", en:"table" },
+    { de:"Baum", en:"tree" },
+    { de:"Fisch", en:"fish" },
+    { de:"Kind", en:"child" },
+    { de:"Apfel", en:"apple" },
+    { de:"Buch", en:"book" },
+    { de:"Schule", en:"school" },
+    { de:"Lehrer", en:"teacher" },
+    { de:"Wasser", en:"water" },
+    { de:"Fenster", en:"window" },
+    { de:"Brief", en:"letter" },
+    { de:"Winter", en:"winter" },
+    { de:"Frühling", en:"spring" },
+    { de:"Sommer", en:"summer" },
+    { de:"Blume", en:"flower" },
+    { de:"Garten", en:"garden" },
+    { de:"Sonne", en:"sun" },
+    { de:"Regen", en:"rain" },
+    { de:"Stadt", en:"town" },
+    { de:"Wald", en:"forest" },
+    { de:"Auge", en:"eye" },
+    { de:"Tag", en:"day" },
+    { de:"Vater", en:"father" },
+    { de:"Mutter", en:"mother" },
+    { de:"Bruder", en:"brother" },
+    { de:"Freund", en:"friend" },
+    { de:"Korb", en:"basket" },
+    { de:"Vogel", en:"bird" },
+    { de:"Hose", en:"trousers" },
+    { de:"Wolke", en:"cloud" },
+    { de:"Minute", en:"minute" },
+    { de:"Stunde", en:"hour" },
+    { de:"Mond", en:"moon" },
+    { de:"Jahr", en:"year" },
+    { de:"Sonntag", en:"Sunday" },
+    { de:"Montag", en:"Monday" },
+    { de:"Dienstag", en:"Tuesday" },
+    { de:"Mittwoch", en:"Wednesday" },
+    { de:"Donnerstag", en:"Thursday" },
+    { de:"Freitag", en:"Friday" },
+    { de:"Samstag", en:"Saturday" },
+    { de:"Feuerwehr", en:"fire brigade" },
+    { de:"Flugzeug", en:"airplane" },
+    { de:"Erdbeere", en:"strawberry" },
+    { de:"Nachmittag", en:"afternoon" },
+    { de:"Frühstück", en:"breakfast" },
+    { de:"Geschichte", en:"story" },
+    { de:"Schmetterling", en:"butterfly" },
+    { de:"Fußball", en:"football" },
+    { de:"Taschenrechner", en:"calculator" },
+    { de:"Schokolade", en:"chocolate" },
+    { de:"Bibliothek", en:"library" },
+    { de:"Grundschule", en:"primary school" },
+    { de:"Eichhörnchen", en:"squirrel" },
+    { de:"Elefant", en:"elephant" },
+    { de:"Krankenhaus", en:"hospital" },
+    { de:"Regenbogen", en:"rainbow" },
+    { de:"Spielplatz", en:"playground" },
+    { de:"Geburtstag", en:"birthday" }
+];
+
+const englishSentences = [
+    { de:"Der Hund läuft im Park.", en:"The dog runs in the park." },
+    { de:"Meine Katze schläft auf dem Sofa.", en:"My cat sleeps on the sofa." },
+    { de:"Wir frühstücken zusammen am Sonntagmorgen.", en:"We have breakfast together on Sunday morning." },
+    { de:"Meine Oma backt leckere Kekse.", en:"My grandma bakes delicious cookies." },
+    { de:"Ich spiele mit meinem kleinen Bruder.", en:"I play with my little brother." },
+    { de:"In der Pause toben wir auf dem Schulhof.", en:"We play in the schoolyard during the break." },
+    { de:"Mein Lieblingsfach ist Sport.", en:"My favourite subject is PE." },
+    { de:"Ich gehe gerne in die Schule.", en:"I like going to school." },
+    { de:"Lena liest ein spannendes Buch.", en:"Lena is reading an exciting book." },
+    { de:"Im Wald sehen wir viele bunte Pilze.", en:"We see many colourful mushrooms in the forest." },
+    { de:"Im Zoo habe ich einen Elefanten gesehen.", en:"I saw an elephant at the zoo." },
+    { de:"Wir bauen einen Schneemann mit Möhrennase.", en:"We build a snowman with a carrot nose." },
+    { de:"Zu Ostern suchen wir bunte Eier im Garten.", en:"At Easter we look for colourful eggs in the garden." },
+    { de:"An Weihnachten schmücken wir den Tannenbaum.", en:"At Christmas we decorate the Christmas tree." },
+    { de:"Im Sommer gehen wir gerne ins Freibad.", en:"In summer we like to go to the outdoor pool." },
+    { de:"Im Frühling blühen die ersten Blumen.", en:"The first flowers bloom in spring." },
+    { de:"Wir spielen Fußball auf dem Sportplatz.", en:"We play football on the sports field." },
+    { de:"Radfahren macht mir großen Spaß.", en:"I really enjoy riding my bike." },
+    { de:"Heute scheint die Sonne.", en:"The sun is shining today." },
+    { de:"Wir fahren mit dem Fahrrad.", en:"We go by bike." },
+    { de:"Im Garten wächst eine Blume.", en:"A flower grows in the garden." },
+    { de:"Ich trinke ein Glas Wasser.", en:"I drink a glass of water." },
+    { de:"Wir lesen gemeinsam ein Buch.", en:"We read a book together." },
+    { de:"Das Kind baut einen Turm.", en:"The child builds a tower." },
+    { de:"Im Winter fällt Schnee.", en:"Snow falls in winter." },
+    { de:"Der Apfel schmeckt süß.", en:"The apple tastes sweet." },
+    { de:"Wir laufen durch den Wald.", en:"We walk through the forest." },
+    { de:"Wir besuchen den Zoo.", en:"We visit the zoo." },
+    { de:"Der Elefant ist sehr groß.", en:"The elephant is very big." },
+    { de:"Das Auto steht vor dem Haus.", en:"The car is parked in front of the house." },
+    { de:"Der Mond leuchtet am Himmel.", en:"The moon shines in the sky." },
+    { de:"Die Lehrerin erklärt die Aufgabe.", en:"The teacher explains the task." },
+    { de:"Die Kinder lachen zusammen.", en:"The children laugh together." },
+    { de:"Im Sommer essen wir Eis.", en:"In summer we eat ice cream." },
+    { de:"Heute machen wir einen Ausflug.", en:"Today we are going on a trip." }
+];
+
+
+// =============================================
+// ============== SACHAUFGABEN =================
+// =============================================
+const sachaufgabenGruppen = [
+{
+    id:"einkaufen",
+    name:"Einkaufen und Geld",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        person:["Anna","Ben","Lena","Tom","Emma","Paul","Mia","Jonas"],
+        objekt:["Äpfel","Brötchen","Bleistifte","Hefte","Radiergummis","Bananen"],
+        preis:[1,2,3,4,5,6,7,8]
+    },
+    templates:[
+        {text:"{person} kauft {anzahl1} {objekt}. Danach kauft {person} noch {anzahl2}. Wie viele {objekt} hat {person} insgesamt?",
+            operator:"+"
+        },
+        {text:"{person} hat {anzahl1} Euro und gibt {anzahl2} Euro aus. Wie viel Geld bleibt übrig?",
+            operator:"-"
+        },
+        {text:"{person} kauft {anzahl1} {objekt} für je {preis} Euro. Wie viel bezahlt {person} insgesamt?",
+            operator:"×"
+        },
+        {text:"{person} verteilt {anzahl1} Euro gleichmäßig auf {anzahl2} Kinder. Wie viele Euro bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"schule",
+    name:"Schule",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        person:["Anna","Ben","Lena","Tom","Emma"],
+        objekt:["Bleistifte","Hefte","Bücher","Radiergummis"]
+    },
+    templates:[
+
+        {text:"In einer Klasse sind {anzahl1} Kinder. {anzahl2} weitere Kinder kommen dazu. Wie viele Kinder sind nun in der Klasse?",
+            operator:"+"
+        },
+        {text:"In einer Klasse sind {anzahl1} Kinder. {anzahl2} Kinder fehlen heute. Wie viele Kinder sind anwesend?",
+            operator:"-"
+        },
+        {text:"Es gibt {anzahl1} Tische. An jedem Tisch sitzen {anzahl2} Kinder. Wie viele Kinder sitzen insgesamt an den Tischen?",
+            operator:"×"
+        },
+        {text:"{anzahl1} Arbeitshefte werden gleichmäßig auf {anzahl2} Kinder verteilt. Wie viele Hefte bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"spielplatz",
+    name:"Spielplatz",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        person:["Anna","Ben","Lena","Tom","Emma"]
+    },
+
+    templates:[
+        {text:"Auf dem Spielplatz spielen {anzahl1} Kinder. Danach kommen {anzahl2} Kinder dazu. Wie viele Kinder spielen jetzt dort?",
+            operator:"+"
+        },
+        {text:"Auf dem Spielplatz spielen {anzahl1} Kinder. {anzahl2} Kinder gehen nach Hause. Wie viele bleiben übrig?",
+            operator:"-"
+        },
+        {text:"Es stehen {anzahl1} Schaukeln bereit. Jede Schaukel wird von {anzahl2} Kindern genutzt. Wie viele Kinder sind das insgesamt?",
+            operator:"×"
+        },
+        {text:"{anzahl1} Bälle werden gleichmäßig auf {anzahl2} Kinder verteilt. Wie viele Bälle bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"zoo",
+    name:"Zoo",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        tier:["Affen","Pinguine","Giraffen","Zebras","Elefanten"]
+    },
+    templates:[
+        {text:"Im Zoo gibt es {anzahl1} {tier}. Es kommen {anzahl2} weitere dazu. Wie viele sind es jetzt?",
+            operator:"+"
+        },
+        {text:"Im Zoo gibt es {anzahl1} {tier}. {anzahl2} werden in einen anderen Zoo gebracht. Wie viele bleiben?",
+            operator:"-"
+        },
+        {text:"Es gibt {anzahl1} Gehege. In jedem Gehege leben {anzahl2} {tier}. Wie viele Tiere sind das insgesamt?",
+            operator:"×"
+        },
+        {text:"{anzahl1} {tier} werden gleichmäßig auf {anzahl2} Gehege verteilt. Wie viele sind in jedem Gehege?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"bus",
+    name:"Busfahrt",
+    operatoren:["+","-"],
+    platzhalter:{},
+    templates:[
+
+        {text:"In einem Bus sitzen {anzahl1} Fahrgäste. An der nächsten Haltestelle steigen {anzahl2} Fahrgäste ein. Wie viele Fahrgäste sind jetzt im Bus?",
+            operator:"+"
+        },
+        {text:"In einem Bus sitzen {anzahl1} Fahrgäste. An der nächsten Haltestelle steigen {anzahl2} aus. Wie viele bleiben im Bus?",
+            operator:"-"
+        }
+    ]
+},
+{
+    id:"geburtstag",
+    name:"Geburtstag",
+    operatoren:["+","-","×"],
+    platzhalter:{
+        objekt:["Bonbons","Kekse","Luftballons","Geschenke"]
+    },
+    templates:[
+
+        {text:"Auf einem Geburtstag liegen {anzahl1} {objekt} bereit. Es kommen noch {anzahl2} dazu. Wie viele sind es nun?",
+            operator:"+"
+        },
+
+        {text:"Auf einem Geburtstag gibt es {anzahl1} {objekt}. {anzahl2} werden verbraucht. Wie viele bleiben übrig?",
+            operator:"-"
+        },
+
+        {text:"Jedes Kind bekommt {anzahl2} {objekt}. Es sind {anzahl1} Kinder da. Wie viele {objekt} werden insgesamt benötigt?",
+            operator:"×"
+        }
+    ]
+}
+
+];
+
 //=============================================
 //==============uebergreifende_funktionen.txt==
 //=============================================
@@ -1127,6 +1481,7 @@ const vowelPairList = [
 	const modeSelect = document.getElementById('modeSelect');
 	const mathControlsDiv = document.getElementById('mathControls');
 	const deutschControlsDiv = document.getElementById('deutschControls');
+	const englishControlsDiv = document.getElementById('englishControls');
 	const generateBtn = document.getElementById('generateBtn');
 	const printBtn = document.getElementById('printBtn');
 	const multiPageContainer = document.getElementById('multiPageContainer');
@@ -1141,6 +1496,7 @@ const vowelPairList = [
 	toggleModeUI();
 	setupSpecialOpsExclusive();
 	setupDeutschExclusive();
+	setupEnglishExclusive();
 	document.getElementById('pyramidDifficulty')?.addEventListener('change', resetTaskCountToMaximum);
 	document.getElementById('numberlineMode')?.addEventListener('change', () => { resetTaskCountToMaximum(); generateMultiPage(); });
 	document.getElementById('numberRange')?.addEventListener('change',()=>{syncMaxOperandToRange();generateMultiPage();});
@@ -1258,8 +1614,17 @@ const vowelPairList = [
 						? 6
 						: 4;
 			}
+			if (ops.wordProblems) return 6;
 			return 40;
 		}
+		if (modeSelect.value === 'english') {
+			const t = getEnglishTypes();
+			if (t.sentences) {
+				return 8;
+			}
+			return 16;
+		}
+		
 		const t = getDeutschTypes();
 		if (t.sentences) return 6;
 		if (t.wordTypes) return 20;
@@ -1335,7 +1700,12 @@ const vowelPairList = [
 			},
 			time: new Set(),
 			pyramids: new Set(),
-			numberline: new Set()
+			numberline: new Set(),
+			english: {
+				deToEn: new Set(),
+				enToDe: new Set(),
+				sentences: new Set()
+			},
 		};
 
 		for (let i = 0; i < pageCount; i++) {
@@ -1348,7 +1718,8 @@ const vowelPairList = [
 				wordTypesSolutions: [],
 				consonantsSolutions: [],
 				vowelSolutions: [],
-				syllableSolutions: []
+				syllableSolutions: [],
+				englishSolutions: []
 			};
 
 			multiPageContainer.appendChild(
@@ -1366,7 +1737,9 @@ const vowelPairList = [
 				(pageState.vowelSolutions?.length || 0) > 0 ||
 				(pageState.syllableSolutions?.length || 0) > 0 ||
 				(pageState.timeSolutions?.length || 0) > 0 ||
-				(pageState.pyramidSolutions?.length || 0) > 0;
+				(pageState.pyramidSolutions?.length || 0) > 0 ||
+				(pageState.englishSolutions?.length || 0) > 0 
+				;
 
 			const generateSolutions =
 			document.getElementById('includeSolutions')?.checked || false;
@@ -1382,7 +1755,7 @@ const vowelPairList = [
 
 //Sorgt dafür, dass nur ein Mathe-Spezialmodul gleichzeitig aktiv ist.
     function setupSpecialOpsExclusive() {
-        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline'];
+        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline', 'wordProblems'];
         const basicOps = ['add', 'sub', 'mul', 'div'];
         specialOps.forEach(opId => {
             const checkbox = document.getElementById(`${opId}Check`);
@@ -1421,22 +1794,29 @@ const vowelPairList = [
         });
     }
 
-//Schaltet zwischen Mathe- und Deutsch-Oberfläche um.
+//Schaltet zwischen Mathe-, Englisch- und Deutsch-Oberfläche um.
     function toggleModeUI() {
-        const mode = modeSelect.value;
-        if (mode === 'math') {
-            mathControlsDiv.classList.remove('hidden');
-            deutschControlsDiv.classList.add('hidden');
-            updateVisibilityBasedOnSelection();
-        } else {
-            mathControlsDiv.classList.add('hidden');
-            deutschControlsDiv.classList.remove('hidden');
-            document.querySelectorAll('#mathRangeGroup, #maxOperandGroup, #tensCrossingGroup, #multiplicationRowGroup, #tableOnlyOptions, #divisionOptions, #squareSettings, #sqrtSettings, #timeSettings, #pyramidSettings, #numberlineSettings').forEach(el => {
-                if (el) el.classList.add('hidden');
-            });
-        }
-        updateCustomWordsVisibility();
-    }
+		const mode = modeSelect.value;
+		if (mode === 'math') {
+			mathControlsDiv.classList.remove('hidden');
+			deutschControlsDiv.classList.add('hidden');
+			englishControlsDiv.classList.add('hidden');
+			updateVisibilityBasedOnSelection();
+		}
+		else if (mode === 'deutsch') {
+			mathControlsDiv.classList.add('hidden');
+			deutschControlsDiv.classList.remove('hidden');
+			englishControlsDiv.classList.add('hidden');
+			document.querySelectorAll('#mathRangeGroup,#maxOperandGroup,#tensCrossingGroup,#multiplicationRowGroup,#tableOnlyOptions,#divisionOptions,#squareSettings,#sqrtSettings,#timeSettings,#pyramidSettings,#numberlineSettings')
+				.forEach(el =>el.classList.add('hidden'));
+		}
+		else if (mode === 'english') {
+			mathControlsDiv.classList.add('hidden');
+			deutschControlsDiv.classList.add('hidden');
+			englishControlsDiv.classList.remove('hidden');
+		}
+		updateCustomWordsVisibility();
+	}
 
 //Zeigt und versteckt Optionen passend zur Auswahl.
 	function updateVisibilityBasedOnSelection() {
@@ -1504,6 +1884,14 @@ const vowelPairList = [
             const showDivisionOptions = (mode === 'math') && ops.div && anyBasicActive && !ops.pyramid && !ops.time && !ops.square && !ops.sqrt && !ops.numberline;
             showDivisionOptions ? divisionOptions.classList.remove('hidden') : divisionOptions.classList.add('hidden');
         }
+		const wordProblemSet =document.getElementById('wordProblemSettings');
+		if(wordProblemSet){
+			ops.wordProblems
+			? wordProblemSet.classList.remove('hidden')
+			: wordProblemSet.classList.add('hidden');
+		}
+		
+		
 	}
 
 //Startet den Druckvorgang.
@@ -1511,6 +1899,7 @@ const vowelPairList = [
 
 //Synchronisiert Maximaloperand mit dem Zahlenraum.
     function syncMaxOperandToRange(){const range=parseInt(document.getElementById('numberRange')?.value,10)||1000;const input=document.getElementById('maxOperand');if(input){input.max=String(range);input.value=String(Math.max(1,Math.floor(range*0.5)));}}
+
 
 
 //=============================================
@@ -1634,70 +2023,94 @@ const vowelPairList = [
     }
 
 
-	function renderTimeSolution(tasks) {
+//Wandelt Zahlenstrahl-Daten in HTML um.
+	function renderNumberlineTasks(tasks) {
 
+		const titles = {
+			read: '1. Lies die markierten Zahlen ab.',
+			connect: '2. Verbinde die Zahlen mit der richtigen Stelle.',
+			sections: '3. Bestimme die markierten Zahlen im Ausschnitt.'
+		};
+
+		const seen = {};
 		let html =
-			'<div class="tasks-grid math-grid">';
+			'<div class="numberline-sheet">';
 
-		tasks.forEach(task => {
+		for (const task of tasks) {
 
-			if (task.type === 'read') {
+			const first =
+				!seen[task.type];
 
-				html +=
-					'<div class="task-item time-task">' +
-						'<div class="clock-canvas">' +
-							drawClockSVG(
-								task.hour,
-								task.minute,
-								true
-							) +
-						'</div>' +
+			seen[task.type] = true;
 
-						'<div class="time-question">' +
-							'Wie spät ist es?' +
-						'</div>' +
+			let titleHtml = '';
 
-						'<div class="time-answer">' +
-							'<strong>' +
-								task.displayHour +
-								':' +
-								task.minuteStr +
-							'</strong>' +
-						'</div>' +
-					'</div>';
-
-			} else {
-
-				html +=
-					'<div class="task-item time-task">' +
-
-						'<div class="time-question">' +
-							'Zeichne die Zeiger für:' +
-						'</div>' +
-
-						'<div class="time-question">' +
-							'<strong>' +
-								task.displayHour +
-								':' +
-								task.minuteStr +
-							'</strong>' +
-						'</div>' +
-
-						'<div class="clock-canvas">' +
-							drawClockSVG(
-								task.hour,
-								task.minute,
-								true
-							) +
-						'</div>' +
-
+			if (first) {
+				titleHtml =
+					'<div class="numberline-title">' +
+					titles[task.type] +
 					'</div>';
 			}
-		});
 
-		html += '</div>';
+			html +=
+				'<div class="numberline-block">' +
+				titleHtml +
+				numberlineSvg(task) +
+				'</div>';
+		}
 
-		return html;
+		return html + '</div>';
+	}
+
+	//Liest die ausgewählten Mathe-Aufgabentypen aus der Oberfläche aus.
+	function getMathOperations() {
+
+		return {
+			add:
+				document.querySelector(
+					'#mathOpsBasic input[value="add"]'
+				)?.checked || false,
+
+			sub:
+				document.querySelector(
+					'#mathOpsBasic input[value="sub"]'
+				)?.checked || false,
+
+			mul:
+				document.querySelector(
+					'#mathOpsBasic input[value="mul"]'
+				)?.checked || false,
+
+			div:
+				document.querySelector(
+					'#mathOpsBasic input[value="div"]'
+				)?.checked || false,
+
+			square:
+				document.getElementById(
+					'squareCheck'
+				)?.checked || false,
+
+			sqrt:
+				document.getElementById(
+					'sqrtCheck'
+				)?.checked || false,
+
+			time:
+				document.getElementById(
+					'timeCheck'
+				)?.checked || false,
+
+			pyramid:
+				document.getElementById(
+					'pyramidCheck'
+				)?.checked || false,
+
+			numberline:
+				document.getElementById(
+					'numberlineCheck'
+				)?.checked || false
+		};
 	}
 
 // ===== MALPYRAMIDEN =====
@@ -1844,7 +2257,7 @@ const vowelPairList = [
 		html += '</div>';
 		return html;
 	}
-	
+
 	function renderPyramidSolution(items) {
 
 		const difficulty =
@@ -1871,6 +2284,7 @@ const vowelPairList = [
 
 		return html;
 	}
+
 
 // ===== GRUNDRECHENARTEN =====
 //Erstellt den verfügbaren Aufgabenpool für Multiplikation, Division, Quadratzahlen und Wurzeln.
@@ -2090,97 +2504,125 @@ const vowelPairList = [
     }
 	
 //Wandelt Zahlenstrahl-Daten in HTML um.
-	function renderNumberlineTasks(tasks) {
-
-		const titles = {
-			read: '1. Lies die markierten Zahlen ab.',
-			connect: '2. Verbinde die Zahlen mit der richtigen Stelle.',
-			sections: '3. Bestimme die markierten Zahlen im Ausschnitt.'
-		};
-
-		const seen = {};
-		let html =
-			'<div class="numberline-sheet">';
-
-		for (const task of tasks) {
-
-			const first =
-				!seen[task.type];
-
-			seen[task.type] = true;
-
-			let titleHtml = '';
-
-			if (first) {
-				titleHtml =
-					'<div class="numberline-title">' +
-					titles[task.type] +
-					'</div>';
-			}
-
-			html +=
-				'<div class="numberline-block">' +
-				titleHtml +
-				numberlineSvg(task) +
+function renderNumberlineTasks(tasks) {
+	const titles = {
+		read: '1. Lies die markierten Zahlen ab.',
+		connect: '2. Verbinde die Zahlen mit der richtigen Stelle.',
+		sections: '3. Bestimme die markierten Zahlen im Ausschnitt.'
+	};
+	const seen = {};
+	let html = '<div class="numberline-sheet">';
+	for (const task of tasks) {
+		const first = !seen[task.type];
+		seen[task.type] = true;
+		let titleHtml = '';
+		if (first) {
+			titleHtml =
+				'<div class="numberline-title">' +
+				titles[task.type] +
 				'</div>';
 		}
-
-		return html + '</div>';
+		html +=
+			'<div class="numberline-block">' +
+			titleHtml +
+			numberlineSvg(task) +
+			'</div>';
 	}
+	return html + '</div>';
+}
+	
+//Liest die ausgewählten Mathe-Aufgabentypen aus der Oberfläche aus.
+    function getMathOperations() {
+        return {
+            add: document.querySelector('#mathOpsBasic input[value="add"]')?.checked || false,
+            sub: document.querySelector('#mathOpsBasic input[value="sub"]')?.checked || false,
+            mul: document.querySelector('#mathOpsBasic input[value="mul"]')?.checked || false,
+            div: document.querySelector('#mathOpsBasic input[value="div"]')?.checked || false,
+            square: document.getElementById('squareCheck')?.checked || false,
+            sqrt: document.getElementById('sqrtCheck')?.checked || false,
+            time: document.getElementById('timeCheck')?.checked || false,
+            pyramid: document.getElementById('pyramidCheck')?.checked || false,
+            numberline: document.getElementById('numberlineCheck')?.checked || false,
+			wordProblems:document.getElementById('wordProblemsCheck')?.checked || false
+        };
+    }
 
-	//Liest die ausgewählten Mathe-Aufgabentypen aus der Oberfläche aus.
-	function getMathOperations() {
+function generateWordProblemTask(difficulty){
+    let erlaubteOperatoren = ["+"];
+    switch(difficulty){
+        case 1:
+            erlaubteOperatoren = ["+","-"];
+            break;
 
-		return {
-			add:
-				document.querySelector(
-					'#mathOpsBasic input[value="add"]'
-				)?.checked || false,
+        case 2:
+            erlaubteOperatoren = ["×",":"];
+            break;
 
-			sub:
-				document.querySelector(
-					'#mathOpsBasic input[value="sub"]'
-				)?.checked || false,
+        case 3:
+            erlaubteOperatoren = ["+","-","×",":"];
+            break;
 
-			mul:
-				document.querySelector(
-					'#mathOpsBasic input[value="mul"]'
-				)?.checked || false,
+        case 4:
+            erlaubteOperatoren = ["+","-","×",":"];
+            break;
 
-			div:
-				document.querySelector(
-					'#mathOpsBasic input[value="div"]'
-				)?.checked || false,
+        case 5:
+            erlaubteOperatoren = ["+","-","×",":"];
+            break;
+    }
+    const passendeGruppen =
+        sachaufgabenGruppen.map(gruppe => {
+            return {
+                ...gruppe,
+                templates: gruppe.templates.filter(
+                    t => erlaubteOperatoren.includes(t.operator)
+                )
+            };
 
-			square:
-				document.getElementById(
-					'squareCheck'
-				)?.checked || false,
+        }).filter(g => g.templates.length > 0);
+    const gruppe = passendeGruppen[rand(0, passendeGruppen.length - 1) ];
+    const template = gruppe.templates[rand(0, gruppe.templates.length - 1)];
+    const values = {
+        person:gruppe.platzhalter.person?.[rand(0, (gruppe.platzhalter.person?.length || 1)-1)] || "",
+        objekt:gruppe.platzhalter.objekt?.[rand(0, (gruppe.platzhalter.objekt?.length || 1)-1)] || "",
+        tier:gruppe.platzhalter.tier?.[rand(0, (gruppe.platzhalter.tier?.length || 1)-1)] || "",
+        preis:gruppe.platzhalter.preis?.[rand(0, (gruppe.platzhalter.preis?.length || 1)-1)] || 1,
+        anzahl1: rand(2,20),
+        anzahl2: rand(2,10)
+    };
+    let solution;
+    switch(template.operator){
+        case "+":
+            solution = values.anzahl1 + values.anzahl2;
+            break;
 
-			sqrt:
-				document.getElementById(
-					'sqrtCheck'
-				)?.checked || false,
+        case "-":
+            if(values.anzahl2 > values.anzahl1){
+                [values.anzahl1, values.anzahl2] =
+                [values.anzahl2, values.anzahl1];
+            }
+            solution =values.anzahl1 - values.anzahl2;
+            break;
+        case "×":
+            solution =values.anzahl1 * values.anzahl2;
+            break;
+        case ":":
+            values.anzahl1 =values.anzahl2 * rand(2,12);
+            solution =values.anzahl1 / values.anzahl2;
+            break;
+    }
+    return {
+        text: replacePlaceholders(template.text,values),operator: template.operator,values,solution
+    };
+}
 
-			time:
-				document.getElementById(
-					'timeCheck'
-				)?.checked || false,
 
-			pyramid:
-				document.getElementById(
-					'pyramidCheck'
-				)?.checked || false,
-
-			numberline:
-				document.getElementById(
-					'numberlineCheck'
-				)?.checked || false
-		};
+	function replacePlaceholders(template,values	){
+		return template.replace(
+			/\{(.*?)\}/g,
+			(_,key)=>values[key] ?? ""
+		);
 	}
-
-
-
 
 
 
@@ -2652,14 +3094,16 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 
 			if (kind === 'arcs') {
 				return '<div class="syllable-row">' +
-					'<span class="de-word">' + item.word + '</span>' +
+					'<span class="de-word syllable-arc-word">' +
+						item.word +
+					'</span>' +
 					'<span class="syllable-work"></span>' +
 				'</div>';
 			}
 
 			return '<div class="syllable-row">' +
 				'<span class="de-word">' + item.word + '</span>' +
-				'<span class="de-write-line"></span>' +
+				'<span class="de-write-line syllable-write-line"></span>' +
 			'</div>';
 
 		}).join('');
@@ -2693,6 +3137,180 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 //Sorgt dafür, dass immer nur ein Deutsch-Spezialmodul gleichzeitig aktiv ist.
     function setupDeutschExclusive(){const ids=['wordsCheck','lettersCheck','sentencesCheck','wordTypesCheck','consonantsCheck','vowelLengthCheck','syllablesCheck'];const checks=ids.map(id=>document.getElementById(id)).filter(Boolean);checks.forEach(check=>check.addEventListener('change',e=>{if(e.target.checked)checks.forEach(o=>{if(o!==e.target)o.checked=false;});else if(!checks.some(x=>x.checked))e.target.checked=true;updateCustomWordsVisibility();}));}
 
+<!-- Englisch_Grundschule.txt -->
+<!-- Englisch_Grundschule.txt -->
+<!-- Englisch_Grundschule.txt -->
+// ===== Englisch-Grundschule =====
+// ===== GENERATOR =====
+	function generateEnglishTasks(count, types, state) {
+		if (types.deToEn) {
+			return takeWithoutRepeats(
+				englishVocabulary,
+				count,
+				state.deToEn,
+				x => x.de
+			);
+		}
+		if (types.enToDe) {
+			return takeWithoutRepeats(
+				englishVocabulary,
+				count,
+				state.enToDe,
+				x => x.en
+			);
+		}
+		if (types.sentences) {
+			return takeWithoutRepeats(
+				englishSentences,
+				count,
+				state.sentences,
+				x => x.de
+			);
+		}
+		return [];
+	}
+
+// Ausgabe Vokabeln
+	function renderEnglishVocabulary(tasks, direction = "deToEn") {
+		return tasks.map(task => {
+			const question =
+				direction === "deToEn"
+					? task.de
+					: task.en;
+			return `
+				<div class="english-task">
+					<div class="deutsch-prompt">
+						${question}
+					</div>
+					<div
+						class="gs-lineatur"
+						style="
+							min-height:56px;
+							height:56px
+						">
+					</div>
+				</div>
+			`;
+		}).join('');
+	}
+
+// Satzübersetzungen
+	function renderEnglishSentences(tasks) {
+		return tasks.map(task => `
+			<div class="english-task">
+				<div class="deutsch-prompt">
+					${task.de}
+				</div>
+				<div
+					class="gs-lineatur"
+					style="
+						min-height:168px;
+						height:168px;
+					">
+				</div>
+			</div>
+		`).join('');
+	}
+
+// Lösungen
+	function renderEnglishSolution(tasks, type) {
+		const rows = tasks.map(task => {
+			if (type === "sentences") {
+				return `
+					<tr>
+						<td>${task.de}</td>
+						<td>${task.en}</td>
+					</tr>
+				`;
+			}
+			return `
+				<tr>
+					<td>
+						${type === "deToEn"
+							? task.de
+							: task.en}
+					</td>
+					<td>
+						${type === "deToEn"
+							? task.en
+							: task.de}
+					</td>
+				</tr>
+			`;
+		}).join('');
+		return `
+			<div class="de-special">
+				<div class="de-instruction">
+					Lösungen Englisch
+				</div>
+				<table class="de-table">
+					<thead>
+						<tr>
+							<th>Aufgabe</th>
+							<th>Lösung</th>
+						</tr>
+					</thead>
+					<tbody>
+						${rows}
+					</tbody>
+				</table>
+			</div>
+		`;
+	}
+
+// Einstellungen
+	function getEnglishTypes() {
+		return {
+			deToEn:
+				document.getElementById(
+					'deToEnCheck'
+				)?.checked || false,
+			enToDe:
+				document.getElementById(
+					'enToDeCheck'
+				)?.checked || false,
+			sentences:
+				document.getElementById(
+					'englishSentencesCheck'
+				)?.checked || false
+		};
+	}
+	
+	function setupEnglishExclusive() {
+		const ids = [
+			"deToEnCheck",
+			"enToDeCheck",
+			"englishSentencesCheck"
+		];
+		const checks =
+			ids
+			.map(id =>
+				document.getElementById(id)
+			)
+			.filter(Boolean);
+		checks.forEach(check => {
+			check.addEventListener(
+				"change",
+				e => {
+					if (e.target.checked) {
+						checks.forEach(other => {
+							if (other !== e.target) {
+								other.checked =false;
+							}
+						});
+					}
+					else {
+						if (!checks.some(c => c.checked)
+						) {
+							e.target.checked =true;
+						}
+					}
+					resetTaskCountToMaximum();
+				}
+			);
+		});
+	}
+
 
 //=============================================
 //==============createWorksheet.txt============
@@ -2704,7 +3322,23 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
         const header = document.createElement('div');
         header.className = 'worksheet-header';
         const title = document.createElement('h1');
-        title.textContent = mode === 'math' ? `Mathe-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}` : `Deutsch-Arbeitsblatt${totalPages > 1 ? ` (Seite ${pageIndex+1}/${totalPages})` : ''}`;
+        let worksheetTitle = "Arbeitsblatt";
+		if (mode === "math") {
+			worksheetTitle = "Mathe-Arbeitsblatt";
+		}
+		else if (mode === "deutsch") {
+			worksheetTitle = "Deutsch-Arbeitsblatt";
+		}
+		else if (mode === "english") {
+			worksheetTitle = "Englisch-Arbeitsblatt";
+		}
+
+		title.textContent =
+			`${worksheetTitle}${
+				totalPages > 1
+				? ` (Seite ${pageIndex + 1}/${totalPages})`
+				: ""
+			}`;		
         const nameDate = document.createElement('div');
         nameDate.className = 'name-date';
         nameDate.innerHTML = `<div>Name: _________________</div><div>Datum: _________________</div>`;
@@ -2738,7 +3372,6 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 					renderNumberlineTasks(
 						numberlineTasks
 					);
-				``(generateNumberlineTasks(nlMode,maxNum,generationState.numberline,getRequestedTaskCount()));
             } else if (ops.time) {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
@@ -2804,7 +3437,32 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 					`;
 					tasksGrid.appendChild(taskDiv);
 				}
-			} else {
+			} else if (ops.wordProblems) {tasksGrid = document.createElement('div');
+				tasksGrid.className = 'word-problem-container';
+				const difficulty = parseInt(document.getElementById('wordProblemDifficulty')?.value || '1',10);
+				const count =Math.min(getRequestedTaskCount(),10);
+				for (let i = 0; i < count; i++) {
+					const task = generateWordProblemTask(difficulty);
+					const taskDiv = document.createElement('div');
+					taskDiv.className = 'task-item word-problem-task';
+					taskDiv.innerHTML = `
+						<div class="word-problem-text">
+							${i + 1}) ${task.text}
+						</div>
+						<div class="word-problem-answer"></div>
+						<div>Antwort: _________________</div>
+					`;
+					tasksGrid.appendChild(taskDiv);
+					if (generationState.solutions && task.solution) {
+						generationState.solutions.push({
+							type: "Sachaufgabe",
+							text:
+								task.text + "<br>" + "→ " + task.solution
+						});
+					}
+				}
+			}
+			else {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
                 let tasks = generateMathTasks(getRequestedTaskCount(), ops, maxNum, selectedRows, squareBase, sqrtMaxNumber, getMathOperandMax(), generationState.math);
@@ -2857,7 +3515,7 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
                     tasksGrid.appendChild(taskDiv);
                 });
             }
-        } else {
+        } else if(mode === "deutsch"){
 			const types = getDeutschTypes();
 			const special =
 				types.wordTypes ? 'wordTypes' :
@@ -2918,6 +3576,43 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 					tasksGrid.appendChild(taskDiv);
 				});
 			}
+		} else if(mode === "english") {
+			tasksGrid =
+				document.createElement("div");
+			tasksGrid.className =
+				"tasks-grid deutsch-grid";
+			const types =
+				getEnglishTypes();
+			const englishTasks =
+				generateEnglishTasks(
+					getRequestedTaskCount(),
+					types,
+					generationState.english
+				);
+			generationState.englishSolutions =
+				[...englishTasks];
+			if (types.deToEn) {
+				tasksGrid.innerHTML =
+					renderEnglishVocabulary(
+						englishTasks,
+						"deToEn"
+					);
+			}
+			else if (types.enToDe) {
+
+				tasksGrid.innerHTML =
+					renderEnglishVocabulary(
+						englishTasks,
+						"enToDe"
+					);
+			}
+			else if (types.sentences) {
+
+				tasksGrid.innerHTML =
+					renderEnglishSentences(
+						englishTasks
+					);
+			}
 		}
         
         const pointsField = document.createElement('div');
@@ -2932,86 +3627,170 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 	
 	
 //Lösungsseite erzeugen
-	function createSolutionSheet(generationState) {
-		const mode = modeSelect.value;
-		let solutionHtml = "";
-		if (mode === "math") {
-			const ops = getMathOperations();
-			if (ops.add||ops.sub||ops.mul||ops.div||ops.square||ops.sqrt) {
-				const mathHtml = generationState.solutions
-					.filter(x => x.type === "Mathe")
-					.map(x =>
-						`<div class="solution-math-item">${x.text}</div>`
-					)
-					.join("");
+function createSolutionSheet(generationState) {
+	const mode = modeSelect.value;
+	let solutionHtml = "";
 
-				solutionHtml = `
-					<div class="solution-math-grid">
-						${mathHtml}
-					</div>
-				`;
-			}
-			else if (ops.time) {
-				solutionHtml =
-					renderTimeSolution(
-						generationState.timeSolutions || []
-					);
-			}
-			else if (ops.pyramid) {
-				solutionHtml =
-					renderPyramidSolution(
-						generationState.pyramidSolutions || []
-					);
-			}
-			else if (ops.numberline) {
+	if (mode === "math") {
+		const ops = getMathOperations();
 
-			}
-		} else {
+		if (ops.wordProblems) {
 
-			const types = getDeutschTypes();
-			const special = 
-			    types.wordTypes ? 'wordTypes' :
-				types.consonants ? 'consonants' :
-				types.vowelLength ? 'vowelLength' :
-				types.syllables ? 'syllables' :
-				null;
-			if (special === "wordTypes") {
-				solutionHtml =
-					renderWordTypesSolution(
-						generationState.wordTypesSolutions || []
-					);
-			}
-			else if (special === "consonants") {
-				solutionHtml =
-					renderConsonantsSolution(
-						generationState.consonantsSolutions || []
-					);
-			}
-			else if (special === "vowelLength") {
-				solutionHtml =
-					renderVowelSolution(
-						generationState.vowelSolutions || []
-					);
-			}
-			else if (special === "syllables") {
-				solutionHtml =
-					renderSyllableSolution(
-						generationState.syllableSolutions || []
-					);
-			}
+			const wordProblemHtml =
+				generationState.solutions
+					.filter(x => x.type === "Sachaufgabe")
+					.map((x, i) => {
+						return (
+							'<div class="word-problem-solution">' +
+								'<strong>Aufgabe ' + (i + 1) + ')</strong><br>' +
+								x.text +
+							'</div>'
+						);
+					})
+					.join('');
+
+			solutionHtml =
+				'<div class="word-problem-solutions">' +
+					wordProblemHtml +
+				'</div>';
+
 		}
-		const page = document.createElement("div");
-		page.className = "worksheet solution-sheet";
-		page.innerHTML = `
-			<div class="worksheet-header">
-				<h1>✅ Lösungen</h1>
-			</div>
-			${solutionHtml}
-		`;
-		return page;
-		
+		else if (
+			ops.add ||
+			ops.sub ||
+			ops.mul ||
+			ops.div ||
+			ops.square ||
+			ops.sqrt
+		) {
+
+			const mathHtml =
+				generationState.solutions
+					.filter(x => x.type === "Mathe")
+					.map(
+						x =>
+							'<div class="solution-math-item">' +
+							x.text +
+							'</div>'
+					)
+					.join('');
+
+			solutionHtml =
+				'<div class="solution-math-grid">' +
+					mathHtml +
+				'</div>';
+
+		}
+		else if (ops.time) {
+
+			solutionHtml =
+				renderTimeSolution(
+					generationState.timeSolutions || []
+				);
+
+		}
+		else if (ops.pyramid) {
+
+			solutionHtml =
+				renderPyramidSolution(
+					generationState.pyramidSolutions || []
+				);
+
+		}
+		else if (ops.numberline) {
+
+		}
+	}
+	else if (mode === "english") {
+
+		const types = getEnglishTypes();
+
+		if (types.deToEn) {
+
+			solutionHtml =
+				renderEnglishSolution(
+					generationState.englishSolutions,
+					"deToEn"
+				);
+
+		}
+		else if (types.enToDe) {
+
+			solutionHtml =
+				renderEnglishSolution(
+					generationState.englishSolutions,
+					"enToDe"
+				);
+
+		}
+		else if (types.sentences) {
+
+			solutionHtml =
+				renderEnglishSolution(
+					generationState.englishSolutions,
+					"sentences"
+				);
+
+		}
+	}
+	else {
+
+		const types = getDeutschTypes();
+
+		const special =
+			types.wordTypes ? 'wordTypes' :
+			types.consonants ? 'consonants' :
+			types.vowelLength ? 'vowelLength' :
+			types.syllables ? 'syllables' :
+			null;
+
+		if (special === "wordTypes") {
+
+			solutionHtml =
+				renderWordTypesSolution(
+					generationState.wordTypesSolutions || []
+				);
+
+		}
+		else if (special === "consonants") {
+
+			solutionHtml =
+				renderConsonantsSolution(
+					generationState.consonantsSolutions || []
+				);
+
+		}
+		else if (special === "vowelLength") {
+
+			solutionHtml =
+				renderVowelSolution(
+					generationState.vowelSolutions || []
+				);
+
+		}
+		else if (special === "syllables") {
+
+			solutionHtml =
+				renderSyllableSolution(
+					generationState.syllableSolutions || []
+				);
+
+		}
 	}
 
+	const page = document.createElement("div");
+
+	page.className = "worksheet solution-sheet";
+
+	page.innerHTML =
+		'<div class="worksheet-header">' +
+			'<h1>✅ Lösungen</h1>' +
+		'</div>' +
+		solutionHtml;
+
+	return page;
+}
+	
 </script>
 </body>
 </html>
