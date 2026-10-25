@@ -680,7 +680,55 @@
 			background:#f8fafc;
 			line-height:1.5;
 		}
+		.thousand-table
+		{
+			display:grid;
+			grid-template-columns:repeat(10,1fr);
+			gap:1px;
+			max-width:420;
+			margin:0 auto;
+		}
 
+		.tt-cell
+		{
+			border:1px solid #334155;
+			min-height:80;
+			display:flex;
+			align-items:center;
+			justify-content:center;
+			font-weight:bold;
+			font-size:1rem;
+
+			background:white;
+		}
+
+		.tt-corner
+		{
+			background:#dbeafe;
+		}
+
+		.tt-target
+		{
+			background:#fde68a;
+		}
+		.tt-solution
+		{
+			background:#22c55e;
+			color:white;
+			font-weight:700;
+			border:2px solid #15803d;
+		}
+		.thousand-table-wrapper{
+			display:flex;
+			flex-direction:column;
+			gap:20px;
+		}
+
+		.thousand-table-block{
+			display:flex;
+			justify-content:center;
+			margin-bottom: 40px;
+		}
     </style>
 
 
@@ -753,9 +801,10 @@
 					<label><input type="checkbox" value="square" id="squareCheck"> Quadratzahl</label>
 					<label><input type="checkbox" value="sqrt" id="sqrtCheck"> Wurzeln ziehen</label>
 					<label><input type="checkbox" value="time" id="timeCheck"> Uhrzeiten</label>
-					<label><input type="checkbox" value="pyramid" id="pyramidCheck"> 🏔️ Malpyramiden</label>
+					<label><input type="checkbox" value="pyramid" id="pyramidCheck"> Malpyramiden</label>
 					<label><input type="checkbox" value="numberline" id="numberlineCheck"> ↔️ Zahlenstrahl</label>
-					<label><input type="checkbox" value="wordproblems" id="wordProblemsCheck">📖 Sachaufgaben</label>
+					<label><input type="checkbox" value="thousandtable" id="thousandTableCheck"> 🔲 Tausendertafel</label>
+					<label><input type="checkbox" value="wordproblems" id="wordProblemsCheck">Sachaufgaben</label>
 					
 				</div>
 			</div>
@@ -766,7 +815,7 @@
 			</div>
 			
 			<div id="maxOperandGroup" class="control-group hidden">
-				<label>🔢 Max. Operand für +/-:</label>
+				<label>Max. Wert:</label>
 				<input type="number" id="maxOperand" value="500" min="1" max="5000" step="10" style="width: 80px;">
 				<small>Z.B. 10 = nur Rechnungen wie 23 + 4, nie 23 + 15</small>
 			</div>
@@ -1347,8 +1396,7 @@ const sachaufgabenGruppen = [
     operatoren:["+","-","×",":"],
     platzhalter:{
         person:["Mia","Lea","Tia","Marlene","Greta","Samuel","Szilamér","Stella","Finn","Noa","Roujin","Maria","Sophie","Anastasiia","David","Paul","Castiel","Daria","Arthur","Elma","Emlihan","Liam","Alyssa","Mohamad"],
-        objekt:["Äpfel","Brötchen","Bleistifte","Hefte","Radiergummis","Bananen"],
-        preis:[1,2,3,4,5,6,7,8]
+        objekt:["Äpfel","Brötchen","Bleistifte","Hefte","Radiergummis","Bananen"]
     },
     templates:[
         {text:"{person} kauft {anzahl1} {objekt}. Danach kauft {person} noch {anzahl2}. Wie viele {objekt} hat {person} insgesamt?",
@@ -1357,7 +1405,7 @@ const sachaufgabenGruppen = [
         {text:"{person} hat {anzahl1} Euro und gibt {anzahl2} Euro aus. Wie viel Geld bleibt übrig?",
             operator:"-"
         },
-        {text:"{person} kauft {anzahl1} {objekt} für je {preis} Euro. Wie viel bezahlt {person} insgesamt?",
+        {text:"{person} kauft {anzahl1} {objekt} für je {anzahl2} Euro. Wie viel bezahlt {person} insgesamt?",
             operator:"×"
         },
         {text:"{person} verteilt {anzahl1} Euro gleichmäßig auf {anzahl2} Kinder. Wie viele Euro bekommt jedes Kind?",
@@ -1473,6 +1521,204 @@ const sachaufgabenGruppen = [
 }
 
 ];
+
+const sachaufgabenGruppenStoer = [
+{
+    id:"einkaufen",
+    name:"Einkaufen und Geld",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        person:["Mia","Lea","Tia","Marlene","Greta","Samuel","Szilamér","Stella","Finn","Noa","Roujin","Maria","Sophie","Anastasiia","David","Paul","Castiel","Daria","Arthur","Elma","Emlihan","Liam","Alyssa","Mohamad"],
+        objekt:["Äpfel","Brötchen","Bleistifte","Hefte","Radiergummis","Bananen"],
+        stoerObjekt:["Wasserflaschen","Zeitschriften","Einkaufskörbe","Taschen","Kartons"]
+    },
+
+    templates:[
+        {text:"{person} kauft {anzahl1} {objekt}. Im Geschäft stehen außerdem {stoer} {stoerObjekt}. Danach kauft {person} noch {anzahl2} {objekt}. Wie viele {objekt} hat {person} insgesamt?",
+            operator:"+"
+        },
+        {text:"{person} hat {anzahl1} Euro. Im Laden stehen {stoer} {stoerObjekt}. {person} gibt {anzahl2} Euro aus. Wie viel Geld bleibt übrig?",
+            operator:"-"
+        },
+        {text:"{person} kauft {anzahl1} {objekt} für je {anzahl2} Euro. Im Regal liegen außerdem {stoer} {stoerObjekt}. Wie viel bezahlt {person} insgesamt?",
+            operator:"×"
+        },
+        {text:"{person} verteilt {anzahl1} Euro gleichmäßig auf {anzahl2} Kinder. Im Raum stehen zusätzlich {stoer} {stoerObjekt}. Wie viele Euro bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+
+{
+    id:"schule",
+    name:"Schule",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        objekt:["Bleistifte","Hefte","Bücher","Radiergummis"],
+        stoerObjekt:["Stühle","Lineale","Schränke","Tafeln","Buntstifte"]
+    },
+
+    templates:[
+        {text:"In einer Klasse sind {anzahl1} Kinder. Außerdem gibt es {stoer} {stoerObjekt}. {anzahl2} weitere Kinder kommen dazu. Wie viele Kinder sind nun in der Klasse?",
+            operator:"+"
+        },
+        {text:"In einer Klasse sind {anzahl1} Kinder. Im Klassenraum befinden sich {stoer} {stoerObjekt}. {anzahl2} Kinder fehlen heute. Wie viele Kinder sind anwesend?",
+            operator:"-"
+        },
+        {text:"Es gibt {anzahl1} Tische. An jedem Tisch sitzen {anzahl2} Kinder. Außerdem besitzt die Klasse {stoer} {stoerObjekt}. Wie viele Kinder sitzen insgesamt an den Tischen?",
+            operator:"×"
+        },
+        {text:"{anzahl1} {objekt} werden gleichmäßig auf {anzahl2} Kinder verteilt. Im Regal liegen zusätzlich {stoer} {stoerObjekt}. Wie viele {objekt} bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+
+{
+    id:"spielplatz",
+    name:"Spielplatz",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        stoerObjekt:["Bänke","Fahrräder","Bäume","Mülleimer","Blumenbeete"]
+    },
+
+    templates:[
+        {text:"Auf dem Spielplatz spielen {anzahl1} Kinder. Dort stehen außerdem {stoer} {stoerObjekt}. Danach kommen {anzahl2} Kinder dazu. Wie viele Kinder spielen jetzt dort?",
+            operator:"+"
+        },
+        {text:"Auf dem Spielplatz spielen {anzahl1} Kinder. Dort gibt es außerdem {stoer} {stoerObjekt}. {anzahl2} Kinder gehen nach Hause. Wie viele bleiben übrig?",
+            operator:"-"
+        },
+        {text:"Es stehen {anzahl1} Schaukeln bereit. Jede Schaukel wird von {anzahl2} Kindern genutzt. Zusätzlich gibt es {stoer} {stoerObjekt}. Wie viele Kinder sind das insgesamt?",
+            operator:"×"
+        },
+        {text:"{anzahl1} Bälle werden gleichmäßig auf {anzahl2} Kinder verteilt. Auf dem Spielplatz stehen außerdem {stoer} {stoerObjekt}. Wie viele Bälle bekommt jedes Kind?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"zoo",
+    name:"Zoo",
+    operatoren:["+","-","×",":"],
+    platzhalter:{
+        tier:["Affen","Pinguine","Giraffen","Zebras","Elefanten"],
+        stoerObjekt:["Bänke","Mülleimer","Futtereimer","Lampen"],
+        stoerPerson:["Tierpfleger","Besucher","Gärtner"]
+    },
+    templates:[
+        {text:"Im Zoo gibt es {anzahl1} {tier}. Außerdem arbeiten dort {stoer} {stoerPerson}. Es kommen {anzahl2} {tier} dazu. Wie viele sind es jetzt?",
+            operator:"+"
+        },
+        {text:"Im Zoo gibt es {anzahl1} {tier}. Zusätzlich stehen dort {stoer} {stoerObjekt}. {anzahl2} {tier} werden in einen anderen Zoo gebracht. Wie viele bleiben?",
+            operator:"-"
+        },
+        {text:"Es gibt {anzahl1} Gehege. In jedem Gehege leben {anzahl2} {tier}. Außerdem gibt es {stoer} {stoerObjekt}. Wie viele {tier} sind das insgesamt?",
+            operator:"×"
+        },
+        {text:"{anzahl1} {tier} werden gleichmäßig auf {anzahl2} Gehege verteilt. Im Zoo arbeiten außerdem {stoer} {stoerPerson}. Wie viele {tier} sind in jedem Gehege?",
+            operator:":"
+        }
+    ]
+},
+{
+    id:"bus",
+    name:"Busfahrt",
+    operatoren:["+","-"],
+
+    platzhalter:{
+        stoerObjekt:["Fenster","Sitzplätze","Haltestellen"]
+    },
+    templates:[
+        {text:"In einem Bus sitzen {anzahl1} Fahrgäste. Der Bus hat {stoer} {stoerObjekt}. An der nächsten Haltestelle steigen {anzahl2} Fahrgäste ein. Wie viele Fahrgäste sind jetzt im Bus?",
+            operator:"+"
+        },
+        {text:"In einem Bus sitzen {anzahl1} Fahrgäste. Der Bus besitzt {stoer} {stoerObjekt}. An der nächsten Haltestelle steigen {anzahl2} Fahrgäste aus. Wie viele bleiben im Bus?",
+            operator:"-"
+        },
+		{text:"Du bist der Busfahrer. In deinem Bus sitzen {anzahl1} Fahrgäste. Der Bus hat {stoer} {stoerObjekt}. An der nächsten Haltestelle steigen {anzahl2} Fahrgäste ein. Wie alt ist der Busfahrer?",
+            operator:"+"
+        },
+    ]
+},
+{
+    id:"geburtstag",
+    name:"Geburtstag",
+    operatoren:["+","-","×"],
+    platzhalter:{
+        objekt:["Bonbons","Kekse","Luftballons","Geschenke"],
+        stoerObjekt:["Kerzen","Girlanden","Stühle","Luftschlangen"]
+    },
+
+    templates:[
+        {text:"Auf einem Geburtstag liegen {anzahl1} {objekt} bereit. Außerdem gibt es {stoer} {stoerObjekt}. Es kommen noch {anzahl2} {objekt}  dazu. Wie viele sind es nun?",
+            operator:"+"
+        },
+        {text:"Auf einem Geburtstag gibt es {anzahl1} {objekt}. Zusätzlich hängen {stoer} {stoerObjekt} im Raum. {anzahl2} {objekt} werden verbraucht. Wie viele bleiben übrig?",
+            operator:"-"
+        },
+        {text:"Jedes Kind bekommt {anzahl2} {objekt}. Es sind {anzahl1} Kinder da. Im Raum befinden sich außerdem {stoer} {stoerObjekt}. Wie viele {objekt} werden insgesamt benötigt?",
+            operator:"×"
+        }
+    ]
+}
+];
+
+
+const sachaufgabenMehrschritt = {
+
+    platzhalter: {
+
+		person:["Mia","Lea","Tia","Marlene","Greta","Samuel","Szilamér","Stella","Finn","Noa","Roujin","Maria","Sophie","Anastasiia","David","Paul","Castiel","Daria","Arthur","Elma","Emlihan","Liam","Alyssa","Mohamad"],
+        objekt: ["Äpfel","Bananen","Brötchen","Bonbons","Bleistifte","Hefte","Bücher","Radiergummis","Sticker","Muffins"],
+        tier: ["Affen","Pinguine","Zebras","Giraffen","Elefanten"],
+        ort: ["Schule","Zoo","Spielplatz","Schwimmbad"],
+        fahrzeug: ["Busse","Fahrräder","Roller"],
+        gebaeude: ["Gehege","Klassenzimmer","Regale","Tische"],
+        stoerObjekt: ["Bänke","Stühle","Fenster","Bäume","Kerzen","Schränke","Fahrräder","Mülleimer"],
+        zeit: ["am Montag","am Dienstag","am Mittwoch","am Donnerstag","am Freitag"]
+    },
+    templates: [
+        {text: "{person} sammelt {anzahl1} Kastanien. Danach findet {person} noch {anzahl2} Kastanien. Anschließend verschenkt {person} {anzahl3} Kastanien. Wie viele Kastanien bleiben übrig?",
+            operations: ["+","-"]
+        },
+        {text: "Auf dem Spielplatz spielen {anzahl1} Kinder. Danach kommen {anzahl2} Kinder dazu. Anschließend gehen {anzahl3} Kinder nach Hause. Wie viele Kinder bleiben auf dem Spielplatz?",
+            operations: ["+","-"]
+        },
+        {text: "Es gibt {anzahl1} Regale. In jedem Regal stehen {anzahl2} Bücher. Zusätzlich werden noch {anzahl3} Bücher eingeräumt. Wie viele Bücher stehen insgesamt in den Regalen?",
+            operations: ["×","+"]
+        },
+        {text: "In {anzahl1} Gehege leben jeweils {anzahl2} {tier}. Später werden {anzahl3} {tier} in einen anderen Zoo gebracht. Wie viele {tier} bleiben übrig?",
+            operations: ["×","-"]
+        },
+        {text: "{person} besitzt {anzahl1} Sticker. Zusätzlich erhält {person} {anzahl2} Sticker. Danach verteilt {person} alle Sticker gleichmäßig auf {anzahl3} Alben. Wie viele Sticker kommen in jedes Album?",
+            operations: ["+",":"]
+        },
+        {text: "Für das Schulfest werden {anzahl1} Muffins gebacken. Danach kommen noch {anzahl2} Muffins dazu. Alle Muffins werden gleichmäßig auf {anzahl3} Tische verteilt. Wie viele Muffins erhält jeder Tisch?",
+            operations: ["+",":"]
+        },
+        {text: "Im Zoo gibt es {anzahl1} Gehege mit jeweils {anzahl2} {tier}. Danach kommen {anzahl3} weitere {tier} hinzu. Später werden {anzahl4} {tier} in einen anderen Zoo gebracht. Wie viele {tier} sind nun insgesamt im Zoo?",
+            operations: ["×","+","-"]
+        },
+        {text: "{person} kauft {anzahl1} Packungen mit jeweils {anzahl2} {objekt}. Danach erhält {person} noch {anzahl3} {objekt} geschenkt. Anschließend verschenkt {person} {anzahl4} {objekt}. Wie viele {objekt} bleiben übrig?",
+            operations: ["×","+","-"]
+        },
+        {text: "Auf dem Spielplatz stehen {stoer} {stoerObjekt}. Dort spielen {anzahl1} Gruppen mit jeweils {anzahl2} Kindern. Danach kommen {anzahl3} Kinder dazu. Wie viele Kinder spielen nun insgesamt dort?",
+            operations: ["×","+"],
+            hasDistractor: true
+        },
+        {text: "Der Bus besitzt {stoer} Sitzplätze. Für den Ausflug sammeln {anzahl1} Gruppen jeweils {anzahl2} Kastanien. Danach geben die Kinder {anzahl3} Kastanien an die Lehrkraft ab. Wie viele Kastanien bleiben insgesamt bei den Kindern?",
+            operations: ["×","-"],
+            hasDistractor: true
+        },
+        {text: "{person} kauft {anzahl1} {objekt} für jeweils {preis} Euro. Zusätzlich kauft {person} noch {anzahl2} weitere {objekt}. Wie viele {objekt} besitzt {person} anschließend insgesamt?",
+            operations: ["×","+"]
+        },
+        {text: "Ein Sack wiegt {gewicht} Kilogramm. Es gibt {anzahl1} Säcke. Danach werden {anzahl2} Säcke weggenommen. Wie viele Kilogramm bleiben übrig?",
+            operations: ["×","-"]
+        }
+    ]
+};
 
 //=============================================
 //==============uebergreifende_funktionen.txt==
@@ -1615,6 +1861,7 @@ const sachaufgabenGruppen = [
 						: 4;
 			}
 			if (ops.wordProblems) return 6;
+			if (ops.thousandTable) return 45;
 			return 40;
 		}
 		if (modeSelect.value === 'english') {
@@ -1715,6 +1962,7 @@ const sachaufgabenGruppen = [
 				solutions: [],
 				timeSolutions: [],
 				pyramidSolutions: [],
+				thousandTableSolution: [],
 				wordTypesSolutions: [],
 				consonantsSolutions: [],
 				vowelSolutions: [],
@@ -1738,9 +1986,9 @@ const sachaufgabenGruppen = [
 				(pageState.syllableSolutions?.length || 0) > 0 ||
 				(pageState.timeSolutions?.length || 0) > 0 ||
 				(pageState.pyramidSolutions?.length || 0) > 0 ||
-				(pageState.englishSolutions?.length || 0) > 0 
+				(pageState.englishSolutions?.length || 0) > 0 ||
+				(pageState.thousandTableSolution != null)
 				;
-
 			const generateSolutions =
 			document.getElementById('includeSolutions')?.checked || false;
 
@@ -1755,7 +2003,7 @@ const sachaufgabenGruppen = [
 
 //Sorgt dafür, dass nur ein Mathe-Spezialmodul gleichzeitig aktiv ist.
     function setupSpecialOpsExclusive() {
-        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline', 'wordProblems'];
+        const specialOps = ['square', 'sqrt', 'time', 'pyramid', 'numberline', 'wordProblems','thousandTable'];
         const basicOps = ['add', 'sub', 'mul', 'div'];
         specialOps.forEach(opId => {
             const checkbox = document.getElementById(`${opId}Check`);
@@ -1838,7 +2086,7 @@ const sachaufgabenGruppen = [
 		
 		// Zahlenraum anzeigen, wenn Grundrechenarten ODER Pyramiden aktiv sind (nur im Mathe-Modus)
 		if (mathRange) {
-			if (mode === 'math' && (anyBasicActive || ops.pyramid || ops.numberline)) {
+			if (mode === 'math' && (anyBasicActive || ops.pyramid || ops.numberline || ops.wordProblems)) {
 				mathRange.classList.remove('hidden');
 			} else {
 				mathRange.classList.add('hidden');
@@ -1864,7 +2112,7 @@ const sachaufgabenGruppen = [
 		const maxOperandGroup = document.getElementById('maxOperandGroup');
 		if (maxOperandGroup) {
 			// Nur im Mathe-Modus und wenn Addition oder Subtraktion aktiv ist
-			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && anyBasicActive && !ops.mul && !ops.div && !ops.pyramid && !ops.numberline;
+			const showMaxOperand = (mode === 'math') && (ops.add || ops.sub) && !ops.mul && !ops.div && !ops.pyramid && !ops.numberline;
 			showMaxOperand ? maxOperandGroup.classList.remove('hidden') : maxOperandGroup.classList.add('hidden');
 		}
 		
@@ -1902,12 +2150,11 @@ const sachaufgabenGruppen = [
 
 
 
+
 //=============================================
 //==============Mathe_Grundschule.txt==========
 //=============================================
-// ===== MATHEMATIK-Grundschule =====
-// ===== GENERATOR =====
-//Hauptgenerator für Matheaufgaben aller aktivierten Rechenarten.
+
     function generateMathTasks(count, operations, maxNumber, selectedRows, squareMaxBase, sqrtMaxNumber, operandMax, state) {
         operandMax = Number.isFinite(operandMax) && operandMax >= 1 ? operandMax : 500;
         const opsList = [];
@@ -2062,56 +2309,6 @@ const sachaufgabenGruppen = [
 		return html + '</div>';
 	}
 
-	//Liest die ausgewählten Mathe-Aufgabentypen aus der Oberfläche aus.
-	function getMathOperations() {
-
-		return {
-			add:
-				document.querySelector(
-					'#mathOpsBasic input[value="add"]'
-				)?.checked || false,
-
-			sub:
-				document.querySelector(
-					'#mathOpsBasic input[value="sub"]'
-				)?.checked || false,
-
-			mul:
-				document.querySelector(
-					'#mathOpsBasic input[value="mul"]'
-				)?.checked || false,
-
-			div:
-				document.querySelector(
-					'#mathOpsBasic input[value="div"]'
-				)?.checked || false,
-
-			square:
-				document.getElementById(
-					'squareCheck'
-				)?.checked || false,
-
-			sqrt:
-				document.getElementById(
-					'sqrtCheck'
-				)?.checked || false,
-
-			time:
-				document.getElementById(
-					'timeCheck'
-				)?.checked || false,
-
-			pyramid:
-				document.getElementById(
-					'pyramidCheck'
-				)?.checked || false,
-
-			numberline:
-				document.getElementById(
-					'numberlineCheck'
-				)?.checked || false
-		};
-	}
 
 // ===== MALPYRAMIDEN =====
 //Erzeugt die Daten einer Malpyramide inklusive ausgeblendeter Felder.
@@ -2543,79 +2740,405 @@ function renderNumberlineTasks(tasks) {
             time: document.getElementById('timeCheck')?.checked || false,
             pyramid: document.getElementById('pyramidCheck')?.checked || false,
             numberline: document.getElementById('numberlineCheck')?.checked || false,
+			thousandTable: document.getElementById('thousandTableCheck')?.checked || false,
 			wordProblems:document.getElementById('wordProblemsCheck')?.checked || false
         };
     }
 
-function generateWordProblemTask(difficulty){
-    let erlaubteOperatoren = ["+"];
-    switch(difficulty){
-        case 1:
-            erlaubteOperatoren = ["+","-"];
-            break;
+	function generateWordProblemTask(difficulty, maxNum, operandMax) {
 
-        case 2:
-            erlaubteOperatoren = ["×",":"];
-            break;
+		let erlaubteOperatoren = ["+"];
 
-        case 3:
-            erlaubteOperatoren = ["+","-","×",":"];
-            break;
+		switch (difficulty) {
 
-        case 4:
-            erlaubteOperatoren = ["+","-","×",":"];
-            break;
+			case 1:
+				erlaubteOperatoren = ["+", "-"];
+				break;
 
-        case 5:
-            erlaubteOperatoren = ["+","-","×",":"];
-            break;
-    }
-    const passendeGruppen =
-        sachaufgabenGruppen.map(gruppe => {
-            return {
-                ...gruppe,
-                templates: gruppe.templates.filter(
-                    t => erlaubteOperatoren.includes(t.operator)
-                )
-            };
+			case 2:
+				erlaubteOperatoren = ["×", ":"];
+				break;
 
-        }).filter(g => g.templates.length > 0);
-    const gruppe = passendeGruppen[rand(0, passendeGruppen.length - 1) ];
-    const template = gruppe.templates[rand(0, gruppe.templates.length - 1)];
-    const values = {
-        person:gruppe.platzhalter.person?.[rand(0, (gruppe.platzhalter.person?.length || 1)-1)] || "",
-        objekt:gruppe.platzhalter.objekt?.[rand(0, (gruppe.platzhalter.objekt?.length || 1)-1)] || "",
-        tier:gruppe.platzhalter.tier?.[rand(0, (gruppe.platzhalter.tier?.length || 1)-1)] || "",
-        preis:gruppe.platzhalter.preis?.[rand(0, (gruppe.platzhalter.preis?.length || 1)-1)] || 1,
-        anzahl1: rand(2,20),
-        anzahl2: rand(2,10)
-    };
-    let solution;
-    switch(template.operator){
-        case "+":
-            solution = values.anzahl1 + values.anzahl2;
-            break;
+			case 3:
+			case 4:
+			case 5:
+				erlaubteOperatoren = ["+", "-", "×", ":"];
+				break;
+		}
 
-        case "-":
-            if(values.anzahl2 > values.anzahl1){
-                [values.anzahl1, values.anzahl2] =
-                [values.anzahl2, values.anzahl1];
-            }
-            solution =values.anzahl1 - values.anzahl2;
-            break;
-        case "×":
-            solution =values.anzahl1 * values.anzahl2;
-            break;
-        case ":":
-            values.anzahl1 =values.anzahl2 * rand(2,12);
-            solution =values.anzahl1 / values.anzahl2;
-            break;
-    }
-    return {
-        text: replacePlaceholders(template.text,values),operator: template.operator,values,solution
-    };
-}
+		const gruppenPool =
+			difficulty >= 4
+				? sachaufgabenGruppenStoer
+				: sachaufgabenGruppen;
 
+		const passendeGruppen =
+			gruppenPool
+				.map(gruppe => ({
+					...gruppe,
+					templates: gruppe.templates.filter(
+						t => erlaubteOperatoren.includes(t.operator)
+					)
+				}))
+				.filter(g => g.templates.length > 0);
+
+		const gruppe =
+			passendeGruppen[
+				rand(0, passendeGruppen.length - 1)
+			];
+
+		const template =
+			gruppe.templates[
+				rand(0, gruppe.templates.length - 1)
+			];
+
+		const values = {
+
+			person:
+				gruppe.platzhalter.person?.[
+					rand(
+						0,
+						(gruppe.platzhalter.person?.length || 1) - 1
+					)
+				] || "",
+
+			objekt:
+				gruppe.platzhalter.objekt?.[
+					rand(
+						0,
+						(gruppe.platzhalter.objekt?.length || 1) - 1
+					)
+				] || "",
+
+			tier:
+				gruppe.platzhalter.tier?.[
+					rand(
+						0,
+						(gruppe.platzhalter.tier?.length || 1) - 1
+					)
+				] || "",
+
+			stoerObjekt:
+				gruppe.platzhalter.stoerObjekt?.[
+					rand(
+						0,
+						(gruppe.platzhalter.stoerObjekt?.length || 1) - 1
+					)
+				] || "",
+
+			stoerPerson:
+				gruppe.platzhalter.stoerPerson?.[
+					rand(
+						0,
+						(gruppe.platzhalter.stoerPerson?.length || 1) - 1
+					)
+				] || "",
+
+			preis: rand(1, 20),
+			gewicht: rand(1, 50),
+			stoer: rand(2, 30)
+		};
+
+		let solution;
+
+		if (difficulty === 5) {
+
+			const template =
+				sachaufgabenMehrschritt.templates[
+					rand(
+						0,
+						sachaufgabenMehrschritt.templates.length - 1
+					)
+				];
+
+			const p =
+				sachaufgabenMehrschritt.platzhalter;
+
+			Object.assign(values, {
+				person:
+					p.person[
+						rand(0, p.person.length - 1)
+					],
+				objekt:
+					p.objekt[
+						rand(0, p.objekt.length - 1)
+					],
+				tier:
+					p.tier[
+						rand(0, p.tier.length - 1)
+					],
+				ort:
+					p.ort[
+						rand(0, p.ort.length - 1)
+					],
+				fahrzeug:
+					p.fahrzeug[
+						rand(0, p.fahrzeug.length - 1)
+					],
+				gebaeude:
+					p.gebaeude[
+						rand(0, p.gebaeude.length - 1)
+					],
+				stoerObjekt:
+					p.stoerObjekt[
+						rand(0, p.stoerObjekt.length - 1)
+					]
+			});
+			const limit = Math.max(2,Math.min(operandMax,Math.floor(maxNum / 2)));
+
+			values.anzahl1 = rand(2, limit);
+			values.anzahl2 = rand(2, limit);
+			values.anzahl3 = rand(2, limit);
+			values.anzahl4 = rand(2, limit);
+
+			const ops =
+				template.operations.join(",");
+
+			switch (ops) {
+
+				case "+,-":
+					do {
+						values.anzahl1 = rand(2, limit);
+						values.anzahl2 = rand(2, limit);
+						values.anzahl3 = rand(2, limit);
+						solution =
+							values.anzahl1 +
+							values.anzahl2 -
+							values.anzahl3;
+					} while (solution < 0 || solution > maxNum);
+					break;
+
+				case "×,+":
+					do {
+						values.anzahl1 = rand(2, limit);
+						values.anzahl2 = rand(2, limit);
+						values.anzahl3 = rand(2, limit);
+						solution =
+							values.anzahl1 *
+							values.anzahl2 +
+							values.anzahl3;
+					} while (solution < 0 || solution > maxNum);
+					break;
+				case "×,-":
+					do {
+						values.anzahl1 = rand(2, limit);
+						values.anzahl2 = rand(2, limit);
+						values.anzahl3 = rand(2, limit);
+
+						solution =
+							values.anzahl1 *
+							values.anzahl2 -
+							values.anzahl3;
+
+					} while (solution < 0 || solution > maxNum);
+					break;
+
+				case "+,:": {
+					let quotient;
+					do {
+						values.anzahl3 = rand(2, limit);
+						const maxQuotient =Math.floor(maxNum / values.anzahl3);
+						quotient = rand(2,Math.max(2, maxQuotient));
+						const gesamt =values.anzahl3 * quotient;
+						values.anzahl1 =rand(1, gesamt - 1);
+						values.anzahl2 =gesamt - values.anzahl1;
+						solution = quotient;
+					} while (values.anzahl1 > maxNum || values.anzahl2 > maxNum);
+					break;
+				}
+
+				case "×,+,-":
+					do {
+						values.anzahl1 = rand(2, limit);
+						values.anzahl2 = rand(2, limit);
+						values.anzahl3 = rand(2, limit);
+						values.anzahl4 = rand(2, limit);
+						solution =
+							values.anzahl1 *
+							values.anzahl2 +
+							values.anzahl3 -
+							values.anzahl4;
+					} while (solution < 0 || solution > maxNum);
+					break;
+
+				default:
+					solution = 0;
+			}
+
+			return {
+				text: replacePlaceholders(
+					template.text,
+					values
+				),
+				operator: "mehrschrittig",
+				values,
+				solution
+			};
+		}
+
+
+		switch (template.operator) {
+
+			case "+": {
+
+				let a;
+				let b;
+
+				do {
+
+					a = rand(2, maxNum);
+
+					const maxB =
+						Math.min(
+							operandMax,
+							maxNum - a
+						);
+
+					if (maxB < 2) {
+						continue;
+					}
+
+					b = rand(2, maxB);
+
+					solution = a + b;
+
+				} while (
+					solution > maxNum
+				);
+
+				values.anzahl1 = a;
+				values.anzahl2 = b;
+
+				break;
+			}
+
+			case "-": {
+
+				const a =
+					rand(2, maxNum);
+
+				const b =
+					rand(
+						2,
+						Math.min(
+							operandMax,
+							a
+						)
+					);
+
+				values.anzahl1 = a;
+				values.anzahl2 = b;
+
+				solution = a - b;
+
+				break;
+			}
+
+			case "×": {
+
+				let a;
+				let b;
+
+				do {
+
+					a = rand(
+						2,
+						Math.min(
+							operandMax,
+							maxNum
+						)
+					);
+
+					const maxB =
+						Math.min(
+							operandMax,
+							Math.floor(
+								maxNum / a
+							)
+						);
+
+					if (maxB < 2) {
+						continue;
+					}
+
+					b = rand(2, maxB);
+
+					solution = a * b;
+
+				} while (
+					solution > maxNum
+				);
+
+				values.anzahl1 = a;
+				values.anzahl2 = b;
+
+				break;
+			}
+
+			case ":": {
+
+				let divisor;
+				let quotient;
+				let dividend;
+
+				do {
+
+					divisor =
+						rand(
+							2,
+							Math.max(
+								2,
+								Math.min(
+									operandMax,
+									12,
+									maxNum
+								)
+							)
+						);
+
+					quotient =
+						rand(
+							1,
+							Math.max(
+								1,
+								Math.min(
+									operandMax,
+									Math.floor(
+										maxNum / divisor
+									)
+								)
+							)
+						);
+
+					dividend =
+						divisor * quotient;
+
+				} while (
+					dividend > maxNum
+				);
+
+				values.anzahl1 = dividend;
+				values.anzahl2 = divisor;
+
+				solution = quotient;
+
+				break;
+			}
+		}
+
+		return {
+
+			text: replacePlaceholders(
+				template.text,
+				values
+			),
+
+			operator: template.operator,
+
+			values,
+
+			solution
+		};
+	}
 
 	function replacePlaceholders(template,values	){
 		return template.replace(
@@ -2623,10 +3146,174 @@ function generateWordProblemTask(difficulty){
 			(_,key)=>values[key] ?? ""
 		);
 	}
+	
+	function generateThousandTable(targetCount = 12)
+	{
+		const starts = [
+			101,201,301,401,501,
+			601,701,801,901
+		];
 
+		const start =
+			starts[rand(0, starts.length - 1)];
 
+		const grid = [];
 
+		for(let row = 0; row < 10; row++)
+		{
+			const current = [];
 
+			for(let col = 0; col < 10; col++)
+			{
+				current.push(
+					start + row * 10 + col
+				);
+			}
+
+			grid.push(current);
+		}
+
+		const targets = [];
+		const used = new Set();
+
+		while(targets.length < targetCount)
+		{
+			const row = rand(0,9);
+			const col = rand(0,9);
+
+			const key =
+				`${row}-${col}`;
+
+			const isCorner =
+				(row === 0 && col === 0) ||
+				(row === 0 && col === 9) ||
+				(row === 9 && col === 0) ||
+				(row === 9 && col === 9);
+
+			if(isCorner) continue;
+			if(used.has(key)) continue;
+
+			used.add(key);
+
+			targets.push({
+				row,
+				col,
+				value:grid[row][col]
+			});
+		}
+
+		return {
+			start,
+			grid,
+			targets
+		};
+	}
+	
+	function renderThousandTable(table){
+		const targetSet = new Set(
+			table.targets.map(
+				t => `${t.row}-${t.col}`
+			)
+		);
+
+		let html =
+			'<div class="thousand-table">';
+
+		for (let row = 0; row < 10; row++)
+		{
+			for (let col = 0; col < 10; col++)
+			{
+				const value =
+					table.grid[row][col];
+
+				const isCorner =
+					(row === 0 && col === 0) ||
+					(row === 0 && col === 9) ||
+					(row === 9 && col === 0) ||
+					(row === 9 && col === 9);
+
+				const isTarget =
+					targetSet.has(
+						`${row}-${col}`
+					);
+
+				let display = "&nbsp;";
+				let cssClass = "tt-cell";
+
+				if (isCorner)
+				{
+					display = value;
+					cssClass += " tt-corner";
+				}
+				else if (isTarget)
+				{
+					display = "|________|";
+					cssClass += " tt-target";
+				}
+
+				html +=
+					`<div class="${cssClass}">
+						${display}
+					</div>`;
+			}
+		}
+
+		html += '</div>';
+
+		return html;
+	}
+	
+	function renderThousandTableSolution(table){
+		const targetSet = new Set(
+			table.targets.map(
+				t => `${t.row}-${t.col}`
+			)
+		);
+
+		let html =
+			'<div class="thousand-table">';
+
+		for (let row = 0; row < 10; row++)
+		{
+			for (let col = 0; col < 10; col++)
+			{
+				const value =
+					table.grid[row][col];
+
+				const isCorner =
+					(row === 0 && col === 0) ||
+					(row === 0 && col === 9) ||
+					(row === 9 && col === 0) ||
+					(row === 9 && col === 9);
+
+				const isTarget =
+					targetSet.has(
+						`${row}-${col}`
+					);
+
+				let cssClass = "tt-cell";
+
+				if (isCorner)
+				{
+					cssClass += " tt-corner";
+				}
+
+				if (isTarget)
+				{
+					cssClass += " tt-solution";
+				}
+
+				html +=
+					`<div class="${cssClass}">
+						${value}
+					</div>`;
+			}
+		}
+
+		html += '</div>';
+
+		return html;
+	}	
 
 //=============================================
 //==============Deutsch_Grundschule.txt========
@@ -3372,7 +4059,30 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 					renderNumberlineTasks(
 						numberlineTasks
 					);
-            } else if (ops.time) {
+            } else if (ops.thousandTable) {
+				tasksGrid = document.createElement('div');
+				const requested = getRequestedTaskCount();
+				const tableCount = 3//Math.ceil(requested / 15);
+				tasksGrid = document.createElement('div');
+				tasksGrid.className = 'thousand-table-wrapper';
+
+				for(let i = 0; i < tableCount; i++) {
+					const table = generateThousandTable(requested/3);
+
+					if(!generationState.thousandTableSolution){
+						generationState.thousandTableSolution = [];
+					}
+
+					generationState.thousandTableSolution.push(table);
+
+					tasksGrid.innerHTML += `
+						<div class="thousand-table-block">
+							${renderThousandTable(table)}
+						</div>
+					`;
+				}
+				
+			}else if (ops.time) {
                 tasksGrid = document.createElement('div');
                 tasksGrid.className = 'tasks-grid math-grid';
                 let timeDifficulty = document.getElementById('timeDifficulty').value;
@@ -3437,18 +4147,20 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 					`;
 					tasksGrid.appendChild(taskDiv);
 				}
-			} else if (ops.wordProblems) {tasksGrid = document.createElement('div');
+			} else if (ops.wordProblems) {
+				tasksGrid = document.createElement('div');
 				tasksGrid.className = 'word-problem-container';
 				const difficulty = parseInt(document.getElementById('wordProblemDifficulty')?.value || '1',10);
 				const count =Math.min(getRequestedTaskCount(),10);
 				for (let i = 0; i < count; i++) {
-					const task = generateWordProblemTask(difficulty);
+					const task = generateWordProblemTask(difficulty,maxNum,getMathOperandMax());
 					const taskDiv = document.createElement('div');
 					taskDiv.className = 'task-item word-problem-task';
 					taskDiv.innerHTML = `
 						<div class="word-problem-text">
 							${i + 1}) ${task.text}
 						</div>
+
 						<div class="word-problem-answer"></div>
 						<div>Antwort: _________________</div>
 					`;
@@ -3460,6 +4172,7 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 								task.text + "<br>" + "→ " + task.solution
 						});
 					}
+
 				}
 			}
 			else {
@@ -3627,6 +4340,7 @@ function specialPick(type,count,state){const map={wordTypes:[wordTypeList,state.
 	
 	
 //Lösungsseite erzeugen
+//Lösungsseite erzeugen
 function createSolutionSheet(generationState) {
 	const mode = modeSelect.value;
 	let solutionHtml = "";
@@ -3700,7 +4414,18 @@ function createSolutionSheet(generationState) {
 		else if (ops.numberline) {
 
 		}
-	}
+		else if (ops.thousandTable){
+			//solutionHtml = renderThousandTableSolution(generationState.thousandTableSolution);
+			solutionHtml =
+				generationState.thousandTableSolution
+					.map(table => `
+						<div class="thousand-table-block">
+							${renderThousandTableSolution(table)}
+						</div>
+					`)
+					.join('');			
+				}
+			}
 	else if (mode === "english") {
 
 		const types = getEnglishTypes();
@@ -3790,6 +4515,8 @@ function createSolutionSheet(generationState) {
 
 	return page;
 }
+	
+
 	
 </script>
 </body>
